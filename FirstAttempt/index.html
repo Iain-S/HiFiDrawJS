@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="description" content="TODO">
+  <meta name="author" content="TODO">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>HiFiDraw</title>
+  <link rel="shortcut icon" type="image/png" href="images/pencil_favicon_small.png"/>
+  
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  
+  <!-- Our own javascript -->
+  <script src="js/scripts.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center"> 
+      HiFi Draw<br/>
+      <small class="text-muted">Draw connection diagrams for your HiFi</small>
+    </h1>
+
+    <p>
+      Your URL paramaters should appear below.  These are the key value pairs following the ? in your URL.  
+      <br/>
+      For example: www.mysite.com?param1=yes&amp;param2=no
+      <div id="output"></div>
+    </p>
+    
+    <p>
+      And here are some shapes in an SVG element:
+    </p>
+    <span class="border border-dark">
+      <svg width="100" height="100">
+        <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+      </svg>
+    </span>
+  </div>
+  <!-- jQuery library and bootstrap javascript -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script>
+    let query = getQueryParams(document.location.search);
+    console.log(query.param1);
+
+    let out=document.getElementById("output");
+    out.innerHTML=query.param1;
+  </script>
+</body>
+</html>
