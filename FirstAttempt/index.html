@@ -46,12 +46,24 @@
         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">About Us</a></li>
       </ul>
     </div>
-    <div id="input_div">
-	  <div id="input_text_div">
-	
-	  </div>
-	  <input type="button" id="btnAdd" value="New text box" onclick="addTextBox();" />
-	</div>
+    <table class="table" id="inputTable" onload="addRow('inputTable');">
+      <thead>
+        <tr>
+	      <th>Source</th>
+	      <th>Connector</th>
+	      <th>Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+	      <td id="sourceBox">
+		    <input type="button" id="btnAdd" value="New text box" onclick="addRow('inputTable');" />
+          </td>
+	      <td></td>
+	      <td></td>
+	    </tr>
+      </tbody>
+	</table>
 	<p>
       And here are some shapes in an SVG element:
     </p>
