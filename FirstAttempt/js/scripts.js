@@ -1,3 +1,9 @@
+/* Things to do once the page has loaded */
+$(document).ready(function() {
+    $('#'+'jquery_test').html('testing')
+});
+
+
 /* Add a text box to the element passed in as addTextBoxTo */
 function addTextBox(addTextBoxTo, fieldId = 888) {
 	//Create an input type dynamically.

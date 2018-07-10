@@ -1,0 +1,14 @@
+- Move to jQuery 
+- Add lists of existing components to source and destination drop-down menus
+- Add list of connector types (RCA, TRS, XLR, speaker cable, wireless)
+- Add high-level svg functions (create window, add component, link component)
+- Add lower-level svg functions (redraw, move, create_box, draw_arrow, etc.)
+- Add repositioning support (i.e. draggable svg items)
+- Add export support
+- Improve visuals
+- Add google analytics
+- Set up Django server (in which case add test cases)?
+- Add advertisements?
+- Buy domain
+- Add to github
+- 

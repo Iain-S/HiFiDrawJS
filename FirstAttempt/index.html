@@ -12,9 +12,6 @@
   
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  
-  <!-- Our own javascript -->
-  <script src="js/scripts.js"></script>
 </head>
 <body>
   <div class="container">
@@ -72,10 +69,14 @@
         <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
       </svg>
     </span>
-  </div> <!-- The main div -->
+	<div id='jquery_test'>
+	</div>
+  </div> <!-- End the main div -->
   <!-- jQuery library and bootstrap javascript -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- Our own javascript -->
+  <script src="js/scripts.js"></script>  
   <script>
     let query = getQueryParams(document.location.search);
     console.log(query.param1);
