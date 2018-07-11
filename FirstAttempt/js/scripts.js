@@ -1,6 +1,10 @@
 /* Things to do once the page has loaded */
 $(document).ready(function() {
     $('#'+'jquery_test').html('testing')
+	
+	// Add a first row to the table
+	//addRow($('#inputTable'))
+	addRow('inputTable')
 });
 
 
@@ -46,6 +50,39 @@ function addConnectorMenu2(addDropdownTo) {
 }
 
 
+/* Add a normal dropdown menu to the element passed in using jquery */
+function addConnectorMenu3(addDropdownTo) {
+	var arr = [
+		{val : 01, text: 'Generic'},
+		{val : 02, text: 'RCA<>RCA'},
+		{val : 03, text: 'RCA<>TRS'},
+		{val : 04, text: 'RCA<>XLR'},
+		{val : 05, text: 'TRS<>TRS'},
+		{val : 06, text: 'TRS<>RCA'},
+		{val : 07, text: 'TRS<>XLR'},
+		{val : 08, text: 'XLR<>XLR'},
+		{val : 09, text: 'XLR<>RCA'},
+		{val : 10, text: 'XLR<>TRS'},
+		//{val : 3, text: 'XLR<>XLR'},
+		//{val : 3, text: 'XLR<>XLR'},
+		//{val : 3, text: 'XLR<>XLR'},
+		//{val : 3, text: 'Wireless'},
+	];
+	
+	var sel = $('<select>');
+	
+	$(arr).each(function() {
+		sel.append($("<option>").attr('value',this.val).text(this.text));
+	});
+	
+	//console.log(sel);
+	//addDropdownTo.innerHTML = (sel.html());
+	//addDropdownTo.append(sel.html());
+	//sel.appendTo('#jquery_test');
+	sel.appendTo(addDropdownTo);
+}
+
+
 /* Add a text box to the element passed in */
 function addDestinationBox(addTextBoxTo) {
 	//Create an input type dynamically.
@@ -78,7 +115,7 @@ function addRow(sourceTable) {
 	addTextBox(srcCell);
 	
 	var conCell = newRow.insertCell(1);
-	addConnectorMenu2(conCell);
+	addConnectorMenu3(conCell);
 	
 	var dstCell = newRow.insertCell(2);
 	addDestinationBox(dstCell);
