@@ -1,6 +1,20 @@
-- Move to jQuery ++
+HIGH-LEVEL STEPS
+1. Create version with flowchart.js:
+   - Any number of sources and any number of destinations
+   - May not be able to handle loops
+   - Linkeable (or downloadable, at least)
+   - Some tests
+   - Some custom graphics for sources, amps and speakers
+   - Different connectors
+   - Analytics
+
+2. Improve flowchart.js version
+   - Handle loops (mics, etc.) and branches better
+   - Add better connectors (maybe XLR images)    
+
+FIXES AND IMPROVEMENTS
 - Add lists of existing components to source and destination drop-down menus
-- Add list of connector types (RCA, TRS, XLR, speaker cable, wireless) ++
+- Add keyboard shortcuts
 - Connection should have a remove button
 - Add high-level svg functions (create window, add component, link component)
 - Add lower-level svg functions (redraw, move, create_box, draw_arrow, etc.)
@@ -12,4 +26,5 @@
 - Add advertisements?
 - Buy domain
 - Add to github
-- 
+- Move to jQuery ++
+- Add list of connector types (RCA, TRS, XLR, speaker cable, wireless) ++

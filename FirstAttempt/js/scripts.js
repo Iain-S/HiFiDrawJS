@@ -1,12 +1,15 @@
 /* Things to do once the page has loaded */
 $(document).ready(function() {
-    $('#'+'jquery_test').html('testing')
+    //$('#'+'jquery_test').html('testing')
 	
 	// Add a first row to the table
 	//addRow($('#inputTable'))
-	addRow('inputTable')
+	//addRow('inputTable')
 });
 
+function scripts_squared(a_number) {
+	return a_number * a_number;
+}
 
 /* Add a text box to the element passed in as addTextBoxTo */
 function addTextBox(addTextBoxTo, fieldId = 888) {
