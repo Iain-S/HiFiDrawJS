@@ -83,7 +83,7 @@ function addConnectorMenu3(addDropdownTo) {
         {val: 7, text: 'TRS<>XLR'},
         {val: 8, text: 'XLR<>XLR'},
         {val: 9, text: 'XLR<>RCA'},
-        {val:10, text: 'XLR<>TRS'}
+        {val: 10, text: 'XLR<>TRS'}
         //{val : 3, text: 'XLR<>XLR'},
         //{val : 3, text: 'XLR<>XLR'},
         //{val : 3, text: 'XLR<>XLR'},
@@ -92,7 +92,7 @@ function addConnectorMenu3(addDropdownTo) {
 
     var sel = $('<select>');
 
-    $(arr).each(function() {
+    $(arr).each(function () {
         sel.append($("<option>").attr('value',this.val).text(this.text));
     });
 
@@ -162,9 +162,18 @@ function getQueryParams(qs) {
         tokens,
         re = /[?&]?([^=]+)=([^&]*)/g;
 
-    while (tokens = re.exec(qs)) {
-        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
-    }
+    // while (tokens = re.exec(qs)) {
+        // params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    // }
+
+    do {
+        tokens = re.exec(qs);
+        if (tokens) {
+            params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+        } else {
+            break;
+        }
+    } while (true);
 
     return params;
 }
