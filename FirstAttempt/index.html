@@ -79,7 +79,7 @@
   <script src="js/scripts.js"></script>  
   <script>
     let query = getQueryParams(document.location.search);
-    console.log(query.param1);
+    console.log('Query parameter 1: ' + query.param1);
 
     let out=document.getElementById("output");
     out.innerHTML=query.param1;

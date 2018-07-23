@@ -1,127 +1,151 @@
 /* Things to do once the page has loaded */
-$(document).ready(function() {
+$(document).ready(function () {
+    // Function-level strict mode syntax
+    'use strict';
     //$('#'+'jquery_test').html('testing')
-	
-	// Add a first row to the table
-	//addRow($('#inputTable'))
-	//addRow('inputTable')
+    console.log("does this override the other doc.ready?");
+    // Add a first row to the table
+    //addRow($('#inputTable'))
+    //addRow('inputTable')
 });
 
 function scripts_squared(a_number) {
-	return a_number * a_number;
+    // Function-level strict mode syntax
+    'use strict';
+    return a_number * a_number;
 }
 
 /* Add a text box to the element passed in as addTextBoxTo */
-function addTextBox(addTextBoxTo, fieldId = 888) {
-	//Create an input type dynamically.
-	var element = document.createElement("input");
-	
-	//Assign different attributes to the element.
-	element.setAttribute("type", "text");
-	element.setAttribute("value", "");
-	element.setAttribute("name", "Test Name");
-	//element.setAttribute("style", "width:200px");
-	element.setAttribute("id", "text" + fieldId);
-	element.setAttribute("placeholder", "source name");
-	
-	//Create Labels
-	//var label = document.createElement("label");
-	//label.innerHTML = "New Label ";     
-	//label.setAttribute("style", "font-weight:normal");
-	//label.setAttribute("for", "text" + fieldId);
-	
-	// 'foobar' is the div id, where new fields are to be added
-	//var foo = document.getElementById(sourceBox);
+function addTextBox(addTextBoxTo) {
+    // Function-level strict mode syntax
+    'use strict';
 
-	//Append the element in page (in span).
-	//foo.appendChild(label);
-	//foo.appendChild(element);
-	//addTextBoxTo.appendChild(label);
-	addTextBoxTo.appendChild(element);
+    var fieldId = 888;
+
+    //Create an input type dynamically.
+    var element = document.createElement("input");
+
+    //Assign different attributes to the element.
+    element.setAttribute("type", "text");
+    element.setAttribute("value", "");
+    element.setAttribute("name", "Test Name");
+    //element.setAttribute("style", "width:200px");
+    element.setAttribute("id", "text" + fieldId);
+    element.setAttribute("placeholder", "source name");
+
+    //Create Labels
+    //var label = document.createElement("label");
+    //label.innerHTML = "New Label ";
+    //label.setAttribute("style", "font-weight:normal");
+    //label.setAttribute("for", "text" + fieldId);
+
+    // 'foobar' is the div id, where new fields are to be added
+    //var foo = document.getElementById(sourceBox);
+
+    //Append the element in page (in span).
+    //foo.appendChild(label);
+    //foo.appendChild(element);
+    //addTextBoxTo.appendChild(label);
+    addTextBoxTo.appendChild(element);
 }
 
 
 /* Add a bootstrap dropdown menu to the element passed in */
 function addConnectorMenu(addDropdownTo) {
-	addDropdownTo.innerHTML = '<div class="dropdown-menu">      <a class="dropdown-item" href="#">Action</a>      <a class="dropdown-item" href="#">Another action</a>      <a class="dropdown-item" href="#">Something else here</a>      <div role="separator" class="dropdown-divider"></div>      <a class="dropdown-item" href="#">Separated link</a>    </div>'
+    // Function-level strict mode syntax
+    'use strict';
+
+    addDropdownTo.innerHTML = '<div class="dropdown-menu">      <a class="dropdown-item" href="#">Action</a>      <a class="dropdown-item" href="#">Another action</a>      <a class="dropdown-item" href="#">Something else here</a>      <div role="separator" class="dropdown-divider"></div>      <a class="dropdown-item" href="#">Separated link</a>    </div>';
 }
 
 
 /* Add a normal dropdown menu to the element passed in */
 function addConnectorMenu2(addDropdownTo) {
-	addDropdownTo.innerHTML = '<select>      <option value="volvo">Volvo</option>      <option value="saab">Saab</option>      <option value="opel">Opel</option>      <option value="audi">Audi</option>    </select>'
+    // Function-level strict mode syntax
+    'use strict';
+
+    addDropdownTo.innerHTML = '<select>      <option value="volvo">Volvo</option>      <option value="saab">Saab</option>      <option value="opel">Opel</option>      <option value="audi">Audi</option>    </select>';
 }
 
 
 /* Add a normal dropdown menu to the element passed in using jquery */
 function addConnectorMenu3(addDropdownTo) {
-	var arr = [
-		{val : 01, text: 'Generic'},
-		{val : 02, text: 'RCA<>RCA'},
-		{val : 03, text: 'RCA<>TRS'},
-		{val : 04, text: 'RCA<>XLR'},
-		{val : 05, text: 'TRS<>TRS'},
-		{val : 06, text: 'TRS<>RCA'},
-		{val : 07, text: 'TRS<>XLR'},
-		{val : 08, text: 'XLR<>XLR'},
-		{val : 09, text: 'XLR<>RCA'},
-		{val : 10, text: 'XLR<>TRS'},
-		//{val : 3, text: 'XLR<>XLR'},
-		//{val : 3, text: 'XLR<>XLR'},
-		//{val : 3, text: 'XLR<>XLR'},
-		//{val : 3, text: 'Wireless'},
-	];
-	
-	var sel = $('<select>');
-	
-	$(arr).each(function() {
-		sel.append($("<option>").attr('value',this.val).text(this.text));
-	});
-	
-	//console.log(sel);
-	//addDropdownTo.innerHTML = (sel.html());
-	//addDropdownTo.append(sel.html());
-	//sel.appendTo('#jquery_test');
-	sel.appendTo(addDropdownTo);
+    // Function-level strict mode syntax
+    'use strict';
+
+    var arr = [
+        {val: 1, text: 'Generic'},
+        {val: 2, text: 'RCA<>RCA'},
+        {val: 3, text: 'RCA<>TRS'},
+        {val: 4, text: 'RCA<>XLR'},
+        {val: 5, text: 'TRS<>TRS'},
+        {val: 6, text: 'TRS<>RCA'},
+        {val: 7, text: 'TRS<>XLR'},
+        {val: 8, text: 'XLR<>XLR'},
+        {val: 9, text: 'XLR<>RCA'},
+        {val:10, text: 'XLR<>TRS'}
+        //{val : 3, text: 'XLR<>XLR'},
+        //{val : 3, text: 'XLR<>XLR'},
+        //{val : 3, text: 'XLR<>XLR'},
+        //{val : 3, text: 'Wireless'},
+    ];
+
+    var sel = $('<select>');
+
+    $(arr).each(function() {
+        sel.append($("<option>").attr('value',this.val).text(this.text));
+    });
+
+    //console.log(sel);
+    //addDropdownTo.innerHTML = (sel.html());
+    //addDropdownTo.append(sel.html());
+    //sel.appendTo('#jquery_test');
+    sel.appendTo(addDropdownTo);
 }
 
 
 /* Add a text box to the element passed in */
 function addDestinationBox(addTextBoxTo) {
-	//Create an input type dynamically.
-	var element = document.createElement("input");
-	
-	//Assign different attributes to the element.
-	element.setAttribute("type", "text");
-	element.setAttribute("value", "");
-	element.setAttribute("name", "Test Name");
-	//element.setAttribute("style", "width:200px");
-	//element.setAttribute("id", "text" + fieldId);
-	element.setAttribute("placeholder", "destination name");
-	
-	addTextBoxTo.appendChild(element);
+    // Function-level strict mode syntax
+    'use strict';
+
+    //Create an input type dynamically.
+    var element = document.createElement("input");
+
+    //Assign different attributes to the element.
+    element.setAttribute("type", "text");
+    element.setAttribute("value", "");
+    element.setAttribute("name", "Test Name");
+    //element.setAttribute("style", "width:200px");
+    //element.setAttribute("id", "text" + fieldId);
+    element.setAttribute("placeholder", "destination name");
+
+    addTextBoxTo.appendChild(element);
 }
 
 
 /* Add a source-connector-destination row at the end of the table*/
 function addRow(sourceTable) {
-	var tableRef = document.getElementById(sourceTable).getElementsByTagName('tbody')[0];
-	
-	// Insert a row at the end of the table
-	var newRow = tableRef.insertRow(tableRef.rows.length);
-	
-	// Insert a row at the beginning of the table
-	//var newRow = tableRef.insertRow(0);
-	
-	// Insert a cell in the row at index 0
-	var srcCell = newRow.insertCell(0);
-	addTextBox(srcCell);
-	
-	var conCell = newRow.insertCell(1);
-	addConnectorMenu3(conCell);
-	
-	var dstCell = newRow.insertCell(2);
-	addDestinationBox(dstCell);
+    // Function-level strict mode syntax
+    'use strict';
+
+    var tableRef = document.getElementById(sourceTable).getElementsByTagName('tbody')[0];
+
+    // Insert a row at the end of the table
+    var newRow = tableRef.insertRow(tableRef.rows.length);
+
+    // Insert a row at the beginning of the table
+    //var newRow = tableRef.insertRow(0);
+
+    // Insert a cell in the row at index 0
+    var srcCell = newRow.insertCell(0);
+    addTextBox(srcCell);
+
+    var conCell = newRow.insertCell(1);
+    addConnectorMenu3(conCell);
+
+    var dstCell = newRow.insertCell(2);
+    addDestinationBox(dstCell);
 }
 
 
@@ -129,6 +153,9 @@ function addRow(sourceTable) {
    e.g. www.mysite.com?something=a_thing&what=why
         will return a dict with something and what as keys */
 function getQueryParams(qs) {
+    // Function-level strict mode syntax
+    'use strict';
+
     qs = qs.split('+').join(' ');
 
     var params = {},
