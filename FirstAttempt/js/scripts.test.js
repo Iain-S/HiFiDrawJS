@@ -3,14 +3,6 @@ $(document).ready(function () {
     // Function-level strict mode syntax
     'use strict';
 
-    // check whether we can call our scripts.js functions
-    var a = scripts_squared(4);
-    if (a !== 16) {
-        console.log("failed");
-    } else {
-        console.log("passed");
-    }
-
     // check whether we can use chai.js functions
     var assert = chai.assert;
     assert.typeOf("a_string", "string");
@@ -20,7 +12,7 @@ $(document).ready(function () {
     // assert.equal(1, 2)
     var test_functions = [
         test_scripts_squared,
-        test_a,
+        test_add_text_box_to,
         test_b,
         test_c
     ];
@@ -53,15 +45,29 @@ function test_scripts_squared() {
     }
 }
 
-function test_a() {
+function test_add_text_box_to() {
     // Function-level strict mode syntax
     'use strict';
 
     var assert = chai.assert;
     try {
-        assert.equal(1, 2);
+        //var testing_div = $("#div_for_testing");
+        var testing_div = document.getElementById("div_for_testing");
+        //var existing_text_box = testing_div.find('input[type="text"]')[0];
+        var existing_text_box = testing_div.children[0];
+        if (existing_text_box !== undefined) {
+            assert.isTrue(false, "existing_text_box wasn't undefined.");
+        } else {
+            console.log("existing_text_box was undefined.");
+        }
+
+        addTextBox(testing_div);
+        var new_text_boxes = testing_div.find('input[type="text"]');
+        assert.equal(new_text_boxes.length, 1, "Expected one text input box");
+
+        console.log('test_add_text_box_to has passed');
     } catch (err) {
-        console.log('Error in TEST_NAME_HERE: ' + err);
+        console.log('Error in test_add_text_box_to: ' + err);
     }
 }
 
