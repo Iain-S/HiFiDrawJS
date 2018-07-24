@@ -1,11 +1,12 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
 import unittest
-import time
+# import time
 
+
+# NOTE: You may need to download geckodriver, if you are using linux and haven't already dowloaded it
 
 class TestNewVisitor(unittest.TestCase):
-
     def setUp(self):
         self.browser = webdriver.Firefox()
 
@@ -37,9 +38,10 @@ class TestNewVisitor(unittest.TestCase):
             'destination name'
         )
 
-        # # She types "Buy peacock feathers" into a text box (Edith's hobby
-        # # is tying fly-fishing lures)
-        # input_box.send_keys('Buy peacock feathers')
+        # She enters a souce name into the first box
+        src_input_box.send_keys("Edith's iPhone")
+
+
         #
         # # When she hits enter, the page updates, and now the page lists
         # # "1: Buy peacock feathers" as an item in a to-do list table
