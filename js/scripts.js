@@ -6,7 +6,7 @@ $(document).ready(function () {
     console.log("does this override the other doc.ready?");
     // Add a first row to the table
     //addRow($('#inputTable'))
-    //addRow('inputTable')
+    addRow('inputTable')
 });
 
 function scripts_squared(a_number) {
@@ -30,22 +30,9 @@ function addTextBox(addTextBoxTo) {
     element.setAttribute("value", "");
     element.setAttribute("name", "Test Name");
     //element.setAttribute("style", "width:200px");
-    element.setAttribute("id", "text" + fieldId);
+    element.setAttribute("id", "id_src_1");
     element.setAttribute("placeholder", "source name");
 
-    //Create Labels
-    //var label = document.createElement("label");
-    //label.innerHTML = "New Label ";
-    //label.setAttribute("style", "font-weight:normal");
-    //label.setAttribute("for", "text" + fieldId);
-
-    // 'foobar' is the div id, where new fields are to be added
-    //var foo = document.getElementById(sourceBox);
-
-    //Append the element in page (in span).
-    //foo.appendChild(label);
-    //foo.appendChild(element);
-    //addTextBoxTo.appendChild(label);
     addTextBoxTo.appendChild(element);
 }
 
@@ -117,7 +104,7 @@ function addDestinationBox(addTextBoxTo) {
     element.setAttribute("value", "");
     element.setAttribute("name", "Test Name");
     //element.setAttribute("style", "width:200px");
-    //element.setAttribute("id", "text" + fieldId);
+    element.setAttribute("id", "id_dst_1");
     element.setAttribute("placeholder", "destination name");
 
     addTextBoxTo.appendChild(element);
@@ -125,11 +112,11 @@ function addDestinationBox(addTextBoxTo) {
 
 
 /* Add a source-connector-destination row at the end of the table*/
-function addRow(sourceTable) {
+function addRow(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
 
-    var tableRef = document.getElementById(sourceTable).getElementsByTagName('tbody')[0];
+    var tableRef = document.getElementById(sourceTableID).getElementsByTagName('tbody')[0];
 
     // Insert a row at the end of the table
     var newRow = tableRef.insertRow(tableRef.rows.length);
