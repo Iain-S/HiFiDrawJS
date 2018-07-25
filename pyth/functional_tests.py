@@ -1,5 +1,6 @@
 from selenium import webdriver
 # from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 import unittest
 # import time
 
@@ -8,7 +9,9 @@ import unittest
 
 class TestNewVisitor(unittest.TestCase):
     def setUp(self):
-        self.browser = webdriver.Firefox()
+        options = Options()
+        options.add_argument("--headless")
+        self.browser = webdriver.Firefox(options=options)
 
     def tearDown(self):
         self.browser.quit()
@@ -38,7 +41,7 @@ class TestNewVisitor(unittest.TestCase):
             'destination name'
         )
 
-        # She enters a souce name into the first box
+        # She enters a source name into the first box
         src_input_box.send_keys("Edith's iPhone")
 
 
