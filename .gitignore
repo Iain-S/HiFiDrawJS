@@ -1,2 +1,4 @@
 geckodriver*
 .idea/*
+raphael.min.js
+flowchart.js
