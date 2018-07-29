@@ -2,7 +2,7 @@ from selenium import webdriver
 # from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 import unittest
-# import time
+import time
 
 
 # NOTE: You may need to download geckodriver, if you are using linux and haven't already dowloaded it
@@ -35,15 +35,27 @@ class TestNewVisitor(unittest.TestCase):
         )
 
         # She notices a table row, which seems to want some destination input
-        src_input_box = self.browser.find_element_by_id('id_dst_1')
+        dst_input_box = self.browser.find_element_by_id('id_dst_1')
         self.assertEqual(
-            src_input_box.get_attribute('placeholder'),
+            dst_input_box.get_attribute('placeholder'),
             'destination name'
         )
 
-        # She enters a source name into the first box
+        # She enters a source and destination and clicks the button
         src_input_box.send_keys("Edith's iPhone")
+        dst_input_box.send_keys("Mackie CR3s")
+        button = self.browser.find_element_by_id("btnAdd")
+        button.click()
+        time.sleep(0.5)
 
+        # She sees a new row, making a total of four in the table
+        # (one header, one for the button, the auto first row and the new one)
+        all_rows = self.browser.find_elements_by_tag_name('tr')
+        self.assertEqual(len(all_rows), 4)
+
+        # She also sees that her diagram has been drawn
+        drawing = self.browser.find_element_by_tag_name('svg')
+        # drawing.find_elements_by_class_name()
 
         #
         # # When she hits enter, the page updates, and now the page lists
