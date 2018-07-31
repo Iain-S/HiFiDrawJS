@@ -6,14 +6,16 @@ $(document).ready(function () {
     console.log("does this override the other doc.ready?");
     // Add a first row to the table
     //addRow($('#inputTable'))
-    addRow('inputTable')
+    addRow('inputTable');
 });
+
 
 function scripts_squared(a_number) {
     // Function-level strict mode syntax
     'use strict';
     return a_number * a_number;
 }
+
 
 /* Add a text box to the element passed in as addTextBoxTo */
 function addTextBox(addTextBoxTo) {
@@ -111,6 +113,14 @@ function addDestinationBox(addTextBoxTo) {
 }
 
 
+function drawDiagram(tableRef) {
+    'use strict';
+    return $("<svg width=\"400\" height=\"110\">\n" +
+        "  <rect width=\"300\" height=\"100\" style=\"fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)\" />\n" +
+        "</svg>");
+}
+
+
 /* Add a source-connector-destination row at the end of the table*/
 function addRow(sourceTableID) {
     // Function-level strict mode syntax
@@ -133,6 +143,14 @@ function addRow(sourceTableID) {
 
     var dstCell = newRow.insertCell(2);
     addDestinationBox(dstCell);
+
+    // Redraw the diagram each call
+    var connectionDiagram = drawDiagram(tableRef)
+
+    var drawingArea = document.getElementById('drawing_span')
+
+    connectionDiagram.appendTo(drawingArea)
+    //drawingArea.appendChild(connectionDiagram)
 }
 
 

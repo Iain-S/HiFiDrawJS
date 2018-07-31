@@ -28,21 +28,21 @@ class TestNewVisitor(unittest.TestCase):
         self.assertIn('HiFi Draw', page_header)
 
         # She notices a table row, which seems to want some source input
-        src_input_box = self.browser.find_element_by_id('id_src_in_1')
+        src_input_box = self.browser.find_element_by_id('id_src_1')
         self.assertEqual(
             src_input_box.get_attribute('placeholder'),
             'source name'
         )
 
         # She notices a table row, which seems to want some destination input
-        dst_input_box = self.browser.find_element_by_id('id_dst_in_1')
+        dst_input_box = self.browser.find_element_by_id('id_dst_1')
         self.assertEqual(
             dst_input_box.get_attribute('placeholder'),
             'destination name'
         )
 
         # She enters a source and destination and clicks the button        
-	src_input_box.send_keys("Edith's iPhone")
+        src_input_box.send_keys("Edith's iPhone")
         dst_input_box.send_keys("Mackie CR3s")
         button = self.browser.find_element_by_id("btnAdd")
         button.click()
@@ -55,17 +55,16 @@ class TestNewVisitor(unittest.TestCase):
 
         # She also sees that her diagram has been drawn with two rects and a path
         rects = self.browser.find_elements_by_tag_name('rect')
-	paths = self.browser.find_elements_by_tag_name('path')
-        self.assertEqual(len(rects), 2))
-        self.assertEqual(len(paths), 1))
+        paths = self.browser.find_elements_by_tag_name('path')
+        self.assertEqual(len(rects), 2)
+        self.assertEqual(len(paths), 1)
 
         # Her source and destination are named but the generic connector is not
-        source_text = self.browser.find_element_by_id('id_component_1)
+        source_text = self.browser.find_element_by_id('id_component_1')
         dest_text = self.browser.find_element_by_id('id_component_2')
         # TODO we have the source and dest elements but we want the actual text
         self.assertEqual("Edith's iPhone", source_text)
         self.assertEqual("Mackie CR3s", dest_text)
-
 
         #
         # # When she hits enter, the page updates, and now the page lists
