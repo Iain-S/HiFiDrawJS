@@ -41,6 +41,12 @@ class TestNewVisitor(unittest.TestCase):
             'destination name'
         )
 
+        # She notices that there is a blank area at the bottom of the page with no drawing in it
+        rects = self.browser.find_elements_by_tag_name('rect')
+        paths = self.browser.find_elements_by_tag_name('path')
+        self.assertEqual(len(rects), 0)
+        self.assertEqual(len(paths), 0)
+
         # She enters a source and destination and clicks the button        
         src_input_box.send_keys("Edith's iPhone")
         dst_input_box.send_keys("Mackie CR3s")

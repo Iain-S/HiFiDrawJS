@@ -39,24 +39,6 @@ function addTextBox(addTextBoxTo) {
 }
 
 
-/* Add a bootstrap dropdown menu to the element passed in */
-function addConnectorMenu(addDropdownTo) {
-    // Function-level strict mode syntax
-    'use strict';
-
-    addDropdownTo.innerHTML = '<div class="dropdown-menu">      <a class="dropdown-item" href="#">Action</a>      <a class="dropdown-item" href="#">Another action</a>      <a class="dropdown-item" href="#">Something else here</a>      <div role="separator" class="dropdown-divider"></div>      <a class="dropdown-item" href="#">Separated link</a>    </div>';
-}
-
-
-/* Add a normal dropdown menu to the element passed in */
-function addConnectorMenu2(addDropdownTo) {
-    // Function-level strict mode syntax
-    'use strict';
-
-    addDropdownTo.innerHTML = '<select>      <option value="volvo">Volvo</option>      <option value="saab">Saab</option>      <option value="opel">Opel</option>      <option value="audi">Audi</option>    </select>';
-}
-
-
 /* Add a normal dropdown menu to the element passed in using jquery */
 function addConnectorMenu3(addDropdownTo) {
     // Function-level strict mode syntax
@@ -85,10 +67,6 @@ function addConnectorMenu3(addDropdownTo) {
         sel.append($("<option>").attr('value',this.val).text(this.text));
     });
 
-    //console.log(sel);
-    //addDropdownTo.innerHTML = (sel.html());
-    //addDropdownTo.append(sel.html());
-    //sel.appendTo('#jquery_test');
     sel.appendTo(addDropdownTo);
 }
 
@@ -115,6 +93,16 @@ function addDestinationBox(addTextBoxTo) {
 
 function drawDiagram(tableRef) {
     'use strict';
+
+    var tableRows = tableRef.children('tr');
+    var tableTextBoxes = tableRows.find('input[type=text]');
+
+    $.each(tableTextBoxes, function (index, value) {
+        if ($(value).val().length) {
+            console.log(index + ": " + $(value).val());
+        }
+    });
+
     return $("<svg width=\"400\" height=\"110\">\n" +
         "  <rect width=\"300\" height=\"100\" style=\"fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)\" />\n" +
         "</svg>");
@@ -126,10 +114,19 @@ function addRow(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
 
-    var tableRef = document.getElementById(sourceTableID).getElementsByTagName('tbody')[0];
+    var tableRef = $("#"+sourceTableID).children('tbody').first();
+    //var tableRef = $("#"+sourceTableID + " > tbody");
+
+    // var childTest = $("#"+sourceTableID);
+    //
+    // var childTest2 = childTest.children();
+    //
+    // var childTest3 = childTest2.children();
+
+    // console.log(childTest3);
 
     // Insert a row at the end of the table
-    var newRow = tableRef.insertRow(tableRef.rows.length);
+    var newRow = tableRef[0].insertRow(tableRef[0].rows.length);
 
     // Insert a row at the beginning of the table
     //var newRow = tableRef.insertRow(0);
@@ -145,11 +142,11 @@ function addRow(sourceTableID) {
     addDestinationBox(dstCell);
 
     // Redraw the diagram each call
-    var connectionDiagram = drawDiagram(tableRef)
+    var connectionDiagram = drawDiagram(tableRef);
 
-    var drawingArea = document.getElementById('drawing_span')
+    var drawingArea = document.getElementById('drawing_span');
 
-    connectionDiagram.appendTo(drawingArea)
+    connectionDiagram.appendTo(drawingArea);
     //drawingArea.appendChild(connectionDiagram)
 }
 
