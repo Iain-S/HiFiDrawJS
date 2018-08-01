@@ -22,8 +22,6 @@ function addTextBox(addTextBoxTo) {
     // Function-level strict mode syntax
     'use strict';
 
-    var fieldId = 888;
-
     //Create an input type dynamically.
     var element = document.createElement("input");
 
@@ -114,16 +112,8 @@ function addRow(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
 
-    var tableRef = $("#"+sourceTableID).children('tbody').first();
+    var tableRef = $("#" + sourceTableID).children('tbody').first();
     //var tableRef = $("#"+sourceTableID + " > tbody");
-
-    // var childTest = $("#"+sourceTableID);
-    //
-    // var childTest2 = childTest.children();
-    //
-    // var childTest3 = childTest2.children();
-
-    // console.log(childTest3);
 
     // Insert a row at the end of the table
     var newRow = tableRef[0].insertRow(tableRef[0].rows.length);
@@ -163,10 +153,6 @@ function getQueryParams(qs) {
     var params = {},
         tokens,
         re = /[?&]?([^=]+)=([^&]*)/g;
-
-    // while (tokens = re.exec(qs)) {
-        // params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
-    // }
 
     do {
         tokens = re.exec(qs);
