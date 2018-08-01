@@ -1,13 +1,13 @@
 /* Things to do once the page has loaded */
-$(document).ready(function () {
-    // Function-level strict mode syntax
-    'use strict';
-    //$('#'+'jquery_test').html('testing')
-    console.log("does this override the other doc.ready?");
-    // Add a first row to the table
-    //addRow($('#inputTable'))
-    addRow('inputTable');
-});
+// $(document).ready(function () {
+//     // Function-level strict mode syntax
+//     'use strict';
+//     //$('#'+'jquery_test').html('testing')
+//     console.log("does this override the other doc.ready?");
+//     // Add a first row to the table
+//     //addRow($('#inputTable'))
+//     addRow('inputTable');
+// });
 
 
 function scripts_squared(a_number) {

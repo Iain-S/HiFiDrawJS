@@ -79,11 +79,10 @@
   <!-- Our own javascript -->
   <script src="js/scripts.js"></script>  
   <script>
-    let query = getQueryParams(document.location.search);
-    console.log('Query parameter 1: ' + query.param1);
-
-    let out=document.getElementById("output");
-    out.innerHTML=query.param1;
+    window.onload = function() {
+        // Add a first row to save the user a click
+        addRow('inputTable');
+    }
   </script>
 </body>
 </html>
