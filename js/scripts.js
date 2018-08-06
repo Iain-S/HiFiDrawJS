@@ -23,7 +23,7 @@ function addTextBox(addTextBoxTo) {
     'use strict';
 
     //Create an input type dynamically.
-    var element = document.createElement("input");
+    let element = document.createElement("input");
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
@@ -42,7 +42,7 @@ function addConnectorMenu3(addDropdownTo) {
     // Function-level strict mode syntax
     'use strict';
 
-    var arr = [
+    let arr = [
         {val: 1, text: 'Generic'},
         {val: 2, text: 'RCA<>RCA'},
         {val: 3, text: 'RCA<>TRS'},
@@ -59,7 +59,7 @@ function addConnectorMenu3(addDropdownTo) {
         //{val : 3, text: 'Wireless'},
     ];
 
-    var sel = $('<select>');
+    let sel = $('<select>');
 
     $(arr).each(function () {
         sel.append($("<option>").attr('value',this.val).text(this.text));
@@ -75,7 +75,7 @@ function addDestinationBox(addTextBoxTo) {
     'use strict';
 
     //Create an input type dynamically.
-    var element = document.createElement("input");
+    let element = document.createElement("input");
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
@@ -92,18 +92,27 @@ function addDestinationBox(addTextBoxTo) {
 function drawDiagram(tableRef) {
     'use strict';
 
-    var tableRows = tableRef.children('tr');
-    var tableTextBoxes = tableRows.find('input[type=text]');
+    let tableRows = tableRef.children('tr');
+    let tableTextBoxes = tableRows.find('input[type=text]');
 
+    let svg_html = "<svg width=\"400\" height=\"110\">\n";
+
+    // Add a rect for each valid row (one with a source and destination)
     $.each(tableTextBoxes, function (index, value) {
         if ($(value).val().length) {
             console.log(index + ": " + $(value).val());
+            svg_html += "  <rect width=\"300\" height=\"100\" style=\"fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)\" />\n";
         }
     });
 
-    return $("<svg width=\"400\" height=\"110\">\n" +
-        "  <rect width=\"300\" height=\"100\" style=\"fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)\" />\n" +
-        "</svg>");
+    // Add one path for now (regardless of how many rectangles we have)
+    if (tableTextBoxes.length > 2) {
+        svg_html += "<path></path>";
+    }
+
+    svg_html += "</svg>";
+
+    return $(svg_html);
 }
 
 
@@ -112,29 +121,32 @@ function addRow(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
 
-    var tableRef = $("#" + sourceTableID).children('tbody').first();
-    //var tableRef = $("#"+sourceTableID + " > tbody");
+    let tableRef = $("#" + sourceTableID).children('tbody').first();
+    //let tableRef = $("#"+sourceTableID + " > tbody");
 
     // Insert a row at the end of the table
-    var newRow = tableRef[0].insertRow(tableRef[0].rows.length);
+    let newRow = tableRef[0].insertRow(tableRef[0].rows.length);
 
     // Insert a row at the beginning of the table
-    //var newRow = tableRef.insertRow(0);
+    //let newRow = tableRef.insertRow(0);
 
     // Insert a cell in the row at index 0
-    var srcCell = newRow.insertCell(0);
+    let srcCell = newRow.insertCell(0);
     addTextBox(srcCell);
 
-    var conCell = newRow.insertCell(1);
+    let conCell = newRow.insertCell(1);
     addConnectorMenu3(conCell);
 
-    var dstCell = newRow.insertCell(2);
+    let dstCell = newRow.insertCell(2);
     addDestinationBox(dstCell);
 
     // Redraw the diagram each call
-    var connectionDiagram = drawDiagram(tableRef);
+    let connectionDiagram = drawDiagram(tableRef);
 
-    var drawingArea = document.getElementById('drawing_span');
+    // let drawingArea = document.getElementById('drawing_span');
+    let drawingArea = $('#drawing_span');
+
+    drawingArea.empty();
 
     connectionDiagram.appendTo(drawingArea);
     //drawingArea.appendChild(connectionDiagram)
@@ -150,7 +162,7 @@ function getQueryParams(qs) {
 
     qs = qs.split('+').join(' ');
 
-    var params = {},
+    let params = {},
         tokens,
         re = /[?&]?([^=]+)=([^&]*)/g;
 

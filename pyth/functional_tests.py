@@ -44,8 +44,10 @@ class TestNewVisitor(unittest.TestCase):
         # She notices that there is a blank area at the bottom of the page with no drawing in it
         rects = self.browser.find_elements_by_tag_name('rect')
         paths = self.browser.find_elements_by_tag_name('path')
+        svgs  = self.browser.find_elements_by_tag_name('svg')
         self.assertEqual(len(rects), 0)
         self.assertEqual(len(paths), 0)
+        self.assertEqual(len(svgs), 1)
 
         # She enters a source and destination and clicks the button        
         src_input_box.send_keys("Edith's iPhone")
@@ -64,6 +66,8 @@ class TestNewVisitor(unittest.TestCase):
         paths = self.browser.find_elements_by_tag_name('path')
         self.assertEqual(len(rects), 2)
         self.assertEqual(len(paths), 1)
+
+        self.assertFalse(True, "We're not done yet!")
 
         # Her source and destination are named but the generic connector is not
         source_text = self.browser.find_element_by_id('id_component_1')
