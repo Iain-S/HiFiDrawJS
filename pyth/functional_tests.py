@@ -3,15 +3,17 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 import unittest
 import time
-
+from selenium.webdriver.common.keys import Keys
 
 # NOTE: You may need to download geckodriver, if you are using linux and haven't already dowloaded it
+
 
 class TestNewVisitor(unittest.TestCase):
     def setUp(self):
         options = Options()
         options.add_argument("--headless")
         self.browser = webdriver.Firefox(options=options)
+        self.browser.get('http://localhost:8009/')
 
     def tearDown(self):
         self.browser.quit()
@@ -19,7 +21,7 @@ class TestNewVisitor(unittest.TestCase):
     def test_can_make_super_simple_diagram(self):
         # Edith wants to make a super simple diagram to of her iPhone and active monitors.
         # Someone gives her a link to our site
-        self.browser.get('http://localhost:8009/')
+        # self.browser.get('http://localhost:8009/')
 
         # She notices the page title and header mention to-do lists
         self.assertIn('HiFiDraw', self.browser.title)
@@ -75,6 +77,26 @@ class TestNewVisitor(unittest.TestCase):
         # TODO we have the source and dest elements but we want the actual text
         self.assertEqual("Edith's iPhone", source_text)
         self.assertEqual("Mackie CR3s", dest_text)
+
+    def test_keyboard_shortcuts(self):
+        # There should be a total of three in the table;
+        # one header, one for the button and the auto first row
+        all_rows = self.browser.find_elements_by_tag_name('tr')
+        self.assertEqual(len(all_rows), 3)
+
+        # She notices a table row, which seems to want some source input
+        src_input_box = self.browser.find_element_by_id('id_src_1')
+        dst_input_box = self.browser.find_element_by_id('id_dst_1')
+
+        src_input_box.send_keys("Edith's iPhone")
+        dst_input_box.send_keys("Mackie CR3s")
+        dst_input_box.send_keys(Keys.RETURN)
+        time.sleep(0.5)
+
+        # There should be a total of four in the table;
+        # one header, one for the button, the auto first row and the new one
+        all_rows = self.browser.find_elements_by_tag_name('tr')
+        self.assertEqual(len(all_rows), 4)
 
         #
         # # When she hits enter, the page updates, and now the page lists

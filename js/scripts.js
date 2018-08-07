@@ -8,7 +8,12 @@
 //     //addRow($('#inputTable'))
 //     addRow('inputTable');
 // });
-
+$(document).keypress( function(event) {
+  if (event.which === 13) {
+    console.log("ENTER key pressed!!");
+    addRow('inputTable');
+  }
+});
 
 function scripts_squared(a_number) {
     // Function-level strict mode syntax
@@ -37,7 +42,7 @@ function addTextBox(addTextBoxTo) {
 }
 
 
-/* Add a normal dropdown menu to the element passed in using jquery */
+/* Add a normal drop-down menu to the element passed in using jquery */
 function addConnectorMenu3(addDropdownTo) {
     // Function-level strict mode syntax
     'use strict';
@@ -101,13 +106,13 @@ function drawDiagram(tableRef) {
     $.each(tableTextBoxes, function (index, value) {
         if ($(value).val().length) {
             console.log(index + ": " + $(value).val());
-            svg_html += "  <rect width=\"300\" height=\"100\" style=\"fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)\" />\n";
+            svg_html += "  <rect width=\"300\" height=\"100\" style=\"fill:rgb(0,0,255);stroke-width:3px;stroke:rgb(0,0,0)\" />\n";
         }
     });
 
     // Add one path for now (regardless of how many rectangles we have)
     if (tableTextBoxes.length > 2) {
-        svg_html += "<path></path>";
+        svg_html += "<path d=''></path>";
     }
 
     svg_html += "</svg>";
@@ -154,7 +159,7 @@ function addRow(sourceTableID) {
 
 
 /* Get query parameters from the URL
-   e.g. www.mysite.com?something=a_thing&what=why
+   e.g. www.my-site.com?something=a_thing&what=why
         will return a dict with something and what as keys */
 function getQueryParams(qs) {
     // Function-level strict mode syntax
