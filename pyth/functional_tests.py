@@ -47,6 +47,7 @@ class TestNewVisitor(unittest.TestCase):
         rects = self.browser.find_elements_by_tag_name('rect')
         paths = self.browser.find_elements_by_tag_name('path')
         svgs  = self.browser.find_elements_by_tag_name('svg')
+
         self.assertEqual(len(rects), 0, "Page should start with no rectangles.")
         self.assertEqual(len(paths), 0, "Page should start with no paths.")
         self.assertEqual(len(svgs), 1, "Page should start with one svg element.")
@@ -66,6 +67,9 @@ class TestNewVisitor(unittest.TestCase):
         # She also sees that her diagram has been drawn with two rects and a path
         rects = self.browser.find_elements_by_tag_name('rect')
         paths = self.browser.find_elements_by_tag_name('path')
+
+        paths = [p for p in paths if p.get_attribute('id') != 'raphael-marker-block']
+
         self.assertEqual(len(rects), 2, "Expected two rectangles after button click.")
         self.assertEqual(len(paths), 1, "Expected one path after button click")
 

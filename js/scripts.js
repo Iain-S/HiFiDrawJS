@@ -122,9 +122,25 @@ function drawDiagram(tableRef) {
 
 /* Generate a string which flowchart js can parse. */
 function generate_flowchart_input(tableRef) {
-    return 'st=>start\n' +
-           'e=>end\n' +
-           'e->s';
+    let tableRows = tableRef.children('tr');
+    let tableTextBoxes = tableRows.find('input[type=text]');
+    let numberOfValidRows = 0
+
+    // Add a rect for each valid row (one with a source and destination)
+    $.each(tableTextBoxes, function (index, value) {
+        if ($(value).val().length) {
+            numberOfValidRows ++;
+        }
+    });
+
+    if (numberOfValidRows === 0) {
+        // This causes a "TypeError: s is null" but doesn't ruin anything
+        return '';
+    } else {
+        return 'op1=>operation: My Operation\n' +
+               'op2=>operation: My Operation\n' +
+               'op1->op2';
+    }
 }
 
 
@@ -150,19 +166,23 @@ function addRowToID(sourceTableID) {
     let dstCell = newRow.insertCell(2);
     addDestinationBox(dstCell);
 
+    let drawingArea = $('#drawing_div');
+
+    drawingArea.empty();
+
     let diagram_var = flowchart.parse(generate_flowchart_input(tableBody));
 
     diagram_var.drawSVG('drawing_div');
 
     // Redraw the diagram each call
-    let connectionDiagram = drawDiagram(tableBody);
+    //let connectionDiagram = drawDiagram(tableBody);
 
     // let drawingArea = document.getElementById('drawing_span');
-    let drawingArea = $('#drawing_div');
+    //let drawingArea = $('#drawing_div');
 
-    drawingArea.empty();
+    //drawingArea.empty();
 
-    connectionDiagram.appendTo(drawingArea);
+    //connectionDiagram.appendTo(drawingArea);
     //drawingArea.appendChild(connectionDiagram)
 }
 
