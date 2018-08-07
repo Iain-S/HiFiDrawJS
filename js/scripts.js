@@ -5,15 +5,16 @@
 //     //$('#'+'jquery_test').html('testing')
 //     console.log("does this override the other doc.ready?");
 //     // Add a first row to the table
-//     //addRow($('#inputTable'))
-//     addRow('inputTable');
+//     //addRowToID($('#inputTable'))
+//     addRowToID('inputTable');
 // });
 $(document).keypress( function(event) {
   if (event.which === 13) {
-    console.log("ENTER key pressed!!");
-    addRow('inputTable');
+    // console.log("ENTER key pressed!!");
+    addRowToID('inputTable');
   }
 });
+
 
 function scripts_squared(a_number) {
     // Function-level strict mode syntax
@@ -23,7 +24,7 @@ function scripts_squared(a_number) {
 
 
 /* Add a text box to the element passed in as addTextBoxTo */
-function addTextBox(addTextBoxTo) {
+function addSourceBox(addTextBoxTo) {
     // Function-level strict mode syntax
     'use strict';
 
@@ -42,8 +43,8 @@ function addTextBox(addTextBoxTo) {
 }
 
 
-/* Add a normal drop-down menu to the element passed in using jquery */
-function addConnectorMenu3(addDropdownTo) {
+/* Add a normal drop-down menu to the DOM element passed in */
+function makeConnectorMenu() {
     // Function-level strict mode syntax
     'use strict';
 
@@ -69,8 +70,7 @@ function addConnectorMenu3(addDropdownTo) {
     $(arr).each(function () {
         sel.append($("<option>").attr('value',this.val).text(this.text));
     });
-
-    sel.appendTo(addDropdownTo);
+    return sel;
 }
 
 
@@ -94,6 +94,7 @@ function addDestinationBox(addTextBoxTo) {
 }
 
 
+/* Given a table of connections, return an SVG representation */
 function drawDiagram(tableRef) {
     'use strict';
 
@@ -121,32 +122,30 @@ function drawDiagram(tableRef) {
 }
 
 
-/* Add a source-connector-destination row at the end of the table*/
-function addRow(sourceTableID) {
+/* Add a source-connector-destination row at the end of the table */
+function addRowToID(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
 
-    let tableRef = $("#" + sourceTableID).children('tbody').first();
-    //let tableRef = $("#"+sourceTableID + " > tbody");
+    let tableRef = $("#" + sourceTableID);
+
+    let tableBody = tableRef.children('tbody').first();
 
     // Insert a row at the end of the table
-    let newRow = tableRef[0].insertRow(tableRef[0].rows.length);
-
-    // Insert a row at the beginning of the table
-    //let newRow = tableRef.insertRow(0);
+    let newRow = tableBody[0].insertRow(tableBody[0].rows.length);
 
     // Insert a cell in the row at index 0
     let srcCell = newRow.insertCell(0);
-    addTextBox(srcCell);
+    addSourceBox(srcCell);
 
     let conCell = newRow.insertCell(1);
-    addConnectorMenu3(conCell);
+    makeConnectorMenu().appendTo(conCell);
 
     let dstCell = newRow.insertCell(2);
     addDestinationBox(dstCell);
 
     // Redraw the diagram each call
-    let connectionDiagram = drawDiagram(tableRef);
+    let connectionDiagram = drawDiagram(tableBody);
 
     // let drawingArea = document.getElementById('drawing_span');
     let drawingArea = $('#drawing_span');
