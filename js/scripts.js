@@ -120,6 +120,14 @@ function drawDiagram(tableRef) {
 }
 
 
+/* Generate a string which flowchart js can parse. */
+function generate_flowchart_input(tableRef) {
+    return 'st=>start\n' +
+           'e=>end\n' +
+           'e->s';
+}
+
+
 /* Add a source-connector-destination row at the end of the table */
 function addRowToID(sourceTableID) {
     // Function-level strict mode syntax
@@ -142,11 +150,15 @@ function addRowToID(sourceTableID) {
     let dstCell = newRow.insertCell(2);
     addDestinationBox(dstCell);
 
+    let diagram_var = flowchart.parse(generate_flowchart_input(tableBody));
+
+    diagram_var.drawSVG('drawing_div');
+
     // Redraw the diagram each call
     let connectionDiagram = drawDiagram(tableBody);
 
     // let drawingArea = document.getElementById('drawing_span');
-    let drawingArea = $('#drawing_span');
+    let drawingArea = $('#drawing_div');
 
     drawingArea.empty();
 
