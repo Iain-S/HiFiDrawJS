@@ -59,9 +59,7 @@ function makeConnectorMenu() {
         {val: 8, text: 'XLR<>XLR'},
         {val: 9, text: 'XLR<>RCA'},
         {val: 10, text: 'XLR<>TRS'}
-        //{val : 3, text: 'XLR<>XLR'},
-        //{val : 3, text: 'XLR<>XLR'},
-        //{val : 3, text: 'XLR<>XLR'},
+        //{val : 3, text: 'spare<>spare'},
         //{val : 3, text: 'Wireless'},
     ];
 

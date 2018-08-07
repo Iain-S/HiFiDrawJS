@@ -15,7 +15,7 @@ $(document).ready(function () {
     let test_functions = [
         test_scripts_squared,
         test_add_text_box,
-        test_add_connector_menu,
+        test_make_connector_menu,
         test_add_destination_box,
         test_add_source_box,
         test_draw_diagram,
@@ -62,11 +62,7 @@ function test_add_text_box() {
         let testing_div = $("#div_for_testing");
         let existing_text_box = testing_div.find('input[type="text"]');
         
-        if (existing_text_box.length !== 0) {
-            assert.isTrue(false, "existing_text_box wasn't undefined. " + existing_text_box.length);
-        } else {
-            // console.log("everything's fine; existing_text_box was undefined.");
-        }
+        assert.equal(existing_text_box.length, 0, "existing_text_box wasn't undefined.");
 
         addSourceBox(testing_div[0]);
         let new_text_boxes = testing_div.find('input[type="text"]');
@@ -79,7 +75,7 @@ function test_add_text_box() {
 }
 
 
-function test_add_connector_menu() {
+function test_make_connector_menu() {
     // Function-level strict mode syntax
     'use strict';
 
@@ -88,9 +84,9 @@ function test_add_connector_menu() {
         // There should be one <select> element returned
         let connector_menu = $(makeConnectorMenu()).filter('select');
         assert.equal(1, connector_menu.length);
-        console.log(test_add_connector_menu.name + ' has passed.');
+        console.log(test_make_connector_menu.name + ' has passed.');
     } catch (err) {
-        console.log('Error in test_add_connector_menu: ' + err);
+        console.log('Error in test_make_connector_menu: ' + err);
     }
 }
 
