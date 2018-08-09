@@ -73,7 +73,7 @@ function makeConnectorMenu() {
 
 
 /* Add a text box to the element passed in */
-function addDestinationBox(addTextBoxTo) {
+function makeDestinationBox() {
     // Function-level strict mode syntax
     'use strict';
 
@@ -88,7 +88,7 @@ function addDestinationBox(addTextBoxTo) {
     element.setAttribute("id", "id_dst_1");
     element.setAttribute("placeholder", "destination name");
 
-    addTextBoxTo.appendChild(element);
+    return $(element);
 }
 
 
@@ -164,7 +164,8 @@ function addRowToID(sourceTableID) {
     makeConnectorMenu().appendTo(conCell);
 
     let dstCell = newRow.insertCell(2);
-    addDestinationBox(dstCell);
+    makeDestinationBox().appendTo(dstCell);
+    //dstCell.appendChild(makeDestinationBox());
 
     let drawingArea = $('#drawing_div');
 
@@ -173,17 +174,6 @@ function addRowToID(sourceTableID) {
     let diagram_var = flowchart.parse(generate_flowchart_input(tableBody));
 
     diagram_var.drawSVG('drawing_div');
-
-    // Redraw the diagram each call
-    //let connectionDiagram = drawDiagram(tableBody);
-
-    // let drawingArea = document.getElementById('drawing_span');
-    //let drawingArea = $('#drawing_div');
-
-    //drawingArea.empty();
-
-    //connectionDiagram.appendTo(drawingArea);
-    //drawingArea.appendChild(connectionDiagram)
 }
 
 

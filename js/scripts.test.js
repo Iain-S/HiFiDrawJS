@@ -17,10 +17,10 @@ $(document).ready(function () {
         test_add_text_box,
         test_make_connector_menu,
         test_add_destination_box,
-        test_add_source_box,
-        test_draw_diagram,
+        // test_add_source_box,
+        // test_draw_diagram,
         test_add_row_to_id,
-        test_generate_flowchart_input,
+        // test_generate_flowchart_input,
     ];
 
     test_functions.forEach(function (element) {
@@ -82,7 +82,7 @@ function test_make_connector_menu() {
     let assert = chai.assert;
     try {
         // There should be one <select> element returned
-        let connector_menu = $(makeConnectorMenu()).filter('select');
+        let connector_menu = makeConnectorMenu().filter('select');
         assert.equal(1, connector_menu.length);
         console.log(test_make_connector_menu.name + ' has passed.');
     } catch (err) {
@@ -97,10 +97,11 @@ function test_add_destination_box() {
 
     let assert = chai.assert;
     try {
-        assert.equal(1, 2);
-        console.log(test_template.name + ' has passed.');
+        let destination_box = makeDestinationBox().filter('input');
+        assert.equal(1, destination_box.length);
+        console.log(test_add_destination_box.name + ' has passed.');
     } catch (err) {
-        console.log('Error in TEST_NAME_HERE: ' + err);
+        console.log('Error in test_add_destination_box: ' + err);
     }
 }
 
@@ -113,7 +114,7 @@ function test_add_source_box() {
         assert.equal(1, 2);
         console.log(test_template.name + ' has passed.');
     } catch (err) {
-        console.log('Error in TEST_NAME_HERE: ' + err);
+        console.log('Error in ' + test_add_source_box.name + ': ' + err);
     }
 }
 
@@ -127,7 +128,7 @@ function test_draw_diagram() {
         assert.equal(1, 2);
         console.log(test_template.name + ' has passed.');
     } catch (err) {
-        console.log('Error in TEST_NAME_HERE: ' + err);
+        console.log('Error in ' + test_draw_diagram.name + ': ' + err);
     }
 }
 
@@ -140,14 +141,22 @@ function test_add_row_to_id() {
     try {
         let tableRef = $('#table_for_testing');
         let tableBody = tableRef.children('tbody').first();
-        let starting_rows = tableBody.children('tr').length;
-        assert.equal(1, starting_rows);
+        let table_rows = tableBody.children('tr');
+        assert.equal(1, table_rows.length);
+
+        // Add some data
+        $('#testing_input_1').val("dd");
+        $('#testing_input_2').val("ee");
 
         addRowToID('table_for_testing');
 
         tableBody = tableRef.children('tbody').first();
-        starting_rows = tableBody.children('tr').length;
-        assert.equal(2, starting_rows, "Expected two rows after calling addRowToID.");
+        table_rows = tableBody.children('tr');
+        assert.equal(2, table_rows.length, "Expected two rows after calling addRowToID.");
+
+        // Check that the row is properly formed
+        let new_row = table_rows.eq(1).children('td');
+        assert.equal(new_row.length, 4, "New row is null");
 
         console.log(test_add_row_to_id.name + ' has passed.');
     } catch (err) {
