@@ -24,7 +24,7 @@ function scripts_squared(a_number) {
 
 
 /* Add a text box to the element passed in as addTextBoxTo */
-function addSourceBox(addTextBoxTo) {
+function makeSourceBox() {
     // Function-level strict mode syntax
     'use strict';
 
@@ -39,7 +39,7 @@ function addSourceBox(addTextBoxTo) {
     element.setAttribute("id", "id_src_1");
     element.setAttribute("placeholder", "source name");
 
-    addTextBoxTo.appendChild(element);
+    return $(element);
 }
 
 
@@ -158,7 +158,7 @@ function addRowToID(sourceTableID) {
 
     // Insert a cell in the row at index 0
     let srcCell = newRow.insertCell(0);
-    addSourceBox(srcCell);
+    makeSourceBox().appendTo(srcCell);
 
     let conCell = newRow.insertCell(1);
     makeConnectorMenu().appendTo(conCell);

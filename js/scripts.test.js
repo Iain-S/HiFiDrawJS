@@ -17,7 +17,7 @@ $(document).ready(function () {
         test_add_text_box,
         test_make_connector_menu,
         test_add_destination_box,
-        // test_add_source_box,
+        test_add_source_box,
         // test_draw_diagram,
         test_add_row_to_id,
         // test_generate_flowchart_input,
@@ -64,7 +64,8 @@ function test_add_text_box() {
         
         assert.equal(existing_text_box.length, 0, "existing_text_box wasn't undefined.");
 
-        addSourceBox(testing_div[0]);
+        makeSourceBox().appendTo(testing_div[0]);
+
         let new_text_boxes = testing_div.find('input[type="text"]');
         assert.equal(new_text_boxes.length, 1, "Expected one text input box");
 
@@ -111,8 +112,9 @@ function test_add_source_box() {
 
     let assert = chai.assert;
     try {
-        assert.equal(1, 2);
-        console.log(test_template.name + ' has passed.');
+        let source_box = makeSourceBox().filter('input');
+        assert.equal(1, source_box.length);
+        console.log(test_add_source_box.name + ' has passed.');
     } catch (err) {
         console.log('Error in ' + test_add_source_box.name + ': ' + err);
     }
