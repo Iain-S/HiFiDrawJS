@@ -38,5 +38,5 @@ It may seem odd to use a flowchart library for this, but I wanted something quic
 
 ## Licence
 
-This project is licensed under the GNU GPLv3 - see the [LICENCE.md](https://github.com/Iain-S/HiFiDrawJS/blob/master/LICENCE.md) file for details.
+This project is licensed under the GNU GPLv3 - see the [LICENCE.md](https://github.com/Iain-S/HiFiDrawJS/blob/master/LICENCE.txt) file for details.
  
