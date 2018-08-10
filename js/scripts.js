@@ -23,7 +23,6 @@ function scripts_squared(a_number) {
 }
 
 
-/* Add a text box to the element passed in as addTextBoxTo */
 function makeSourceBox() {
     // Function-level strict mode syntax
     'use strict';
@@ -43,7 +42,6 @@ function makeSourceBox() {
 }
 
 
-/* Add a normal drop-down menu to the DOM element passed in */
 function makeConnectorMenu() {
     // Function-level strict mode syntax
     'use strict';
@@ -72,7 +70,6 @@ function makeConnectorMenu() {
 }
 
 
-/* Add a text box to the element passed in */
 function makeDestinationBox() {
     // Function-level strict mode syntax
     'use strict';
@@ -87,6 +84,21 @@ function makeDestinationBox() {
     //element.setAttribute("style", "width:200px");
     element.setAttribute("id", "id_dst_1");
     element.setAttribute("placeholder", "destination name");
+
+    return $(element);
+}
+
+
+function makeDeleteButton() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    //Create an input type dynamically.
+    let element = document.createElement("input");
+
+    //Assign different attributes to the element.
+    element.setAttribute("type", "button");
+    element.setAttribute("value", "Delete");
 
     return $(element);
 }
@@ -165,7 +177,9 @@ function addRowToID(sourceTableID) {
 
     let dstCell = newRow.insertCell(2);
     makeDestinationBox().appendTo(dstCell);
-    //dstCell.appendChild(makeDestinationBox());
+
+    let deleteCell = newRow.insertCell(3);
+    makeDeleteButton().appendTo(deleteCell);
 
     let drawingArea = $('#drawing_div');
 

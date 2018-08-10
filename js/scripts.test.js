@@ -16,11 +16,12 @@ $(document).ready(function () {
         test_scripts_squared,
         test_add_text_box,
         test_make_connector_menu,
-        test_add_destination_box,
-        test_add_source_box,
+        test_make_destination_box,
+        test_make_source_box,
+        test_make_delete_button,
         // test_draw_diagram,
         test_add_row_to_id,
-        // test_generate_flowchart_input,
+        test_generate_flowchart_input,
     ];
 
     test_functions.forEach(function (element) {
@@ -92,7 +93,7 @@ function test_make_connector_menu() {
 }
 
 
-function test_add_destination_box() {
+function test_make_destination_box() {
     // Function-level strict mode syntax
     'use strict';
 
@@ -100,13 +101,13 @@ function test_add_destination_box() {
     try {
         let destination_box = makeDestinationBox().filter('input');
         assert.equal(1, destination_box.length);
-        console.log(test_add_destination_box.name + ' has passed.');
+        console.log(test_make_destination_box.name + ' has passed.');
     } catch (err) {
-        console.log('Error in test_add_destination_box: ' + err);
+        console.log('Error in test_make_destination_box: ' + err);
     }
 }
 
-function test_add_source_box() {
+function test_make_source_box() {
     // Function-level strict mode syntax
     'use strict';
 
@@ -114,12 +115,26 @@ function test_add_source_box() {
     try {
         let source_box = makeSourceBox().filter('input');
         assert.equal(1, source_box.length);
-        console.log(test_add_source_box.name + ' has passed.');
+        console.log(test_make_source_box.name + ' has passed.');
     } catch (err) {
-        console.log('Error in ' + test_add_source_box.name + ': ' + err);
+        console.log('Error in ' + test_make_source_box.name + ': ' + err);
     }
 }
 
+function test_make_delete_button() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+    try {
+        let delete_button = makeDeleteButton().filter('input').first();
+        assert.equal(delete_button.attr('type'), 'button');
+        assert.equal(delete_button.attr('value'), 'Delete');
+        console.log(test_make_delete_button.name + ' has passed.');
+    } catch (err) {
+        console.log('Error in ' + test_make_delete_button.name + ': ' + err);
+    }
+}
 
 function test_draw_diagram() {
     // Function-level strict mode syntax
@@ -173,10 +188,11 @@ function test_generate_flowchart_input() {
 
     let assert = chai.assert;
     try {
-        assert.equal(1, 2, "error, error");
-        console.log(test_template.name + ' has passed.');
+        let the_output = generate_flowchart_input($(''));
+        assert.equal(the_output, '', "error, error");
+        console.log(test_generate_flowchart_input.name + ' has passed.');
     } catch (err) {
-        console.log('Error in TEST_NAME_HERE: ' + err);
+        console.log('Error in ' + test_generate_flowchart_input.name + ': ' + err);
     }
 }
 
