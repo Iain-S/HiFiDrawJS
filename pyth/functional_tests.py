@@ -52,7 +52,7 @@ class TestNewVisitor(unittest.TestCase):
         self.assertEqual(len(paths), 0, "Page should start with no paths.")
         self.assertEqual(len(svgs), 1, "Page should start with one svg element.")
 
-        # She enters a source and destination and clicks the button        
+        # She enters a source and destination and clicks the button
         src_input_box.send_keys("Edith's iPhone")
         dst_input_box.send_keys("Mackie CR3s")
         button = self.browser.find_element_by_id("btnAdd")
