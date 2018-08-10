@@ -102,7 +102,19 @@ class TestNewVisitor(unittest.TestCase):
         all_rows = self.browser.find_elements_by_tag_name('tr')
         self.assertEqual(len(all_rows), 4, "Expected four rows after ENTER keystroke.")
 
-        #
+    def test_can_delete_rows(self):
+        # We begin with some rows
+        start_rows = self.browser.find_elements_by_tag_name('tr')
+        num_rows_start = len(start_rows)
+
+        # Try to delete a row
+        self.browser.find_element_by_xpath("//input[@value='Delete']").click()
+
+        end_rows = self.browser.find_elements_by_tag_name('tr')
+        num_rows_end = len(end_rows)
+
+        self.assertEqual(num_rows_start-1, num_rows_end)
+
         # # When she hits enter, the page updates, and now the page lists
         # # "1: Buy peacock feathers" as an item in a to-do list table
         # input_box.send_keys(Keys.ENTER)
