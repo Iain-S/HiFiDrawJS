@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="description" content="TODO">
+  <meta name="author" content="TODO">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Flowchart JS</title>
+  <link rel="shortcut icon" type="image/png" href="images/pencil_favicon_small.png"/>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="bootstrap-4.1.3/css/bootstrap.css">
+</head>
+<body>
+  <textarea id='the_input_box' rows="10" cols="50">
+
+  </textarea>
+  <div id="diagram">Diagram will be placed here</div>
+
+  <script src="js/raphael.js"></script>
+  <script src="js/flowchart.js"></script>
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script>
+    // let diagram = flowchart.parse('st=>start: Start:>http://www.google.com[blank]\n' +
+    //                               'e=>end:>http://www.google.com\n' +
+    //                               'op1=>operation: My Operation\n' +
+    //                               'op2=>operation: Stuff|current\n' +
+    //                               'sub1=>subroutine: My Subroutine\n' +
+    //                               'cond=>condition: Yes \n' + // use cond(align-next=no) to disable vertical align of symbols below
+    //                               'or No?\n:>http://www.google.com\n' +
+    //                               'c2=>condition: Good idea|rejected\n' +
+    //                               'io=>inputoutput: catch something...|request\n' +
+    //                               '\n' +
+    //                               'st->op1(right)->cond\n' +
+    //                               'cond(yes, right)->c2\n' + // conditions can also be redirected like cond(yes, bottom) or cond(yes, right)
+    //                               'cond(no)->sub1(left)->op1\n' + // the other symbols too...
+    //                               'c2(true)->io->e\n' +
+    //                               'c2(false)->op2->e'  //allow for true and false in conditionals
+    //                               );
+    let input_text = $("#the_input_box").val();
+
+    console.log(input_text);
+
+    let diagram = flowchart.parse(input_text);
+
+    diagram.drawSVG('diagram');
+
+    // you can also try to pass options:
+
+    diagram.drawSVG('diagram', {
+                                'x': 0,
+                                'y': 0,
+                                'line-width': 3,
+                                'line-length': 50,
+                                'text-margin': 10,
+                                'font-size': 14,
+                                'font-color': 'black',
+                                'line-color': 'black',
+                                'element-color': 'black',
+                                'fill': 'white',
+                                'yes-text': 'yes',
+                                'no-text': 'no',
+                                'arrow-end': 'block',
+                                'scale': 1,
+                                // style symbol types
+                                'symbols': {
+                                    'start': {
+                                      'font-color': 'red',
+                                      'element-color': 'green',
+                                      'fill': 'yellow'
+                                    },
+                                    'end':{
+                                        'class': 'end-element'
+                                    }
+                                },
+                                // even flowstate support ;-)
+                                'flowstate' : {
+                                    // 'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                                    // 'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                                    // 'future' : { 'fill' : '#FFFF99'},
+                                    'request' : { 'fill' : 'blue'}//,
+                                    // 'invalid': {'fill' : '#444444'},
+                                    // 'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                                    // 'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+                                }});
+  </script>
+</body>

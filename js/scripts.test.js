@@ -15,12 +15,13 @@ $(document).ready(function () {
     let test_functions = [
         test_scripts_squared,
         test_add_text_box,
+        test_count_tbody_rows,
         test_make_connector_menu,
         test_make_destination_box,
         test_make_source_box,
         test_make_delete_button,
         test_draw_diagram,
-        test_add_row_to_id,
+        test_add_or_delete_row,
         test_generate_flowchart_input,
     ];
 
@@ -78,6 +79,35 @@ function test_add_text_box() {
 }
 
 
+function test_count_tbody_rows() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+
+    let tableRef = $("#table_for_testing");
+    let tableBody = tableRef.children('tbody').first();
+    let currentRows = countBodyRows(tableBody);
+    assert.equal(currentRows, 4);
+    addRowToID('table_for_testing');
+    currentRows = countBodyRows(tableBody);
+    assert.equal(currentRows, 5);
+}
+
+
+function test_delete_tbody_row() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+
+    let tableRef = $("#table_for_testing");
+    let tableBody = tableRef.children('tbody').first();
+    let currentRows = countBodyRows(tableBody);
+    assert.equal(currentRows, 4);
+}
+
+
 function test_make_connector_menu() {
     // Function-level strict mode syntax
     'use strict';
@@ -98,6 +128,7 @@ function test_make_destination_box() {
     assert.equal(1, destination_box.length);
 }
 
+
 function test_make_source_box() {
     // Function-level strict mode syntax
     'use strict';
@@ -106,6 +137,7 @@ function test_make_source_box() {
     let source_box = makeSourceBox().filter('input');
     assert.equal(1, source_box.length);
 }
+
 
 function test_make_delete_button() {
     // Function-level strict mode syntax
@@ -117,6 +149,7 @@ function test_make_delete_button() {
     assert.equal(delete_button.attr('value'), 'Delete');
 }
 
+
 function test_draw_diagram() {
     // Function-level strict mode syntax
     'use strict';
@@ -126,7 +159,32 @@ function test_draw_diagram() {
 }
 
 
-function test_add_row_to_id() {
+function test_add_or_delete_row() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    // Unfortunately, add and delete are intertwined so we shall have to test them together
+
+    let assert = chai.assert;
+    let tableRef = $('#table_for_testing');
+    let tableBody = tableRef.children('tbody').first();
+    let table_rows = tableBody.children('tr');
+    assert.equal(5, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+
+    addRowToID('table_for_testing');
+
+    tableBody = tableRef.children('tbody').first();
+    table_rows = tableBody.children('tr');
+    assert.equal(6, table_rows.length, "Expected more rows after calling addRowToID.");
+
+    deleteRowFromID('table_for_testing', 6);
+    tableBody = tableRef.children('tbody').first();
+    table_rows = tableBody.children('tr');
+    assert.equal(5, table_rows.length, "Expected fewer rows after calling deleteRowFromID.");
+}
+
+
+function test_new_row_has_right_num_of_cols() {
     // Function-level strict mode syntax
     'use strict';
 
@@ -134,21 +192,15 @@ function test_add_row_to_id() {
     let tableRef = $('#table_for_testing');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
-    assert.equal(1, table_rows.length);
-
-    // Add some data
-    $('#testing_input_1').val("dd");
-    $('#testing_input_2').val("ee");
+    assert.equal(5, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
     addRowToID('table_for_testing');
 
+    // Check that the row is properly formed
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
-    assert.equal(2, table_rows.length, "Expected two rows after calling addRowToID.");
-
-    // Check that the row is properly formed
-    let new_row = table_rows.eq(1).children('td');
-    assert.equal(new_row.length, 4, "New row is null");
+    let new_row = table_rows.eq(5).children('td');
+    assert.equal(new_row.length, 4, "New row has wrong number of columns.");
 }
 
 

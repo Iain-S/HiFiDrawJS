@@ -23,6 +23,18 @@ function scripts_squared(a_number) {
 }
 
 
+function countBodyRows(tableBody) {
+    let tableRows = tableBody.children('tr');
+
+    return tableRows.length;
+}
+
+
+function deleteRowFromID(tableID, idx) {
+
+}
+
+
 function makeSourceBox() {
     // Function-level strict mode syntax
     'use strict';
@@ -100,7 +112,16 @@ function makeDeleteButton() {
     element.setAttribute("type", "button");
     element.setAttribute("value", "Delete");
 
-    return $(element);
+    let jqe = $(element);
+
+    jqe.click(
+        function() {
+            $(this).closest('tr').remove ();
+            return false;
+        }
+    );
+
+    return jqe;
 }
 
 
@@ -164,6 +185,8 @@ function addRowToID(sourceTableID) {
     let tableRef = $("#" + sourceTableID);
 
     let tableBody = tableRef.children('tbody').first();
+
+    let currentRows = countBodyRows(tableBody);
 
     // Insert a row at the end of the table
     let newRow = tableBody[0].insertRow(tableBody[0].rows.length);
