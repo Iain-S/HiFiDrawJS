@@ -190,9 +190,9 @@ function generateFlowchartInput(tableObj) {
         // This causes a "TypeError: s is null" but doesn't ruin anything
         return '';
     } else {
-        return 'op1=>operation: My Operation\n' +
-               'op2=>operation: My Operation\n' +
-               'op1->op2';
+        return 'para1=>parallel: p1\n' +
+               'para2=>parallel: p2\n' +
+               'para1(path1,)->para2\n';
     }
 }
 
