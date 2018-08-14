@@ -20,9 +20,13 @@ $(document).ready(function () {
         test_make_destination_box,
         test_make_source_box,
         test_make_delete_button,
-        test_draw_diagram,
-        test_add_or_delete_row,
+        //test_draw_diagram,
+        test_delete_last_row_leaves_essentials,
+        test_add_and_delete_row,
+        test_add_row,
         test_generate_flowchart_input,
+        test_new_row_has_right_num_of_cols,
+        test_delete_last_row,
     ];
 
     let test_result_area = $("#test_results");
@@ -89,9 +93,14 @@ function test_count_tbody_rows() {
     let tableBody = tableRef.children('tbody').first();
     let currentRows = countBodyRows(tableBody);
     assert.equal(currentRows, 4);
-    addRowToID('table_for_testing');
-    currentRows = countBodyRows(tableBody);
-    assert.equal(currentRows, 5);
+
+    let newTableBody = $("<tbody><tr></tr></tbody>");
+    currentRows = countBodyRows(newTableBody);
+    assert.equal(currentRows, 1);
+
+    let emptyTableBody = $("<tbody></tbody>");
+    currentRows = countBodyRows(emptyTableBody);
+    assert.equal(currentRows, 0);
 }
 
 
@@ -159,7 +168,7 @@ function test_draw_diagram() {
 }
 
 
-function test_add_or_delete_row() {
+function test_add_and_delete_row() {
     // Function-level strict mode syntax
     'use strict';
 
@@ -169,18 +178,90 @@ function test_add_or_delete_row() {
     let tableRef = $('#table_for_testing');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
-    assert.equal(5, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+    assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
-    addRowToID('table_for_testing');
+    try {
+        addRowRedraw('table_for_testing');
+    } catch (ex) {}
 
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
-    assert.equal(6, table_rows.length, "Expected more rows after calling addRowToID.");
+    assert.equal(5, table_rows.length, "Expected more rows after calling addRowRedraw.");
 
-    deleteRowFromID('table_for_testing', 6);
+    // Delete the last row
+    try {
+        deleteRowFromID('table_for_testing', table_rows.length - 1);
+    } catch (ex) {}
+
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
-    assert.equal(5, table_rows.length, "Expected fewer rows after calling deleteRowFromID.");
+    assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteRowFromID.");
+}
+
+
+function test_delete_last_row() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+    let tableRef = $('#table_for_testing');
+    let tableBody = tableRef.children('tbody').first();
+    let table_rows = tableBody.children('tr');
+    assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+
+    try {
+        addRowRedraw('table_for_testing');
+    } catch (ex) {}
+
+    tableBody = tableRef.children('tbody').first();
+    table_rows = tableBody.children('tr');
+    assert.equal(5, table_rows.length, "Expected more rows after calling addRowRedraw.");
+
+    // Delete the last row
+    try {
+        deleteLastDataRowFromID('table_for_testing');
+    } catch (ex) {}
+
+    tableBody = tableRef.children('tbody').first();
+    table_rows = tableBody.children('tr');
+    assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteLastDataRowFromID.");
+}
+
+
+function test_delete_last_row_leaves_essentials() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+
+    // Add a table with two rows
+    $(document.body).append('<table class="table" id="9029384093284023">\n' +
+        '      <thead>\n' +
+        '        <tr>\n' +
+        '\t        <th>Source</th>\n' +
+        '\t        <th>Connector</th>\n' +
+        '\t        <th>Destination</th>\n' +
+        '        </tr>\n' +
+        '      </thead>\n' +
+        '      <tbody>\n' +
+        '        <tr>\n' +
+        '\t        <td id="sourceBox">\n' +
+        '\t\t        <input type="button" id="btnAdd" value="Add" onclick="addRowRedraw(\'inputTable\');" />\n' +
+        '          </td>\n' +
+        '\t        <td></td>\n' +
+        '\t        <td></td>\n' +
+        '\t      </tr>\n' +
+        '      </tbody>\n' +
+        '\t  </table>');
+
+
+    // Check that our function will always leave them there
+    try {
+        deleteLastDataRowFromID('9029384093284023');
+    } catch (ex) {}
+
+    let tableRows = $('#9029384093284023').find('tr');
+    assert.equal(2, tableRows.length);
 }
 
 
@@ -191,16 +272,23 @@ function test_new_row_has_right_num_of_cols() {
     let assert = chai.assert;
     let tableRef = $('#table_for_testing');
     let tableBody = tableRef.children('tbody').first();
-    let table_rows = tableBody.children('tr');
-    assert.equal(5, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+    let tableRows = tableBody.children('tr');
+    assert.equal(4, tableRows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
-    addRowToID('table_for_testing');
+    try {
+        addRowRedraw('table_for_testing');
+    } catch (ex) {}
 
     // Check that the row is properly formed
     tableBody = tableRef.children('tbody').first();
-    table_rows = tableBody.children('tr');
-    let new_row = table_rows.eq(5).children('td');
+    tableRows = tableBody.children('tr');
+    let new_row = tableRows.eq(4).children('td');
     assert.equal(new_row.length, 4, "New row has wrong number of columns.");
+
+    try {
+        deleteRowFromID('table_for_testing', 3);
+    }
+    catch (ex) {}
 }
 
 
@@ -209,8 +297,23 @@ function test_generate_flowchart_input() {
     'use strict';
 
     let assert = chai.assert;
-    let the_output = generate_flowchart_input($(''));
+    let the_output = generateFlowchartInput($(''));
     assert.equal(the_output, '', "error, error");
+}
+
+
+function test_add_row() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+    let tableBody = $("<tbody></tbody>");
+
+    addRow(tableBody);
+    assert.equal(tableBody.children('tr').length, 1);
+
+    addRow(tableBody);
+    assert.equal(tableBody.children('tr').length, 2);
 }
 
 

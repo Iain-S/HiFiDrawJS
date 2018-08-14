@@ -5,15 +5,15 @@
 //     //$('#'+'jquery_test').html('testing')
 //     console.log("does this override the other doc.ready?");
 //     // Add a first row to the table
-//     //addRowToID($('#inputTable'))
-//     addRowToID('inputTable');
+//     //addRowRedraw($('#inputTable'))
+//     addRowRedraw('inputTable');
 // });
-$(document).keypress( function(event) {
-  if (event.which === 13) {
-    // console.log("ENTER key pressed!!");
-    addRowToID('inputTable');
-  }
-});
+// $(document).keypress( function(event) {
+//   if (event.which === 13) {
+//     // console.log("ENTER key pressed!!");
+//     addRowRedraw('inputTable');
+//   }
+// });
 
 
 function scripts_squared(a_number) {
@@ -23,15 +23,35 @@ function scripts_squared(a_number) {
 }
 
 
+var pressedKeys = {};
+
+$(document.body).keydown(function (evt) {
+    evt = evt || event; // to deal with IE
+
+    pressedKeys[evt.keyCode] = evt.type == 'keydown';
+
+    if (pressedKeys[13]) {
+        if(pressedKeys[16]) {
+            deleteLastDataRowFromID('inputTable');
+        }
+        else {
+            addRowRedraw('inputTable');
+        }
+    }
+});
+
+
+$(document.body).keyup(function (evt) {
+    evt = evt || event; // to deal with IE
+
+    pressedKeys[evt.keyCode] = evt.type == 'keydown';
+});
+
+
 function countBodyRows(tableBody) {
     let tableRows = tableBody.children('tr');
 
     return tableRows.length;
-}
-
-
-function deleteRowFromID(tableID, idx) {
-
 }
 
 
@@ -154,7 +174,7 @@ function drawDiagram(tableRef) {
 
 
 /* Generate a string which flowchart js can parse. */
-function generate_flowchart_input(tableRef) {
+function generateFlowchartInput(tableRef) {
     let tableRows = tableRef.children('tr');
     let tableTextBoxes = tableRows.find('input[type=text]');
     let numberOfValidRows = 0
@@ -177,16 +197,9 @@ function generate_flowchart_input(tableRef) {
 }
 
 
-/* Add a source-connector-destination row at the end of the table */
-function addRowToID(sourceTableID) {
-    // Function-level strict mode syntax
-    'use strict';
+function addRow(tableBody){
 
-    let tableRef = $("#" + sourceTableID);
-
-    let tableBody = tableRef.children('tbody').first();
-
-    let currentRows = countBodyRows(tableBody);
+    //let currentRows = countBodyRows(tableBody);
 
     // Insert a row at the end of the table
     let newRow = tableBody[0].insertRow(tableBody[0].rows.length);
@@ -204,13 +217,71 @@ function addRowToID(sourceTableID) {
     let deleteCell = newRow.insertCell(3);
     makeDeleteButton().appendTo(deleteCell);
 
+    return tableBody;
+}
+
+/* Add a source-connector-destination row at the end of the table */
+function addRowRedraw(sourceTableID) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let tableRef = $("#" + sourceTableID);
+
+    let tableBody = tableRef.children('tbody').first();
+
+    addRow(tableBody);
+
     let drawingArea = $('#drawing_div');
 
     drawingArea.empty();
 
-    let diagram_var = flowchart.parse(generate_flowchart_input(tableBody));
+    let diagram_var = flowchart.parse(generateFlowchartInput(tableBody));
 
-    diagram_var.drawSVG('drawing_div');
+    try {
+        diagram_var.drawSVG('drawing_div');
+    } catch (e) {
+        if (!(e instanceof TypeError)) {
+            throw e;
+        }
+    }
+}
+
+
+function deleteRowFromID(tableID, idx) {
+    let theTable = $("#"+tableID);
+
+    let tableBody = theTable.children('tbody').first();
+
+    tableBody.children('tr').eq(idx).remove();
+
+    let drawingArea = $('#drawing_div');
+
+    drawingArea.empty();
+
+    let diagram_var = flowchart.parse(generateFlowchartInput(tableBody));
+
+    try {
+        diagram_var.drawSVG('drawing_div');
+    } catch (e) {
+        if (!(e instanceof TypeError)) {
+            throw e;
+        }
+    }
+}
+
+
+function deleteLastDataRowFromID(tableID, idx) {
+    /* This is a safe delete function, it will always leave the
+    *  headers and the add button. */
+    let theTable = $("#" + tableID);
+
+    let tableBody = theTable.children('tbody').first();
+
+    if (tableBody.find('tr').length > 2) {
+        deleteRowFromID(tableID, tableBody.children('tr').length - 1);
+    }
+
+    return;
 }
 
 

@@ -7,7 +7,7 @@ QUnit.test("test table count function", function (assert) {
     let tableBody = tableRef.children('tbody').first();
     let currentRows = countBodyRows(tableBody);
     assert.equal(currentRows, 4);
-    addRowToID('inputTable');
+    addRowRedraw('inputTable');
     currentRows = countBodyRows(tableBody);
     assert.equal(currentRows, 5);
 });

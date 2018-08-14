@@ -15,17 +15,15 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="text-center"> 
+    <h1 class="text-center">
       HiFi Draw<br/>
       <small class="text-muted">Draw connection diagrams for your HiFi</small>
     </h1>
 
     <p>
-      Your URL parameters should appear below.  These are the key value pairs following the ? in your URL.
-      <br/>
-      For example: www.mysite.com?param1=yes&amp;param2=no
-	</p>
-      <div id="output"></div>
+      ENTER: Add new row to the end of the table.<br>
+      SHIFT + ENTER: Remove the last row from the table.
+    </p>
     
     <select>
       <option value="volvo">Volvo</option>
@@ -55,7 +53,7 @@
       <tbody>
         <tr>
 	        <td id="sourceBox">
-		        <input type="button" id="btnAdd" value="Add" onclick="addRowToID('inputTable');" />
+		        <input type="button" id="btnAdd" value="Add" onclick="addRowRedraw('inputTable');" />
           </td>
 	        <td></td>
 	        <td></td>
@@ -84,7 +82,7 @@
   <script>
     window.onload = function() {
         // Add a first row to save the user a click
-        addRowToID('inputTable');
+        addRowRedraw('inputTable');
     }
   </script>
 </body>
