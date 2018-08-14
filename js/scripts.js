@@ -174,8 +174,8 @@ function drawDiagram(tableRef) {
 
 
 /* Generate a string which flowchart js can parse. */
-function generateFlowchartInput(tableRef) {
-    let tableRows = tableRef.children('tr');
+function generateFlowchartInput(tableObj) {
+    let tableRows = tableObj.children('tr');
     let tableTextBoxes = tableRows.find('input[type=text]');
     let numberOfValidRows = 0
 
@@ -220,30 +220,39 @@ function addRow(tableBody){
     return tableBody;
 }
 
-/* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID) {
+
+function redraw(drawingArea, tableBody) {
     // Function-level strict mode syntax
     'use strict';
 
-    let tableRef = $("#" + sourceTableID);
-
-    let tableBody = tableRef.children('tbody').first();
-
-    addRow(tableBody);
-
-    let drawingArea = $('#drawing_div');
-
     drawingArea.empty();
 
-    let diagram_var = flowchart.parse(generateFlowchartInput(tableBody));
+    let diagramVar = flowchart.parse(generateFlowchartInput(tableBody));
 
     try {
-        diagram_var.drawSVG('drawing_div');
+        diagramVar.drawSVG('drawing_div');
     } catch (e) {
         if (!(e instanceof TypeError)) {
             throw e;
         }
     }
+}
+
+
+/* Add a source-connector-destination row at the end of the table */
+function addRowRedraw(sourceTableID) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let tableObj = $("#" + sourceTableID);
+
+    let tableBody = tableObj.children('tbody').first();
+
+    addRow(tableBody);
+
+    let drawingArea = $('#drawing_div');
+
+    redraw(drawingArea, tableBody);
 }
 
 
@@ -256,17 +265,7 @@ function deleteRowFromID(tableID, idx) {
 
     let drawingArea = $('#drawing_div');
 
-    drawingArea.empty();
-
-    let diagram_var = flowchart.parse(generateFlowchartInput(tableBody));
-
-    try {
-        diagram_var.drawSVG('drawing_div');
-    } catch (e) {
-        if (!(e instanceof TypeError)) {
-            throw e;
-        }
-    }
+    redraw(drawingArea, tableBody);
 }
 
 
