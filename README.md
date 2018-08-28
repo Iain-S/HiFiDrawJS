@@ -24,7 +24,7 @@ For the unit tests, I flirted with jest and some other popular unit testing fram
 I'm sure this system could be improved upon, but it works fine for me.
 
 ## Coding style
-I have come to love Python's PEP8.  I dislike the lack of a widely used JavaScript standard.  I try to be consistent but often fail when it comes to naming conventions.  I use the Notepad++ JSLint plugin when working on Windows.  When working on Linux, I let PyCharm correct my JavaScript and Python.  I check html using [this w3 validator](https://validator.w3.org/nu/#textarea).
+I have come to love Python's PEP8.  I dislike the lack of a widely used JavaScript standard.  I try to be consistent with naming conventions but don't always succeed.  I use the Notepad++ JSLint plugin when working on Windows.  When working on Linux, I let PyCharm correct my JavaScript and Python.  I check html using [this w3 validator](https://validator.w3.org/nu/#textarea).
 
 ## Versioning
 Use [SemVer](http://semver.org/) for versioning.
