@@ -1,3 +1,5 @@
+**Note, this is still very much in its infancy and won't actually let you draw anything just yet.**
+
 # HiFi Draw JS
 I noticed that there were no simple websites that allow you to draw a diagram of your hifi.  I field a lot of questions about how best to wire together different components like PCs, amplifiers, speakers, mixers, sub-woofers, etc.  Wouldn't it be nice if people could go to a site, click a couple of buttons and end up with a diagram to share online or with friends?  Well, this is my first attempt at such a site.  It uses JavaScript because it is something I have been meaning to learn.  As I have no prior experience with the language, don't expect the code to be too clever.
 
