@@ -14,76 +14,152 @@
   <link rel="stylesheet" href="bootstrap-4.1.3/css/bootstrap.css">
 </head>
 <body>
-  <textarea id='the_input_box' rows="10" cols="50">
+  <table class="table" id="inputTable">
+      <thead>
+        <tr>
+	        <th>Code</th>
+	        <th>Image</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <textarea id='the_input_box' rows="10" cols="50"></textarea>
+        </td>
+        <td>
+          <div id="diagram"></div>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>
+          <textarea id='example_1_txt' rows="10" cols="50">
+            st=>start: Start1:>http://www.google.com[blank]
+            tt=>start: Start2:>http://www.google.com[blank]
+            e=>end:>http://www.google.com
+            op1=>operation: My Operation
+            sub1=>subroutine: My Subroutine
+            cond=>condition: Yes
+            or No?:>http://www.google.com
+            io=>inputoutput: catch something...
+            para=>parallel: parallel tasks
 
-  </textarea>
-  <div id="diagram">Diagram will be placed here</div>
+            st->tt->para
+            para(path1, left)->io->e
+            para(path2, right)->op1->e
+          </textarea>
+        </td>
+        <td><div id="example_1_img"></div></td>
+      </tr>
+      <tr>
+        <td>
+          <textarea id='example_2_txt' rows="10" cols="50">
+            para1=>parallel: P1
+            para2=>parallel: P2
+            para3=>parallel: P3
+            para4=>parallel: P4
+            para5=>parallel: P5
+            para6=>parallel: P6
+            para7=>parallel: P7
 
+
+            para1(path1)->para2
+            para2(path2)->para3
+            para4(path4)->para3
+          </textarea>
+        </td>
+        <td>
+          <div id="example_2_img"></div>
+        </td>
+      </tr>
+      </tbody>
+  </table>
   <script src="js/raphael.js"></script>
   <script src="js/flowchart.js"></script>
   <script src="js/jquery-3.3.1.min.js"></script>
   <script>
-    // let diagram = flowchart.parse('st=>start: Start:>http://www.google.com[blank]\n' +
-    //                               'e=>end:>http://www.google.com\n' +
-    //                               'op1=>operation: My Operation\n' +
-    //                               'op2=>operation: Stuff|current\n' +
-    //                               'sub1=>subroutine: My Subroutine\n' +
-    //                               'cond=>condition: Yes \n' + // use cond(align-next=no) to disable vertical align of symbols below
-    //                               'or No?\n:>http://www.google.com\n' +
-    //                               'c2=>condition: Good idea|rejected\n' +
-    //                               'io=>inputoutput: catch something...|request\n' +
-    //                               '\n' +
-    //                               'st->op1(right)->cond\n' +
-    //                               'cond(yes, right)->c2\n' + // conditions can also be redirected like cond(yes, bottom) or cond(yes, right)
-    //                               'cond(no)->sub1(left)->op1\n' + // the other symbols too...
-    //                               'c2(true)->io->e\n' +
-    //                               'c2(false)->op2->e'  //allow for true and false in conditionals
-    //                               );
+    
     let input_text = $("#the_input_box").val();
 
-    console.log(input_text);
+    // console.log(input_text);
 
-    let diagram = flowchart.parse(input_text);
+    try {
+        let diagram = flowchart.parse(input_text);
 
-    diagram.drawSVG('diagram');
+        diagram.drawSVG('diagram');
 
-    // you can also try to pass options:
+        // you can try to pass options:
 
-    diagram.drawSVG('diagram', {
-                                'x': 0,
-                                'y': 0,
-                                'line-width': 3,
-                                'line-length': 50,
-                                'text-margin': 10,
-                                'font-size': 14,
-                                'font-color': 'black',
-                                'line-color': 'black',
-                                'element-color': 'black',
-                                'fill': 'white',
-                                'yes-text': 'yes',
-                                'no-text': 'no',
-                                'arrow-end': 'block',
-                                'scale': 1,
-                                // style symbol types
-                                'symbols': {
-                                    'start': {
-                                      'font-color': 'red',
-                                      'element-color': 'green',
-                                      'fill': 'yellow'
-                                    },
-                                    'end':{
-                                        'class': 'end-element'
-                                    }
-                                },
-                                // even flowstate support ;-)
-                                'flowstate' : {
-                                    // 'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
-                                    // 'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
-                                    // 'future' : { 'fill' : '#FFFF99'},
-                                    'request' : { 'fill' : 'blue'}//,
-                                    // 'invalid': {'fill' : '#444444'},
-                                    // 'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
-                                    // 'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
-                                }});
+        diagram.drawSVG('diagram', {
+            'x': 0,
+            'y': 0,
+            'line-width': 3,
+            'line-length': 50,
+            'text-margin': 10,
+            'font-size': 14,
+            'font-color': 'black',
+            'line-color': 'black',
+            'element-color': 'black',
+            'fill': 'white',
+            'yes-text': 'yes',
+            'no-text': 'no',
+            'arrow-end': 'block',
+            'scale': 1,
+            // style symbol types
+            'symbols': {
+                'start': {
+                    'font-color': 'red',
+                    'element-color': 'green',
+                    'fill': 'yellow'
+                },
+                'end': {
+                    'class': 'end-element'
+                }
+            },
+            // even flowstate support ;-)
+            'flowstate': {
+                // 'past' : { 'fill' : '#CCCCCC', 'font-size' : 12},
+                // 'current' : {'fill' : 'yellow', 'font-color' : 'red', 'font-weight' : 'bold'},
+                // 'future' : { 'fill' : '#FFFF99'},
+                'request': {'fill': 'blue'}//,
+                // 'invalid': {'fill' : '#444444'},
+                // 'approved' : { 'fill' : '#58C4A3', 'font-size' : 12, 'yes-text' : 'APPROVED', 'no-text' : 'n/a' },
+                // 'rejected' : { 'fill' : '#C45879', 'font-size' : 12, 'yes-text' : 'n/a', 'no-text' : 'REJECTED' }
+            }
+        });
+    } catch (e) {}
+
+    try {
+        let example_1_text = $("#example_1_txt").val();
+        let example_1 = flowchart.parse(example_1_text);
+        example_1.drawSVG('example_1_img');
+    } catch (ex) {}
+
+    try {
+        let example_2_text = $("#example_2_txt").val();
+        let example_2 = flowchart.parse(example_2_text);
+        example_2.drawSVG('example_2_img');
+    } catch (e) {}
+
+    try {
+      let example_3_text = $("#example_3_txt").val();
+      let example_3 = flowchart.parse(example_3_text);
+      example_3.drawSVG('example_3_img');
+    } catch (e) {}
+
+    try {
+      let example_4_text = $("#example_4_txt").val();
+      let example_4 = flowchart.parse(example_4_text);
+      example_4.drawSVG('example_4_img');
+    } catch (e) {}
+
+    try {
+      let example_5_text = $("#example_5_txt").val();
+      let example_5 = flowchart.parse(example_5_text);
+      example_5.drawSVG('example_5_img');
+    } catch (e) {}
   </script>
 </body>
