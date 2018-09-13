@@ -21,7 +21,8 @@ $(document).ready(function () {
         test_add_row,
         test_new_row_has_right_num_of_cols,
         test_delete_last_row,
-        test_count_valid_rows
+        test_count_valid_rows,
+        test_graph_from_table
     ];
 
     let test_result_area = $("#test_results");
@@ -292,13 +293,16 @@ function test_count_valid_rows() {
               '\t      </tr>\n' +
               '        <tr>\n' +
               '\t        <td><input value="comp1" type="text"></td>\n' +
-              '\t        <td></td>\n' +
+              '\t        <td><select>' +
+                              '<option value="conn1" selected="selected"></option>' +
+                              '<option value="conn2"></option>' +
+                             '</select></td>\n' +
               '\t        <td><input value="comp2" type="text"></td>\n' +
               '\t      </tr>\n' +
               '      </tbody>\n' +
               '\t  </table>');
 
-    assert.equal(countValidRows(test_data), 1)
+    assert.equal(countValidRows(test_data), 1);
 }
 
 
@@ -307,9 +311,47 @@ function test_graph_from_table() {
     'use strict';
 
     let assert = chai.assert;
-    let test_data = $("");
 
-    assert.equal(graphFromTable(test_data), 0);
+    let test_data = $('<table class="table" id="9029384093284023">\n' +
+                  '      <thead>\n' +
+                  '        <tr>\n' +
+                  '\t        <th>Source</th>\n' +
+                  '\t        <th>Connector</th>\n' +
+                  '\t        <th>Destination</th>\n' +
+                  '        </tr>\n' +
+                  '      </thead>\n' +
+                  '      <tbody>\n' +
+                  '        <tr>\n' +
+                  '\t        <td id="sourceBox">\n' +
+                  '\t\t        <input type="button" id="btnAdd" value="Add" onclick="addRowRedraw(\'inputTable\');" />\n' +
+                  '          </td>\n' +
+                  '\t        <td></td>\n' +
+                  '\t        <td></td>\n' +
+                  '\t      </tr>\n' +
+                  '        <tr>\n' +
+                  '\t        <td><input value="comp1" type="text"></td>\n' +
+                  '\t        <td><select>' +
+                                  '<option value="conn1" selected="selected"></option>' +
+                                  '<option value="conn2"></option>' +
+                                 '</select></td>\n' +
+                  '\t        <td><input value="comp2" type="text"></td>\n' +
+                  '\t      </tr>\n' +
+                  '      </tbody>\n' +
+                  '\t  </table>');
+
+
+    let nodes = [
+        {id: 1, label: 'conn1'},
+        {id: 2, label: 'conn2'},
+    ];
+
+    // create an array with edges
+    let edges = [
+        {from: 1, to: 2},
+    ];
+
+    assert.deepEqual(graphFromTable(test_data).nodes, nodes);
+    assert.deepEqual(graphFromTable(test_data).edges, edges);
 }
 
 

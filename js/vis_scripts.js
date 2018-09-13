@@ -54,16 +54,16 @@ function makeConnectorMenu() {
     'use strict';
 
     let arr = [
-        {val: 1, text: 'Generic'},
-        {val: 2, text: 'RCA<>RCA'},
-        {val: 3, text: 'RCA<>TRS'},
-        {val: 4, text: 'RCA<>XLR'},
-        {val: 5, text: 'TRS<>TRS'},
-        {val: 6, text: 'TRS<>RCA'},
-        {val: 7, text: 'TRS<>XLR'},
-        {val: 8, text: 'XLR<>XLR'},
-        {val: 9, text: 'XLR<>RCA'},
-        {val: 10, text: 'XLR<>TRS'}
+        {val: 'Generic', text: 'Generic'},
+        {val: 'RCA<>RCA', text: 'RCA<>RCA'},
+        {val: 'RCA<>TRS', text: 'RCA<>TRS'},
+        {val: 'RCA<>XLR', text: 'RCA<>XLR'},
+        {val: 'TRS<>TRS', text: 'TRS<>TRS'},
+        {val: 'TRS<>RCA', text: 'TRS<>RCA'},
+        {val: 'TRS<>XLR', text: 'TRS<>XLR'},
+        {val: 'XLR<>XLR', text: 'XLR<>XLR'},
+        {val: 'XLR<>RCA', text: 'XLR<>RCA'},
+        {val: 'XLR<>TRS', text: 'XLR<>TRS'}
         //{val : 3, text: 'spare<>spare'},
         //{val : 3, text: 'Wireless'},
     ];
@@ -271,6 +271,21 @@ function countValidRows(tableObj) {
 function graphFromTable(tableObj) {
     // Function-level strict mode syntax
     'use strict';
+    
+    let nodes = [
+        {id: 1, label: 'conn1'},
+        {id: 2, label: 'conn2'},
+    ];
 
-    return;
+    // create an array with edges
+    let edges = [
+        {from: 1, to: 2},
+    ];
+
+    let data = {
+        nodes: nodes,
+        edges: edges
+    };
+
+    return data;
 }
