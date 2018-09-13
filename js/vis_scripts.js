@@ -283,15 +283,50 @@ function graphFromTable(tableObj) {
     // Function-level strict mode syntax
     'use strict';
 
-    let nodes = [
-        {id: 1, label: 'conn1'},
-        {id: 2, label: 'conn2'},
-    ];
+    let tableBody = tableObj.children('tbody').first();
+    let tableRows = tableBody.children('tr');
 
-    // create an array with edges
-    let edges = [
-        {from: 1, to: 2},
-    ];
+    let nodes = [];
+    let edges = [];
+
+    $.each(tableRows, function (index, value) {
+        let tableRow = $(value);
+        if (rowIsValid(tableRow)) {
+            // get source label
+            let src = tableRow.children('td').eq(0);
+
+            // if source label is not in nodes, add it
+            let src_in_nodes = false;
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].label == src.val()) {
+                    src_in_nodes = true;
+                }
+            }
+            if (!src_in_nodes) {
+                nodes.push({id: index,
+                            label: src.val()});
+            }
+
+            // get dest label
+            let dst = tableRow.children('td').eq(2);
+            // if dest label is not in nodes, add it
+            let dst_in_nodes = false;
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].label == dst.val()) {
+                    dst_in_nodes = true;
+                }
+            }
+            if (!dst_in_nodes) {
+                nodes.push({id: index,
+                            label: dst.val()});
+            }
+
+            // find id of src
+            // find id of dst
+            // find label from drop-down
+            // add edge
+        }
+    });
 
     let data = {
         nodes: nodes,
