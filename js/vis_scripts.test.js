@@ -22,7 +22,8 @@ $(document).ready(function () {
         test_new_row_has_right_num_of_cols,
         test_delete_last_row,
         test_count_valid_rows,
-        test_graph_from_table
+        test_graph_from_table,
+        test_row_is_valid
     ];
 
     let test_result_area = $("#test_results");
@@ -352,6 +353,36 @@ function test_graph_from_table() {
 
     assert.deepEqual(graphFromTable(test_data).nodes, nodes);
     assert.deepEqual(graphFromTable(test_data).edges, edges);
+}
+
+
+function test_row_is_valid() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+
+    let test_data = $('<tr>\n' +
+                        '<td><input value="comp1" type="text"></td>\n' +
+                        '<td><select>' +
+                              '<option value="conn1" selected="selected"></option>' +
+                              '<option value="conn2"></option>' +
+                            '</select></td>\n' +
+                        '<td><input value="comp2" type="text"></td>\n' +
+                        '</tr>');
+
+    assert.equal(rowIsValid(test_data), true);
+
+    let rest_data = $('<tr>\n' +
+                        '<td><input value="comp1" type="text"></td>\n' +
+                        '<td><select>' +
+                              '<option value="conn1" selected="selected"></option>' +
+                              '<option value="conn2"></option>' +
+                            '</select></td>\n' +
+                        '<td><input type="text"></td>\n' +
+                        '</tr>');
+
+    assert.equal(rowIsValid(rest_data), false);
 }
 
 

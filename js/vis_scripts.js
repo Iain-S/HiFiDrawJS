@@ -238,6 +238,26 @@ function deleteLastDataRowFromID(tableID) {
 }
 
 
+function rowIsValid(rowObj) {
+    let tableTextBoxes = rowObj.find('input[type=text]');
+    let numberOfValidInputs = 0;
+
+    // ToDo Check for valid selection option as well
+
+    $.each(tableTextBoxes, function (index, value) {
+        if ($(value).val().length) {
+            numberOfValidInputs ++;
+        }
+    });
+
+    if (numberOfValidInputs === 2) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 function countValidRows(tableObj) {
     /* Count the number of valid table rows (rows with a source and destination)*/
 
@@ -250,16 +270,7 @@ function countValidRows(tableObj) {
 
     $.each(tableRows, function (index, value) {
 
-        let tableTextBoxes = $(value).find('input[type=text]');
-        let numberOfValidInputs = 0;
-
-        $.each(tableTextBoxes, function (index, value) {
-            if ($(value).val().length) {
-                numberOfValidInputs ++;
-            }
-        });
-
-        if (numberOfValidInputs === 2) {
+        if (rowIsValid($(value))) {
             numberOfValidRows ++;
         }
     });
@@ -271,7 +282,7 @@ function countValidRows(tableObj) {
 function graphFromTable(tableObj) {
     // Function-level strict mode syntax
     'use strict';
-    
+
     let nodes = [
         {id: 1, label: 'conn1'},
         {id: 2, label: 'conn2'},
