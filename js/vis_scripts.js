@@ -1,4 +1,6 @@
-var pressedKeys = {};
+//var pressedKeys = {};
+/*global window, $, vis */
+window.pressedKeys = {};
 
 $(document.body).keydown(function (evt) {
     // Function-level strict mode syntax
@@ -6,14 +8,13 @@ $(document.body).keydown(function (evt) {
 
     evt = evt || event; // to deal with IE
 
-    pressedKeys[evt.keyCode] = evt.type == 'keydown';
+    window.pressedKeys[evt.keyCode] = evt.type === 'keydown';
 
     // Shift + Enter to delete last row or Enter for new row
-    if (pressedKeys[13]) {
-        if(pressedKeys[16]) {
+    if (window.pressedKeys[13]) {
+        if (window.pressedKeys[16]) {
             deleteLastDataRowFromID('inputTable');
-        }
-        else {
+        } else {
             addRowRedraw('inputTable');
         }
     }
@@ -26,7 +27,7 @@ $(document.body).keyup(function (evt) {
 
     evt = evt || event; // to deal with IE
 
-    pressedKeys[evt.keyCode] = evt.type == 'keydown';
+    window.pressedKeys[evt.keyCode] = evt.type === 'keydown';
 });
 
 
@@ -64,7 +65,7 @@ function makeConnectorMenu() {
     'use strict';
 
     let arr = [
-        {val: 'Generic', text: 'Generic'},
+        {val: '', text: 'Generic'},
         {val: 'RCA<>RCA', text: 'RCA<>RCA'},
         {val: 'RCA<>TRS', text: 'RCA<>TRS'},
         {val: 'RCA<>XLR', text: 'RCA<>XLR'},
@@ -120,8 +121,8 @@ function makeDeleteButton() {
     let jqe = $(element);
 
     jqe.click(
-        function() {
-            $(this).closest('tr').remove ();
+        function () {
+            $(this).closest('tr').remove();
             return false;
         }
     );
@@ -130,34 +131,7 @@ function makeDeleteButton() {
 }
 
 
-/* Generate a string which flowchart js can parse. */
-function generateFlowchartInput(tableObj) {
-    // Function-level strict mode syntax
-    'use strict';
-
-    let tableRows = tableObj.children('tr');
-    let tableTextBoxes = tableRows.find('input[type=text]');
-    let numberOfValidRows = 0;
-
-    // Add a rect for each valid row (one with a source and destination)
-    $.each(tableTextBoxes, function (index, value) {
-        if ($(value).val().length) {
-            numberOfValidRows ++;
-        }
-    });
-
-    if (numberOfValidRows === 0) {
-        // This causes a "TypeError: s is null" but doesn't ruin anything
-        return '';
-    } else {
-        return 'para1=>parallel: p1\n' +
-               'para2=>parallel: p2\n' +
-               'para1(path1,)->para2\n';
-    }
-}
-
-
-function addRow(tableBody){
+function addRow(tableBody) {
     // Function-level strict mode syntax
     'use strict';
 
@@ -211,9 +185,9 @@ function rowIsValid(rowObj) {
 
     // ToDo Check for valid selection option as well
 
-    $.each(tableTextBoxes, function (index, value) {
+    $.each(tableTextBoxes, function (ignore, value) {
         if ($(value).val().length) {
-            numberOfValidInputs ++;
+            numberOfValidInputs += 1;
         }
     });
 
@@ -235,10 +209,10 @@ function countValidRows(tableObj) {
     let tableRows = tableBody.children('tr');
     let numberOfValidRows = 0;
 
-    $.each(tableRows, function (index, value) {
+    $.each(tableRows, function (ignore, value) {
 
         if (rowIsValid($(value))) {
-            numberOfValidRows ++;
+            numberOfValidRows += 1;
         }
     });
 
@@ -259,8 +233,8 @@ function addNodeFromCell(tdObject, nodeArray) {
     let input = tdObject.children('input').first();
 
     // do we have a node for this already?
-    nodeArray.some(function(element, index) {
-        if (element.label == input.val()) {
+    nodeArray.some(function (element) {
+        if (element.label === input.val()) {
             id = element.id;
             return true;
         }
@@ -269,7 +243,7 @@ function addNodeFromCell(tdObject, nodeArray) {
     if (!id) {
         let max_idx = 0;
 
-        nodeArray.forEach(function(element, index) {
+        nodeArray.forEach(function (element) {
             if (element.id > max_idx) {
                 max_idx = element.id;
             }
@@ -295,7 +269,7 @@ function graphFromTable(tableObj) {
     let nodes = [];
     let edges = [];
 
-    $.each(tableRows, function (index, value) {
+    $.each(tableRows, function (ignore, value) {
         let tableRow = $(value);
         if (rowIsValid(tableRow)) {
             // get source label
@@ -374,7 +348,7 @@ function deleteRowFromID(tableID, idx) {
     // Function-level strict mode syntax
     'use strict';
 
-    let theTable = $("#"+tableID);
+    let theTable = $("#" + tableID);
 
     let tableBody = theTable.children('tbody').first();
 
