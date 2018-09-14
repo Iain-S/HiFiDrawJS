@@ -73,34 +73,39 @@
   <script src="js/vis_scripts.js"></script>
   <script>
     // create an array with nodes
-    let nodes = new vis.DataSet([
-      {id: 1, label: 'Node 1', shape: 'box'},
-      {id: 2, label: 'Node 2', shape: 'box'},
-      {id: 3, label: 'Node 3', shape: 'box'},
-      {id: 4, label: 'Node 4', shape: 'box'},
-      {id: 5, label: 'Node 5', shape: 'box'}
-    ]);
+    // let nodes = new vis.DataSet([
+    //   {id: 1, label: 'Node 1', shape: 'box'},
+    //   {id: 2, label: 'Node 2', shape: 'box'},
+    //   {id: 3, label: 'Node 3', shape: 'box'},
+    //   {id: 4, label: 'Node 4', shape: 'box'},
+    //   {id: 5, label: 'Node 5', shape: 'box'}
+    // ]);
+    //
+    // // create an array with edges
+    // let edges = new vis.DataSet([
+    //   {from: 1, to: 3, arrows:'to', label:'one-to-one'},
+    //   {from: 1, to: 2, arrows:'to', label:'one-to-one'},
+    //   {from: 2, to: 4, arrows:'to', label:'one-to-one'},
+    //   {from: 2, to: 5, arrows:'to', label:'one-to-one'},
+    //   {from: 3, to: 3, arrows:'to', label:'one-to-one'}
+    // ]);
+    //
+    // // create a network
+    // let container = document.getElementById('drawing_div');
+    // let data = {
+    //   nodes: nodes,
+    //   edges: edges
+    // };
+    // let options = {physics:false
+    //                // ,nodes: {shadow: true},
+    //                // edges: {shadow: true}
+    //               };
+    // let network = new vis.Network(container, data, options);
 
-    // create an array with edges
-    let edges = new vis.DataSet([
-      {from: 1, to: 3, arrows:'to', label:'one-to-one'},
-      {from: 1, to: 2, arrows:'to', label:'one-to-one'},
-      {from: 2, to: 4, arrows:'to', label:'one-to-one'},
-      {from: 2, to: 5, arrows:'to', label:'one-to-one'},
-      {from: 3, to: 3, arrows:'to', label:'one-to-one'}
-    ]);
-
-    // create a network
-    let container = document.getElementById('drawing_div');
-    let data = {
-      nodes: nodes,
-      edges: edges
-    };
-    let options = {physics:false
-                   // ,nodes: {shadow: true},
-                   // edges: {shadow: true}
-                  };
-    let network = new vis.Network(container, data, options);
+    window.onload = function() {
+        // Add a first row to save the user a click
+        addRowRedraw('inputTable');
+    }
   </script>
 </body>
 </html>

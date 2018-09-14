@@ -23,6 +23,7 @@ $(document).ready(function () {
         test_delete_last_row,
         test_count_valid_rows,
         test_graph_from_table,
+        test_add_node_from_cell,
         test_row_is_valid
     ];
 
@@ -330,29 +331,31 @@ function test_graph_from_table() {
                   '\t        <td></td>\n' +
                   '\t      </tr>\n' +
                   '        <tr>\n' +
-                  '\t        <td><input value="comp1" type="text"></td>\n' +
+                  '\t        <td><input value="part1" type="text"></td>\n' +
                   '\t        <td><select>' +
                                   '<option value="conn1" selected="selected"></option>' +
                                   '<option value="conn2"></option>' +
                                  '</select></td>\n' +
-                  '\t        <td><input value="comp2" type="text"></td>\n' +
+                  '\t        <td><input value="part2" type="text"></td>\n' +
                   '\t      </tr>\n' +
                   '      </tbody>\n' +
                   '\t  </table>');
 
 
     let nodes = [
-        {id: 1, label: 'conn1'},
-        {id: 2, label: 'conn2'},
+        {id: 1, label: 'part1', shape: "box"},
+        {id: 2, label: 'part2', shape: "box"},
     ];
 
     // create an array with edges
     let edges = [
-        {from: 1, to: 2},
+        {from: 1, to: 2, arrows: 'to', label: 'conn1'},
     ];
 
-    assert.deepEqual(graphFromTable(test_data).nodes, nodes);
-    assert.deepEqual(graphFromTable(test_data).edges, edges);
+    let data = graphFromTable(test_data);
+
+    assert.deepEqual(data.nodes, nodes, "nodes don't match " + data.nodes);
+    assert.deepEqual(data.edges, edges, "edges don't match " + data.nodes);
 }
 
 
@@ -383,6 +386,32 @@ function test_row_is_valid() {
                         '</tr>');
 
     assert.equal(rowIsValid(rest_data), false);
+}
+
+
+function test_add_node_from_cell() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+
+    // Check that we can add a new node
+    let cell = $("<td><input value=\"comp1\" type=\"text\"></td>");
+    let node_array = [];
+
+    let returned_id = addNodeFromCell(cell, node_array);
+
+    assert.equal(1, returned_id);
+    assert.deepEqual(node_array, [{id: 1, label: "comp1", shape: "box"}]);
+
+    // Check that we return the id of an existing node
+    cell = $("<td><input value=\"this_is_a_node_label\" type=\"text\"></td>");
+    node_array = [{id: 8798, label: "this_is_a_node_label", shape: "box"}];
+
+    returned_id = addNodeFromCell(cell, node_array);
+
+    assert.equal(8798, returned_id);
+    assert.deepEqual(node_array, [{id: 8798, label: "this_is_a_node_label", shape: "box"}]);
 }
 
 

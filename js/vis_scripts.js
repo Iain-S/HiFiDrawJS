@@ -168,57 +168,6 @@ function addRow(tableBody){
 }
 
 
-function redraw(drawingArea, tableBody) {
-    // Function-level strict mode syntax
-    'use strict';
-
-    drawingArea.empty();
-
-    let diagramVar = flowchart.parse(generateFlowchartInput(tableBody));
-
-    try {
-        diagramVar.drawSVG('drawing_div');
-    } catch (e) {
-        if (!(e instanceof TypeError)) {
-            throw e;
-        }
-    }
-}
-
-
-/* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID) {
-    // Function-level strict mode syntax
-    'use strict';
-
-    let tableObj = $("#" + sourceTableID);
-
-    let tableBody = tableObj.children('tbody').first();
-
-    addRow(tableBody);
-
-    // let drawingArea = $('#drawing_div');
-
-    // redraw(drawingArea, tableBody);
-}
-
-
-function deleteRowFromID(tableID, idx) {
-    // Function-level strict mode syntax
-    'use strict';
-
-    let theTable = $("#"+tableID);
-
-    let tableBody = theTable.children('tbody').first();
-
-    tableBody.children('tr').eq(idx).remove();
-
-    // let drawingArea = $('#drawing_div');
-
-    // redraw(drawingArea, tableBody);
-}
-
-
 function deleteLastDataRowFromID(tableID) {
     /* This is a safe delete function, it will always leave the
     *  headers and the add button. */
@@ -279,6 +228,45 @@ function countValidRows(tableObj) {
 }
 
 
+function addNodeFromCell(tdObject, nodeArray) {
+    // This is messy but testable.
+    // Pass in a <td></td> and an array of nodes,
+    // get back the id of any nodes added or the id
+    // of the matching node if it was already in nodeArray
+
+    // Function-level strict mode syntax
+    'use strict';
+
+    let id = null;
+
+    let input = tdObject.children('input').first();
+
+    // do we have a node for this already?
+    for (let i = 0; i < nodeArray.length; i++) {
+        if (nodeArray[i].label == input.val()) {
+            id = nodeArray[i].id;
+            break;
+        }
+    }
+
+    if (!id) {
+        let max_idx = 0;
+        for (let i = 0; i < nodeArray.length; i++) {
+            if (nodeArray[i].id > max_idx) {
+                max_idx = nodeArray[i].id;
+            }
+        }
+
+        id = max_idx + 1;
+        nodeArray.push({id: id,
+                        label: input.val(),
+                        shape: "box"});
+    }
+
+    return id;
+}
+
+
 function graphFromTable(tableObj) {
     // Function-level strict mode syntax
     'use strict';
@@ -293,38 +281,26 @@ function graphFromTable(tableObj) {
         let tableRow = $(value);
         if (rowIsValid(tableRow)) {
             // get source label
-            let src = tableRow.children('td').eq(0);
+            let src_td = tableRow.children('td').eq(0);
 
             // if source label is not in nodes, add it
-            let src_in_nodes = false;
-            for (let i = 0; i < nodes.length; i++) {
-                if (nodes[i].label == src.val()) {
-                    src_in_nodes = true;
-                }
-            }
-            if (!src_in_nodes) {
-                nodes.push({id: index,
-                            label: src.val()});
-            }
+            let src_id = addNodeFromCell(src_td, nodes);
 
             // get dest label
-            let dst = tableRow.children('td').eq(2);
-            // if dest label is not in nodes, add it
-            let dst_in_nodes = false;
-            for (let i = 0; i < nodes.length; i++) {
-                if (nodes[i].label == dst.val()) {
-                    dst_in_nodes = true;
-                }
-            }
-            if (!dst_in_nodes) {
-                nodes.push({id: index,
-                            label: dst.val()});
-            }
+            let dst_td = tableRow.children('td').eq(2);
 
-            // find id of src
-            // find id of dst
+            // if dest label is not in nodes, add it
+            let dst_id = addNodeFromCell(dst_td, nodes);
+
             // find label from drop-down
+            let conn_td = tableRow.children('td').eq(1);
+            let conn_label = conn_td.children('select').first().val();
+            console.log(conn_label);
             // add edge
+            edges.push({from: src_id,
+                        to: dst_id,
+                        arrows: 'to',
+                        label: conn_label});
         }
     });
 
@@ -334,4 +310,59 @@ function graphFromTable(tableObj) {
     };
 
     return data;
+}
+
+
+function redraw(drawingArea, tableObj) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let graph = graphFromTable(tableObj);
+
+    let vis_nodes = new vis.DataSet(graph.nodes);
+    let vis_edges = new vis.DataSet(graph.edges);
+    let vis_container = drawingArea[0];
+    let vis_options = {physics:false
+                       // ,nodes: {shadow: true},
+                       // edges: {shadow: true}
+                      };
+
+    let vis_data = {nodes: vis_nodes,
+                    edges: vis_edges};
+
+    // draw the thing
+    new vis.Network(vis_container, vis_data, vis_options);
+}
+
+
+/* Add a source-connector-destination row at the end of the table */
+function addRowRedraw(sourceTableID) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let tableObj = $("#" + sourceTableID);
+
+    let tableBody = tableObj.children('tbody').first();
+
+    addRow(tableBody);
+
+    let drawingArea = $('#drawing_div');
+
+    redraw(drawingArea, tableObj);
+}
+
+
+function deleteRowFromID(tableID, idx) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let theTable = $("#"+tableID);
+
+    let tableBody = theTable.children('tbody').first();
+
+    tableBody.children('tr').eq(idx).remove();
+
+    let drawingArea = $('#drawing_div');
+
+    redraw(drawingArea, theTable);
 }
