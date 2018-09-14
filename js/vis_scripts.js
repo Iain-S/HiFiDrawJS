@@ -1,10 +1,14 @@
 var pressedKeys = {};
 
 $(document.body).keydown(function (evt) {
+    // Function-level strict mode syntax
+    'use strict';
+
     evt = evt || event; // to deal with IE
 
     pressedKeys[evt.keyCode] = evt.type == 'keydown';
 
+    // Shift + Enter to delete last row or Enter for new row
     if (pressedKeys[13]) {
         if(pressedKeys[16]) {
             deleteLastDataRowFromID('inputTable');
@@ -17,6 +21,9 @@ $(document.body).keydown(function (evt) {
 
 
 $(document.body).keyup(function (evt) {
+    // Function-level strict mode syntax
+    'use strict';
+
     evt = evt || event; // to deal with IE
 
     pressedKeys[evt.keyCode] = evt.type == 'keydown';
@@ -24,6 +31,9 @@ $(document.body).keyup(function (evt) {
 
 
 function countBodyRows(tableBody) {
+    // Function-level strict mode syntax
+    'use strict';
+
     let tableRows = tableBody.children('tr');
 
     return tableRows.length;
@@ -122,9 +132,12 @@ function makeDeleteButton() {
 
 /* Generate a string which flowchart js can parse. */
 function generateFlowchartInput(tableObj) {
+    // Function-level strict mode syntax
+    'use strict';
+
     let tableRows = tableObj.children('tr');
     let tableTextBoxes = tableRows.find('input[type=text]');
-    let numberOfValidRows = 0
+    let numberOfValidRows = 0;
 
     // Add a rect for each valid row (one with a source and destination)
     $.each(tableTextBoxes, function (index, value) {
@@ -145,6 +158,8 @@ function generateFlowchartInput(tableObj) {
 
 
 function addRow(tableBody){
+    // Function-level strict mode syntax
+    'use strict';
 
     //let currentRows = countBodyRows(tableBody);
 
@@ -188,6 +203,9 @@ function deleteLastDataRowFromID(tableID) {
 
 
 function rowIsValid(rowObj) {
+    // Function-level strict mode syntax
+    'use strict';
+
     let tableTextBoxes = rowObj.find('input[type=text]');
     let numberOfValidInputs = 0;
 
@@ -238,24 +256,24 @@ function addNodeFromCell(tdObject, nodeArray) {
     'use strict';
 
     let id = null;
-
     let input = tdObject.children('input').first();
 
     // do we have a node for this already?
-    for (let i = 0; i < nodeArray.length; i++) {
-        if (nodeArray[i].label == input.val()) {
-            id = nodeArray[i].id;
-            break;
+    nodeArray.some(function(element, index) {
+        if (element.label == input.val()) {
+            id = element.id;
+            return true;
         }
-    }
+    });
 
     if (!id) {
         let max_idx = 0;
-        for (let i = 0; i < nodeArray.length; i++) {
-            if (nodeArray[i].id > max_idx) {
-                max_idx = nodeArray[i].id;
+
+        nodeArray.forEach(function(element, index) {
+            if (element.id > max_idx) {
+                max_idx = element.id;
             }
-        }
+        });
 
         id = max_idx + 1;
         nodeArray.push({id: id,
