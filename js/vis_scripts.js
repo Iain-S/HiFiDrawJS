@@ -314,7 +314,15 @@ function redraw(drawingArea, tableObj) {
     let vis_nodes = new vis.DataSet(graph.nodes);
     let vis_edges = new vis.DataSet(graph.edges);
     let vis_container = drawingArea[0];
-    let vis_options = {physics:false
+    let vis_options = {physics: false,
+                       width: '100%',
+                       height: '100%',
+                       nodes: {
+                           font: {size: 50}
+                       },
+                       edges: {
+                           length: 100
+                       }
                        // ,nodes: {shadow: true},
                        // edges: {shadow: true}
                       };

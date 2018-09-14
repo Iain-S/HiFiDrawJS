@@ -15,39 +15,35 @@
 </head>
 <body>
   <div class="paper container">
-    <h1>
+    <h1 class="text-center">
       Vis JS<br/>
       <small class="text-muted">Draw network diagrams</small>
     </h1>
-
     <p>
       ENTER: Add new row to the end of the table.<br>
       SHIFT + ENTER: Remove the last row from the table.
     </p>
-
-    <table id="inputTable">
-      <thead>
-        <tr>
-	        <th>Source</th>
-	        <th>Connector</th>
-	        <th>Destination</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-	        <td id="sourceBox">
-		        <input type="button" id="btnAdd" value="Add" onclick="addRowRedraw('inputTable');" />
-          </td>
-	        <td></td>
-	        <td></td>
-	      </tr>
-      </tbody>
-	  </table>
-	  <p>
-      And here are some shapes:
-    </p>
-    <div id="drawing_div">
-    </div>
+    <form>
+      <table id="inputTable">
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Connector</th>
+            <th>Destination</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="sourceBox">
+              <input type="button" id="btnAdd" value="Add" onclick="addRowRedraw('inputTable');" />
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+    <div id="drawing_div" class="border border-primary"></div>
   </div>
   <!-- jQuery library and bootstrap javascript -->
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
