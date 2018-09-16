@@ -14,7 +14,9 @@ $(document).ready(function () {
         test_count_tbody_rows,
         test_make_connector_menu,
         test_make_destination_box,
+        test_make_destination_box_with_value,
         test_make_source_box,
+        test_make_source_box_with_value,
         test_make_delete_button,
         test_delete_last_row_leaves_essentials,
         test_add_and_delete_row,
@@ -24,7 +26,8 @@ $(document).ready(function () {
         test_count_valid_rows,
         test_graph_from_table,
         test_add_node_from_cell,
-        test_row_is_valid
+        test_row_is_valid,
+        test_add_sample_data
     ];
 
     let test_result_area = $("#test_results");
@@ -105,6 +108,17 @@ function test_make_destination_box() {
 }
 
 
+function test_make_destination_box_with_value() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+    let source_box = makeDestinationBox("my value").filter('input');
+    assert.equal(1, source_box.length);
+    assert.equal("my value", source_box.val());
+}
+
+
 function test_make_source_box() {
     // Function-level strict mode syntax
     'use strict';
@@ -112,6 +126,17 @@ function test_make_source_box() {
     let assert = chai.assert;
     let source_box = makeSourceBox().filter('input');
     assert.equal(1, source_box.length);
+}
+
+
+function test_make_source_box_with_value() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+    let source_box = makeSourceBox("my value").filter('input');
+    assert.equal(1, source_box.length);
+    assert.equal("my value", source_box.val());
 }
 
 
@@ -412,6 +437,26 @@ function test_add_node_from_cell() {
 
     assert.equal(8798, returned_id);
     assert.deepEqual(node_array, [{id: 8798, label: "this_is_a_node_label", shape: "box"}]);
+}
+
+
+function test_add_sample_data() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+    let tableRef = $('#table_for_testing');
+    let tableBody = tableRef.children('tbody').first();
+    let table_rows = tableBody.children('tr');
+    assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+
+    try {
+        addSampleData('table_for_testing');
+    } catch (ex) {}
+
+    tableBody = tableRef.children('tbody').first();
+    table_rows = tableBody.children('tr');
+    assert.equal(6, table_rows.length, "Expected more rows after calling addSampleData.");
 }
 
 

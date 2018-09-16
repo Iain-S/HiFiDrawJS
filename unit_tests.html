@@ -7,7 +7,7 @@
   <meta name="author" content="TODO">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-  <title>HiFiDraw SVG Unit Tests</title>
+  <title>Unit Tests</title>
   <link rel="shortcut icon" type="image/png" href="images/pencil_favicon_small.png"/>
   
   <!-- Latest compiled and minified CSS -->
@@ -16,14 +16,11 @@
 <body>
   <div class="container">
     <h1 class="text-center">
-      HiFi Draw Unit Tests<br/>
-      <small class="text-muted">Test Hifi Draw</small>
+      Unit Tests<br/>
+      <small class="text-muted">Testing...</small>
     </h1>
     <div id="test_results">
     </div>
-	<div id="div_for_testing">
-	    <!-- To test our tests <input type="text"> -->
-	</div>
     <table class="table" id="table_for_testing">
       <tbody>
       <tr>
@@ -36,21 +33,22 @@
       <tr> 4 It is needed for testing. </tr>
       </tbody>
     </table>
+    <div id="div_for_testing">
+    <!-- To test our tests <input type="text"> -->
+    </div>
     <div id="drawing_div">
     </div>
   </div> <!-- End the main div -->
   <!-- jQuery library and bootstrap javascript -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <!-- Raphael -->
-  <script src="js/raphael.js"></script>
-  <!-- Flowchart -->
-  <script src="js/flowchart.js"></script>
-  <!-- Our own javascript -->
-  <script src="js/scripts.js"></script>
+  <!-- Vis JS -->
+  <script src="js/vis.min.js"></script>
+  <!-- Our JS -->
+  <script src="js/vis_scripts.js"></script>
   <!-- Testing assertions -->
   <script src="js/chai.js"></script> 
   <!-- Our unit tests -->
-  <script src="js/scripts.test.js"></script>
+  <script src="js/vis_scripts.test.js"></script>
 </body>
 </html>

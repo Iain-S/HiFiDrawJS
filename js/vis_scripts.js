@@ -41,31 +41,12 @@ function countBodyRows(tableBody) {
 }
 
 
-function makeSourceBox() {
-    // Function-level strict mode syntax
-    'use strict';
-
-    //Create an input type dynamically.
-    let element = document.createElement("input");
-
-    //Assign different attributes to the element.
-    element.setAttribute("type", "text");
-    element.setAttribute("value", "");
-    element.setAttribute("name", "Test Name");
-    //element.setAttribute("style", "width:200px");
-    element.setAttribute("id", "id_src_1");
-    element.setAttribute("placeholder", "source name");
-
-    return $(element);
-}
-
-
 function makeConnectorMenu() {
     // Function-level strict mode syntax
     'use strict';
 
     let arr = [
-        {val: '', text: 'Generic'},
+        {val: '', text: 'Simple'},
         {val: 'RCA<>RCA', text: 'RCA<>RCA'},
         {val: 'RCA<>TRS', text: 'RCA<>TRS'},
         {val: 'RCA<>XLR', text: 'RCA<>XLR'},
@@ -84,11 +65,12 @@ function makeConnectorMenu() {
     $(arr).each(function () {
         sel.append($("<option>").attr('value',this.val).text(this.text));
     });
+
     return sel;
 }
 
 
-function makeDestinationBox() {
+function makeSourceBox(value) {
     // Function-level strict mode syntax
     'use strict';
 
@@ -97,11 +79,44 @@ function makeDestinationBox() {
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
-    element.setAttribute("value", "");
     element.setAttribute("name", "Test Name");
-    //element.setAttribute("style", "width:200px");
+    element.setAttribute("size", "7");
+    element.setAttribute("id", "id_src_1");
+    element.setAttribute("placeholder", "source");
+    //element.setAttribute("style", "height: 10%");
+    element.setAttribute("style", "padding: 0.4rem 0.4rem");
+
+    if (value) {
+        element.setAttribute("value", value);
+    } else {
+        element.setAttribute("value", "");
+    }
+
+    return $(element);
+}
+
+
+function makeDestinationBox(value) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    //Create an input type dynamically.
+    let element = document.createElement("input");
+
+    //Assign different attributes to the element.
+    element.setAttribute("type", "text");
+    element.setAttribute("name", "Test Name");
+    element.setAttribute("size", "7");
     element.setAttribute("id", "id_dst_1");
-    element.setAttribute("placeholder", "destination name");
+    element.setAttribute("placeholder", "destination");
+    //element.setAttribute("style", "height: 10%");
+    element.setAttribute("style", "padding: 0.4rem 0.4rem");
+
+    if (value) {
+        element.setAttribute("value", value);
+    } else {
+        element.setAttribute("value", "");
+    }
 
     return $(element);
 }
@@ -117,6 +132,8 @@ function makeDeleteButton() {
     //Assign different attributes to the element.
     element.setAttribute("type", "button");
     element.setAttribute("value", "Delete");
+    element.setAttribute("style", "padding: 8px 8px");
+
 
     let jqe = $(element);
 
@@ -131,9 +148,7 @@ function makeDeleteButton() {
 }
 
 
-function addRow(tableBody) {
-    // Function-level strict mode syntax
-    'use strict';
+function addRow(tableBody, source_val=null, dest_val=null) {
 
     //let currentRows = countBodyRows(tableBody);
 
@@ -142,13 +157,13 @@ function addRow(tableBody) {
 
     // Insert a cell in the row at index 0
     let srcCell = newRow.insertCell(0);
-    makeSourceBox().appendTo(srcCell);
+    makeSourceBox(source_val).appendTo(srcCell);
 
     let conCell = newRow.insertCell(1);
     makeConnectorMenu().appendTo(conCell);
 
     let dstCell = newRow.insertCell(2);
-    makeDestinationBox().appendTo(dstCell);
+    makeDestinationBox(dest_val).appendTo(dstCell);
 
     let deleteCell = newRow.insertCell(3);
     makeDeleteButton().appendTo(deleteCell);
@@ -316,16 +331,21 @@ function redraw(drawingArea, tableObj) {
     let vis_container = drawingArea[0];
     let vis_options = {physics: false,
                        width: '100%',
-                       height: '100%',
+                       height: '500px',
                        nodes: {
-                           font: {size: 50}
-                       },
+                           font: {size: 50,
+                                  face: 'Patrick Hand SC, arial'}
+                           //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
+                           },
                        edges: {
                            length: 100
-                       }
+                           },
                        // ,nodes: {shadow: true},
                        // edges: {shadow: true}
-                      };
+                       layout: {
+                           hierarchical: true
+                           }
+                       };
 
     let vis_data = {nodes: vis_nodes,
                     edges: vis_edges};
@@ -365,4 +385,20 @@ function deleteRowFromID(tableID, idx) {
     let drawingArea = $('#drawing_div');
 
     redraw(drawingArea, theTable);
+}
+
+function addSampleData(sourceTableID) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let tableObj = $("#" + sourceTableID);
+
+    let tableBody = tableObj.children('tbody').first();
+
+    addRow(tableBody, 'phone', 'amp');
+    addRow(tableBody, 'amp', 'speakers');
+
+    let drawingArea = $('#drawing_div');
+
+    redraw(drawingArea, tableObj);
 }
