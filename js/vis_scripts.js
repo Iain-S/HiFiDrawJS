@@ -343,7 +343,7 @@ function redraw(drawingArea, tableObj) {
                        // ,nodes: {shadow: true},
                        // edges: {shadow: true}
                        layout: {
-                           hierarchical: true
+                           hierarchical: {direction: 'LR'}
                            }
                        };
 
