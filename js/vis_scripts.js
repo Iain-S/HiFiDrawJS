@@ -41,7 +41,7 @@ function countBodyRows(tableBody) {
 }
 
 
-function makeConnectorMenu() {
+function makeConnectorMenu(value) {
     // Function-level strict mode syntax
     'use strict';
 
@@ -55,7 +55,8 @@ function makeConnectorMenu() {
         {val: 'TRS<>XLR', text: 'TRS<>XLR'},
         {val: 'XLR<>XLR', text: 'XLR<>XLR'},
         {val: 'XLR<>RCA', text: 'XLR<>RCA'},
-        {val: 'XLR<>TRS', text: 'XLR<>TRS'}
+        {val: 'XLR<>TRS', text: 'XLR<>TRS'},
+        {val: 'speaker cable', text: 'speaker cable'}
         //{val : 3, text: 'spare<>spare'},
         //{val : 3, text: 'Wireless'},
     ];
@@ -65,6 +66,8 @@ function makeConnectorMenu() {
     $(arr).each(function () {
         sel.append($("<option>").attr('value',this.val).text(this.text));
     });
+
+    sel.val(value);
 
     return sel;
 }
@@ -81,7 +84,7 @@ function makeSourceBox(value) {
     element.setAttribute("type", "text");
     element.setAttribute("name", "Test Name");
     element.setAttribute("size", "7");
-    element.setAttribute("id", "id_src_1");
+    //element.setAttribute("id", "id_src_1");
     element.setAttribute("placeholder", "source");
     //element.setAttribute("style", "height: 10%");
     element.setAttribute("style", "padding: 0.4rem 0.4rem");
@@ -107,7 +110,7 @@ function makeDestinationBox(value) {
     element.setAttribute("type", "text");
     element.setAttribute("name", "Test Name");
     element.setAttribute("size", "7");
-    element.setAttribute("id", "id_dst_1");
+    //element.setAttribute("id", "id_dst_1");
     element.setAttribute("placeholder", "destination");
     //element.setAttribute("style", "height: 10%");
     element.setAttribute("style", "padding: 0.4rem 0.4rem");
@@ -134,7 +137,6 @@ function makeDeleteButton() {
     element.setAttribute("value", "Delete");
     element.setAttribute("style", "padding: 8px 8px");
 
-
     let jqe = $(element);
 
     jqe.click(
@@ -148,7 +150,7 @@ function makeDeleteButton() {
 }
 
 
-function addRow(tableBody, source_val=null, dest_val=null) {
+function addRow(tableBody, source_val=null, dest_val=null, conn_val=null) {
 
     //let currentRows = countBodyRows(tableBody);
 
@@ -160,7 +162,7 @@ function addRow(tableBody, source_val=null, dest_val=null) {
     makeSourceBox(source_val).appendTo(srcCell);
 
     let conCell = newRow.insertCell(1);
-    makeConnectorMenu().appendTo(conCell);
+    makeConnectorMenu(conn_val).appendTo(conCell);
 
     let dstCell = newRow.insertCell(2);
     makeDestinationBox(dest_val).appendTo(dstCell);
@@ -351,19 +353,14 @@ function redraw(drawingArea, tableObj) {
                     edges: vis_edges};
 
     // draw the thing
-    new vis.Network(vis_container, vis_data, vis_options);
+    let network = new vis.Network(vis_container, vis_data, vis_options);
 
-    // We'll have to use a callback such as afterDrawing
-    // See http://visjs.org/docs/network/#Events
-    setTimeout(function () {
-
+    network.on("afterDrawing", function (ignore) {
         let link = document.getElementById('id_download');
         let canvas = document.getElementsByTagName('canvas')[0];
-        link.setAttribute('download', 'MintyPaper.png');
+        link.setAttribute('download', 'HiFiDraw.png');
         link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
-        //link.click();
-
-    }, 5000);
+    });
 }
 
 
@@ -399,6 +396,7 @@ function deleteRowFromID(tableID, idx) {
     redraw(drawingArea, theTable);
 }
 
+
 function addSampleData(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
@@ -407,7 +405,7 @@ function addSampleData(sourceTableID) {
 
     let tableBody = tableObj.children('tbody').first();
 
-    addRow(tableBody, 'phone', 'amp');
+    addRow(tableBody, 'phone', 'amp', 'XLR<>XLR');
     addRow(tableBody, 'amp', 'speakers');
 
     let drawingArea = $('#drawing_div');

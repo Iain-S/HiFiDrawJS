@@ -1,3 +1,5 @@
+/*global $, chai */
+
 /* Things to do once the unit_tests page has loaded */
 $(document).ready(function () {
     // Function-level strict mode syntax
@@ -27,7 +29,9 @@ $(document).ready(function () {
         test_graph_from_table,
         test_add_node_from_cell,
         test_row_is_valid,
-        test_add_sample_data
+        test_add_sample_data,
+        test_serialise_table,
+        test_deserialise_table
     ];
 
     let test_result_area = $("#test_results");
@@ -165,7 +169,7 @@ function test_add_and_delete_row() {
 
     try {
         addRowRedraw('table_for_testing');
-    } catch (ex) {}
+    } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
@@ -174,7 +178,7 @@ function test_add_and_delete_row() {
     // Delete the last row
     try {
         deleteRowFromID('table_for_testing', table_rows.length - 1);
-    } catch (ex) {}
+    } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
@@ -194,7 +198,7 @@ function test_delete_last_row() {
 
     try {
         addRowRedraw('table_for_testing');
-    } catch (ex) {}
+    } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
@@ -203,7 +207,7 @@ function test_delete_last_row() {
     // Delete the last row
     try {
         deleteLastDataRowFromID('table_for_testing');
-    } catch (ex) {}
+    } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
@@ -243,7 +247,7 @@ function test_delete_last_row_leaves_essentials() {
     // Check that our function will always leave them there
     try {
         deleteLastDataRowFromID('9029384093284023');
-    } catch (ex) {}
+    } catch (ignore) {}
 
     let tableRows = $('#9029384093284023').find('tr');
     assert.equal(2, tableRows.length);
@@ -262,7 +266,7 @@ function test_new_row_has_right_num_of_cols() {
 
     try {
         addRowRedraw('table_for_testing');
-    } catch (ex) {}
+    } catch (ignore) {}
 
     // Check that the row is properly formed
     tableBody = tableRef.children('tbody').first();
@@ -273,7 +277,7 @@ function test_new_row_has_right_num_of_cols() {
     try {
         deleteRowFromID('table_for_testing', 3);
     }
-    catch (ex) {}
+    catch (ignore) {}
 }
 
 
@@ -299,7 +303,7 @@ function test_count_valid_rows() {
     let assert = chai.assert;
     let test_data = $("");
 
-    assert.equal(countValidRows(test_data), 0)
+    assert.equal(countValidRows(test_data), 0);
 
     // Create a table with one valid row
     test_data = $('<table class="table" id="9029384093284023">\n' +
@@ -369,12 +373,12 @@ function test_graph_from_table() {
 
     let nodes = [
         {id: 1, label: 'part1', shape: "box"},
-        {id: 2, label: 'part2', shape: "box"},
+        {id: 2, label: 'part2', shape: "box"}
     ];
 
     // create an array with edges
     let edges = [
-        {from: 1, to: 2, arrows: 'to', label: 'conn1'},
+        {from: 1, to: 2, arrows: 'to', label: 'conn1'}
     ];
 
     let data = graphFromTable(test_data);
@@ -452,11 +456,30 @@ function test_add_sample_data() {
 
     try {
         addSampleData('table_for_testing');
-    } catch (ex) {}
+    } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
     assert.equal(6, table_rows.length, "Expected more rows after calling addSampleData.");
+}
+
+
+function test_serialise_table() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+    assert.fail();
+
+}
+
+
+function test_deserialise_table() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    let assert = chai.assert;
+    assert.equal(1, 2, "This is an error message.");
 }
 
 
