@@ -352,6 +352,18 @@ function redraw(drawingArea, tableObj) {
 
     // draw the thing
     new vis.Network(vis_container, vis_data, vis_options);
+
+    // We'll have to use a callback such as afterDrawing
+    // See http://visjs.org/docs/network/#Events
+    setTimeout(function () {
+
+        let link = document.getElementById('id_download');
+        let canvas = document.getElementsByTagName('canvas')[0];
+        link.setAttribute('download', 'MintyPaper.png');
+        link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+        //link.click();
+
+    }, 5000);
 }
 
 

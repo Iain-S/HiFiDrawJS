@@ -24,6 +24,11 @@ td, th {
     text-align: center;
 }
 
+a.button {
+    font-family: Neucha,sans-serif
+    /*ToDo Add further button-like formatting here*/
+}
+
 /*override the paper padding to make more room for the table*/
 .paper {
   /*background-color: #fff;*/
