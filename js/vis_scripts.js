@@ -328,6 +328,10 @@ function redraw(drawingArea, tableObj) {
 
     let graph = graphFromTable(tableObj);
 
+    let link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
+    $('#id_export_link').text(link_url);
+    //console.log(link_url);
+
     let vis_nodes = new vis.DataSet(graph.nodes);
     let vis_edges = new vis.DataSet(graph.edges);
     let vis_container = drawingArea[0];
@@ -356,10 +360,10 @@ function redraw(drawingArea, tableObj) {
     let network = new vis.Network(vis_container, vis_data, vis_options);
 
     network.on("afterDrawing", function (ignore) {
-        let link = document.getElementById('id_download');
+        let download_link = document.getElementById('id_download');
         let canvas = document.getElementsByTagName('canvas')[0];
-        link.setAttribute('download', 'HiFiDraw.png');
-        link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+        download_link.setAttribute('download', 'HiFiDraw.png');
+        download_link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
     });
 }
 
@@ -415,16 +419,83 @@ function addSampleData(sourceTableID) {
 
 
 function serialiseGraph(graphData) {
+    // Function-level strict mode syntax
+    'use strict';
     return JSON.stringify(graphData);
 }
 
 
 function deserialiseGraph(serialisedGraph) {
+    // Function-level strict mode syntax
+    'use strict';
     return JSON.parse(serialisedGraph);
 }
 
 
-function setUpPage(sourceTable) {
-    // Add a first row to save the user a click
-    addSampleData(sourceTable);
+/* Get query parameters from the URL
+   e.g. www.my-site.com?something=a_thing&what=why
+        will return a dict with something and what as keys
+   You can call it like this getQueryParams(document.location.search)*/
+function getQueryParams(qs) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    qs = qs.split('+').join(' ');
+
+    let params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+
+    do {
+        tokens = re.exec(qs);
+        if (tokens) {
+            params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+        } else {
+            break;
+        }
+    } while (true);
+
+    return params;
 }
+
+
+function addDataFromURL(serialisedData, sourceTable) {
+    console.log(deserialiseGraph(serialisedData));
+}
+
+
+function setUpPage(sourceTable) {
+    // Function-level strict mode syntax
+    'use strict';
+    let query_params = getQueryParams(document.location.search);
+
+    if ('serialised' in query_params) {
+        addDataFromURL(query_params.serialised, sourceTable);
+    } else {
+        // Add a first row to save the user a click
+        addSampleData(sourceTable);
+    }
+}
+
+
+function copyToClipboard (element) {
+    str = $('#id_export_link').text();
+    console.log(str);
+    const el = document.createElement('textarea');  // Create a <textarea> element
+    el.value = str;                                 // Set its value to the string that you want copied
+    el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';                      // Move outside the screen to make it invisible
+    document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
+    const selected =
+        document.getSelection().rangeCount > 0        // Check if there is any content selected previously
+        ? document.getSelection().getRangeAt(0)     // Store selection if found
+        : false;                                    // Mark as false to know no selection existed before
+    el.select();                                    // Select the <textarea> content
+    document.execCommand('copy');                   // Copy - only works as a result of a user action (e.g. click events)
+    document.body.removeChild(el);                  // Remove the <textarea> element
+    if (selected) {                                 // If a selection existed before copying
+        document.getSelection().removeAllRanges();    // Unselect everything on the HTML document
+        document.getSelection().addRange(selected);   // Restore the original selection
+    }
+};

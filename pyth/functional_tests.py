@@ -48,7 +48,6 @@ class TestNewVisitor(unittest.TestCase):
     def can_make_super_simple_diagram(self):
         # Edith wants to make a super simple diagram to of her iPhone and active monitors.
         # Someone gives her a link to our site
-        # self.browser.get('http://localhost:8009/')
 
         # She notices the page title and header mention to-do lists
         self.assertIn('HiFiDraw', self.browser.title)
