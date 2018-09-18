@@ -289,22 +289,22 @@ function graphFromTable(tableObj) {
     $.each(tableRows, function (ignore, value) {
         let tableRow = $(value);
         if (rowIsValid(tableRow)) {
-            // get source label
+            // get source
             let src_td = tableRow.children('td').eq(0);
 
-            // if source label is not in nodes, add it
+            // if source is not in nodes already, add it
             let src_id = addNodeFromCell(src_td, nodes);
 
-            // get dest label
+            // get dest
             let dst_td = tableRow.children('td').eq(2);
 
-            // if dest label is not in nodes, add it
+            // if dest is not in nodes already, add it
             let dst_id = addNodeFromCell(dst_td, nodes);
 
             // find label from drop-down
             let conn_td = tableRow.children('td').eq(1);
             let conn_label = conn_td.children('select').first().val();
-            console.log(conn_label);
+
             // add edge
             edges.push({from: src_id,
                         to: dst_id,
@@ -421,4 +421,10 @@ function serialiseGraph(graphData) {
 
 function deserialiseGraph(serialisedGraph) {
     return JSON.parse(serialisedGraph);
+}
+
+
+function setUpPage(sourceTable) {
+    // Add a first row to save the user a click
+    addSampleData(sourceTable);
 }

@@ -31,7 +31,8 @@ $(document).ready(function () {
         test_row_is_valid,
         test_add_sample_data,
         test_serialise_graph,
-        test_deserialise_graph
+        test_deserialise_graph,
+        test_serialise_deserialise
     ];
 
     let test_result_area = $("#test_results");
@@ -484,6 +485,36 @@ function test_deserialise_graph() {
     let deserialised_graph = deserialiseGraph("{}");
 
     assert.equal(typeof(deserialised_graph), "object");
+}
+
+
+function generate_random_valid_graph() {
+    // Function-level strict mode syntax
+    'use strict';
+    // ToDo Finish this
+    return {"nodes":[{"id":1,"label":"phone","shape":"box"},
+                     {"id":2,"label":"amp","shape":"box"},
+                     {"id":3,"label":"speakers","shape":"box"}],
+            "edges":[{"from":1,"to":2,"arrows":"to","label":"XLR<>XLR"},
+                     {"from":2,"to":3,"arrows":"to","label":""}]};
+}
+
+function test_serialise_deserialise() {
+    // Function-level strict mode syntax
+    'use strict';
+    let assert = chai.assert;
+    let test_data_1 = {};
+
+    assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_1)), test_data_1);
+
+    let test_data_2 = {nodes: [],
+                       edges: []};
+
+    assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_2)), test_data_2);
+
+    let test_data_3 = generate_random_valid_graph();
+
+    assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_3)), test_data_3);
 }
 
 
