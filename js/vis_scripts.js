@@ -1,5 +1,5 @@
 //var pressedKeys = {};
-/*global window, $, vis */
+/*global window, $, vis, document, event, console */
 window.pressedKeys = {};
 
 $(document.body).keydown(function (evt) {
@@ -150,7 +150,7 @@ function makeDeleteButton() {
 }
 
 
-function addRow(tableBody, source_val=null, dest_val=null, conn_val=null) {
+function addRow(tableBody, source_val = null, dest_val = null, conn_val = null) {
 
     //let currentRows = countBodyRows(tableBody);
 
@@ -342,14 +342,16 @@ function redraw(drawingArea, tableObj) {
                            font: {size: 50,
                                   face: 'Patrick Hand SC, arial'}
                            //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
-                           },
-                       edges: {
-                           length: 100
-                           },
+                       },
+                       edges: {length: 100,
+                               font: {size: 30,
+                                      face: 'Patrick Hand SC, arial'}
+                       },
                        // ,nodes: {shadow: true},
                        // edges: {shadow: true}
                        layout: {
-                           hierarchical: {direction: 'LR'}
+                           hierarchical: {direction: 'LR',
+                                          levelSeparation: 300}
                            }
                        };
 
@@ -469,7 +471,7 @@ function setUpPage(sourceTable) {
     'use strict';
     let query_params = getQueryParams(document.location.search);
 
-    if ('serialised' in query_params) {
+    if (query_params.hasOwnProperty('serialised')) {
         addDataFromURL(query_params.serialised, sourceTable);
     } else {
         // Add a first row to save the user a click
@@ -478,8 +480,10 @@ function setUpPage(sourceTable) {
 }
 
 
-function copyToClipboard (element) {
-    str = $('#id_export_link').text();
+function copyToClipboard () {
+    // Function-level strict mode syntax
+    'use strict';
+    let str = $('#id_export_link').text();
     console.log(str);
     const el = document.createElement('textarea');  // Create a <textarea> element
     el.value = str;                                 // Set its value to the string that you want copied
@@ -488,14 +492,14 @@ function copyToClipboard (element) {
     el.style.left = '-9999px';                      // Move outside the screen to make it invisible
     document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
     const selected =
-        document.getSelection().rangeCount > 0        // Check if there is any content selected previously
+        document.getSelection().rangeCount > 0      // Check if there is any content selected previously
         ? document.getSelection().getRangeAt(0)     // Store selection if found
         : false;                                    // Mark as false to know no selection existed before
     el.select();                                    // Select the <textarea> content
     document.execCommand('copy');                   // Copy - only works as a result of a user action (e.g. click events)
     document.body.removeChild(el);                  // Remove the <textarea> element
     if (selected) {                                 // If a selection existed before copying
-        document.getSelection().removeAllRanges();    // Unselect everything on the HTML document
-        document.getSelection().addRange(selected);   // Restore the original selection
+        document.getSelection().removeAllRanges();  // Unselect everything on the HTML document
+        document.getSelection().addRange(selected); // Restore the original selection
     }
-};
+}

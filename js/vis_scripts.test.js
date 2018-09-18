@@ -1,4 +1,4 @@
-/*global $, chai */
+/*global $, chai, document */
 
 /* Things to do once the unit_tests page has loaded */
 $(document).ready(function () {
@@ -474,7 +474,7 @@ function test_serialise_graph() {
 
     let serialised_graph = serialiseGraph(data);
 
-    chai.assert.equal(typeof(serialised_graph), "string");
+    assert.equal(typeof(serialised_graph), "string");
 }
 
 
