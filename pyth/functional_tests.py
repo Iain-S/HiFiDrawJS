@@ -54,8 +54,8 @@ class TestNewVisitor(unittest.TestCase):
         self.assertIn('HiFiDraw', self.browser.title)
 
         # ToDo Come back to these
-        # page_header = self.browser.find_element_by_tag_name('h1').text
-        # self.assertIn('HiFi Draw', page_header)
+        page_header = self.browser.find_element_by_tag_name('h3').text
+        self.assertIn('HiFi Draw', page_header)
 
         # She notices a table row, which seems to want some source input
         src_input_box = self.browser.find_element_by_id('id_src_1')

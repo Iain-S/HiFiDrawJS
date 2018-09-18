@@ -30,8 +30,8 @@ $(document).ready(function () {
         test_add_node_from_cell,
         test_row_is_valid,
         test_add_sample_data,
-        test_serialise_table,
-        test_deserialise_table
+        test_serialise_graph,
+        test_deserialise_graph
     ];
 
     let test_result_area = $("#test_results");
@@ -447,11 +447,11 @@ function test_add_node_from_cell() {
 function test_add_sample_data() {
     // Function-level strict mode syntax
     'use strict';
-
     let assert = chai.assert;
     let tableRef = $('#table_for_testing');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
+
     assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
     try {
@@ -464,29 +464,33 @@ function test_add_sample_data() {
 }
 
 
-function test_serialise_table() {
+function test_serialise_graph() {
     // Function-level strict mode syntax
     'use strict';
-
     let assert = chai.assert;
-    assert.fail();
+    let data = {nodes: {},
+                edges: {}};
 
+    let serialised_graph = serialiseGraph(data);
+
+    chai.assert.equal(typeof(serialised_graph), "string");
 }
 
 
-function test_deserialise_table() {
+function test_deserialise_graph() {
     // Function-level strict mode syntax
     'use strict';
-
     let assert = chai.assert;
-    assert.equal(1, 2, "This is an error message.");
+    let deserialised_graph = deserialiseGraph("{}");
+
+    assert.equal(typeof(deserialised_graph), "object");
 }
 
 
 function test_template() {
     // Function-level strict mode syntax
     'use strict';
-
     let assert = chai.assert;
+
     assert.equal(1, 2, "This is an error message.");
 }

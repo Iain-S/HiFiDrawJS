@@ -345,7 +345,7 @@ function redraw(drawingArea, tableObj) {
                        // ,nodes: {shadow: true},
                        // edges: {shadow: true}
                        layout: {
-                           hierarchical: true
+                           hierarchical: {direction: 'LR'}
                            }
                        };
 
@@ -411,4 +411,14 @@ function addSampleData(sourceTableID) {
     let drawingArea = $('#drawing_div');
 
     redraw(drawingArea, tableObj);
+}
+
+
+function serialiseGraph(graphData) {
+    return JSON.stringify(graphData);
+}
+
+
+function deserialiseGraph(serialisedGraph) {
+    return JSON.parse(serialisedGraph);
 }
