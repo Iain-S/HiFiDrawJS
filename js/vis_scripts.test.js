@@ -110,6 +110,7 @@ function test_make_destination_box() {
     let assert = chai.assert;
     let destination_box = makeDestinationBox().filter('input');
     assert.equal(1, destination_box.length);
+    assert.equal('none', destination_box.attr("autocapitalize"));
 }
 
 
@@ -131,6 +132,7 @@ function test_make_source_box() {
     let assert = chai.assert;
     let source_box = makeSourceBox().filter('input');
     assert.equal(1, source_box.length);
+    assert.equal('none', source_box.attr("autocapitalize"));
 }
 
 
