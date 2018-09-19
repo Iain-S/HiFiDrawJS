@@ -86,7 +86,7 @@ function makeSourceBox(value) {
     element.setAttribute("size", "7");
     //element.setAttribute("id", "id_src_1");
     element.setAttribute("placeholder", "source");
-    //element.setAttribute("style", "height: 10%");
+    element.setAttribute("autocapitalize", 'none');
     element.setAttribute("style", "padding: 0.4rem 0.4rem");
 
     if (value) {
@@ -112,7 +112,7 @@ function makeDestinationBox(value) {
     element.setAttribute("size", "7");
     //element.setAttribute("id", "id_dst_1");
     element.setAttribute("placeholder", "destination");
-    //element.setAttribute("style", "height: 10%");
+    element.setAttribute("autocapitalize", 'none');
     element.setAttribute("style", "padding: 0.4rem 0.4rem");
 
     if (value) {
@@ -335,25 +335,27 @@ function redraw(drawingArea, tableObj) {
     let vis_nodes = new vis.DataSet(graph.nodes);
     let vis_edges = new vis.DataSet(graph.edges);
     let vis_container = drawingArea[0];
-    let vis_options = {physics: false,
+    let vis_options = {physics: true ,
                        width: '100%',
                        height: '500px',
                        nodes: {
-                           font: {size: 50,
+                           font: {size: 12,
                                   face: 'Patrick Hand SC, arial'}
                            //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                        },
                        edges: {length: 100,
-                               font: {size: 30,
+                               font: {size: 12,
                                       face: 'Patrick Hand SC, arial'}
                        },
                        // ,nodes: {shadow: true},
                        // edges: {shadow: true}
                        layout: {
-                           hierarchical: {direction: 'LR',
-                                          levelSeparation: 300}
-                           }
-                       };
+                           hierarchical: false,
+                               // {direction: 'LR',
+                               //  levelSeparation: 300}
+                           randomSeed: 10161
+                       }
+                      };
 
     let vis_data = {nodes: vis_nodes,
                     edges: vis_edges};
@@ -366,7 +368,26 @@ function redraw(drawingArea, tableObj) {
         let canvas = document.getElementsByTagName('canvas')[0];
         download_link.setAttribute('download', 'HiFiDraw.png');
         download_link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+
+        // In case you want to choose a different random seed
+        // console.log("random seed: " + network.getSeed());
     });
+
+    // get scale and position.  we won't reposition and will only rescale if scale is 1.0
+    // const current_position = network.getViewPosition();
+    // const current_scale = network.getScale();
+    //
+    // console.log('current scale: ' + current_scale);
+    //
+    // if (current_scale == 1) {
+    //     network.moveTo({
+    //         position: current_position,
+    //         scale: 400
+    //     });
+    //     network.redraw();
+    // }
+    //
+    // console.log('new scale: ' + network.getScale());
 }
 
 
