@@ -366,9 +366,24 @@ function redraw(drawingArea, tableObj) {
 
     network.on("afterDrawing", function (ignore) {
         let download_link = document.getElementById('id_download');
-        let canvas = document.getElementsByTagName('canvas')[0];
+        let network_canvas = document.getElementsByTagName('canvas')[0];
+
+        // make a new canvas so that we can add an opaque background
+        let download_canvas = document.createElement("canvas");
+
+        download_canvas.width = network_canvas.width;
+        download_canvas.height = network_canvas.height;
+        let download_context = download_canvas.getContext('2d');
+
+        //create a rectangle with the desired color
+        download_context.fillStyle = "#FFFFFF";
+        download_context.fillRect(0, 0, network_canvas.width, network_canvas.height);
+
+        //draw the original canvas onto the destination canvas
+        download_context.drawImage(network_canvas, 0, 0);
+
         download_link.setAttribute('download', 'HiFiDraw.png');
-        download_link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+        download_link.setAttribute('href', download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
 
         // In case you want to choose a different random seed
         // console.log("random seed: " + network.getSeed());
