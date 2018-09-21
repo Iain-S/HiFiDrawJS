@@ -56,7 +56,8 @@ function makeConnectorMenu(value) {
         {val: 'XLR<>XLR', text: 'XLR<>XLR'},
         {val: 'XLR<>RCA', text: 'XLR<>RCA'},
         {val: 'XLR<>TRS', text: 'XLR<>TRS'},
-        {val: 'speaker cable', text: 'speaker cable'}
+        {val: 'speaker cable', text: 'speaker cable'},
+        {val: 'headphone cable', text: 'headphone cable'}
         //{val : 3, text: 'spare<>spare'},
         //{val : 3, text: 'Wireless'},
     ];
@@ -346,10 +347,9 @@ function redraw(drawingArea, tableObj) {
                        },
                        edges: {length: 100,
                                font: {size: 12,
-                                      face: 'Patrick Hand SC, arial'}
+                                      face: 'Patrick Hand SC, arial'},
+                               arrowStrikethrough: false // note we may want to make the node borders a little thicker
                        },
-                       // ,nodes: {shadow: true},
-                       // edges: {shadow: true}
                        layout: {
                            hierarchical: false,
                                // {direction: 'LR',
@@ -375,20 +375,20 @@ function redraw(drawingArea, tableObj) {
     });
 
     // get scale and position.  we won't reposition and will only rescale if scale is 1.0
-    // const current_position = network.getViewPosition();
-    // const current_scale = network.getScale();
-    //
-    // console.log('current scale: ' + current_scale);
-    //
-    // if (current_scale == 1) {
-    //     network.moveTo({
-    //         position: current_position,
-    //         scale: 400
-    //     });
-    //     network.redraw();
-    // }
-    //
-    // console.log('new scale: ' + network.getScale());
+    const current_position = network.getViewPosition();
+    const current_scale = network.getScale();
+
+    console.log('current scale: ' + current_scale);
+
+    // x1 sees to be too conservative, at least in Firefox on Linux
+    if (current_scale == 1) {
+        network.moveTo({
+            position: current_position,
+            scale: 1.2
+        });
+    }
+
+    //console.log('new scale: ' + network.getScale());
 }
 
 
