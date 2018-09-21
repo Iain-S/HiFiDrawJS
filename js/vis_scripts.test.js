@@ -77,7 +77,7 @@ function test_count_tbody_rows() {
 
     let assert = chai.assert;
 
-    let tableRef = $("#table_for_testing");
+    let tableRef = $("#inputTable");
     let tableBody = tableRef.children('tbody').first();
     let currentRows = countBodyRows(tableBody);
     assert.equal(currentRows, 4);
@@ -165,13 +165,13 @@ function test_add_and_delete_row() {
     // Unfortunately, add and delete are intertwined so we shall have to test them together
 
     let assert = chai.assert;
-    let tableRef = $('#table_for_testing');
+    let tableRef = $('#inputTable');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
     assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
     try {
-        addRowRedraw('table_for_testing');
+        addRowRedraw('inputTable');
     } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
@@ -180,7 +180,7 @@ function test_add_and_delete_row() {
 
     // Delete the last row
     try {
-        deleteRowFromID('table_for_testing', table_rows.length - 1);
+        deleteRowFromID('inputTable', table_rows.length - 1);
     } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
@@ -194,13 +194,13 @@ function test_delete_last_row() {
     'use strict';
 
     let assert = chai.assert;
-    let tableRef = $('#table_for_testing');
+    let tableRef = $('#inputTable');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
     assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
     try {
-        addRowRedraw('table_for_testing');
+        addRowRedraw('inputTable');
     } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
@@ -209,7 +209,7 @@ function test_delete_last_row() {
 
     // Delete the last row
     try {
-        deleteLastDataRowFromID('table_for_testing');
+        deleteLastDataRowFromID('inputTable');
     } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();
@@ -262,13 +262,13 @@ function test_new_row_has_right_num_of_cols() {
     'use strict';
 
     let assert = chai.assert;
-    let tableRef = $('#table_for_testing');
+    let tableRef = $('#inputTable');
     let tableBody = tableRef.children('tbody').first();
     let tableRows = tableBody.children('tr');
     assert.equal(4, tableRows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
     try {
-        addRowRedraw('table_for_testing');
+        addRowRedraw('inputTable');
     } catch (ignore) {}
 
     // Check that the row is properly formed
@@ -278,7 +278,7 @@ function test_new_row_has_right_num_of_cols() {
     assert.equal(new_row.length, 4, "New row has wrong number of columns.");
 
     try {
-        deleteRowFromID('table_for_testing', 3);
+        deleteRowFromID('inputTable', 3);
     }
     catch (ignore) {}
 }
@@ -451,14 +451,14 @@ function test_add_sample_data() {
     // Function-level strict mode syntax
     'use strict';
     let assert = chai.assert;
-    let tableRef = $('#table_for_testing');
+    let tableRef = $('#inputTable');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
 
     assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
     try {
-        addSampleData('table_for_testing');
+        addSampleData('inputTable');
     } catch (ignore) {}
 
     tableBody = tableRef.children('tbody').first();

@@ -1,3 +1,8 @@
+body {
+    /* Background pattern from Toptal Subtle Patterns */
+    background-image: url("../images/subtle_white_feathers.png");
+}
+
 table.fixed-width-table {
     table-layout: fixed;
     width: 100%;
@@ -29,7 +34,7 @@ a.button {
     /*ToDo Add further button-like formatting here*/
 }
 
-/*override the paper padding to make more room for the table*/
+/* Override the paper padding to make more room for the table*/
 .paper {
   /*background-color: #fff;*/
   /*border: 1px solid #c1c0bd;*/

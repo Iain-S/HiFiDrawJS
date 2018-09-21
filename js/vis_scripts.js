@@ -335,7 +335,8 @@ function redraw(drawingArea, tableObj) {
     let vis_nodes = new vis.DataSet(graph.nodes);
     let vis_edges = new vis.DataSet(graph.edges);
     let vis_container = drawingArea[0];
-    let vis_options = {physics: true ,
+    let vis_options = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
+                                       // we could give the user some warning to set one connector to simple
                        width: '100%',
                        height: '500px',
                        nodes: {
