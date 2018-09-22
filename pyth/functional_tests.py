@@ -31,7 +31,12 @@ class TestNewVisitor(unittest.TestCase):
         options = Options()
         options.add_argument("--headless")
         self.browser = webdriver.Firefox(options=options)
-        self.browser.get('http://localhost:8009/')
+        try:
+            self.browser.get('http://localhost:8009/')
+        except WebDriverException:
+            print("Exception in setUp().  Have you remembered to start a webserver?")
+            self.browser.quit()
+            raise
 
     def tearDown(self):
         self.browser.quit()
@@ -101,24 +106,25 @@ class TestNewVisitor(unittest.TestCase):
     #     self.assertEqual(len(paths), 1, "Expected one path after button click")
 
     def test_keyboard_shortcuts(self):
-        # There should be a total of three in the table;
-        # one header, one for the button and the auto first row
+        # There should be a total of four in the table;
+        # one header, two rows of pre-populated data and an empty row
         all_rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertEqual(len(all_rows), 3, "Expected three rows to begin with.")
+        self.assertEqual(len(all_rows), 4, "Expected four rows to begin with.")
 
         # She notices a table row, which seems to want some source input
-        src_input_box = self.browser.find_element_by_id('id_src_1')
-        dst_input_box = self.browser.find_element_by_id('id_dst_1')
+        table_cells = self.browser.find_elements_by_tag_name("input")
+        src_input_box = table_cells[4]
+        dst_input_box = table_cells[8]
 
         src_input_box.send_keys("Edith's iPhone")
         dst_input_box.send_keys("Mackie CR3s")
         dst_input_box.send_keys(Keys.RETURN)
         time.sleep(0.5)
 
-        # There should be a total of four in the table;
-        # one header, one for the button, the auto first row and the new one
+        # There should be a total of five in the table;
+        # one header, two rows of pre-populated data and the new one
         all_rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertEqual(len(all_rows), 4, "Expected four rows after ENTER keystroke.")
+        self.assertEqual(len(all_rows), 5, "Expected four rows after ENTER keystroke.")
 
     def test_can_delete_rows(self):
         # We begin with some rows
