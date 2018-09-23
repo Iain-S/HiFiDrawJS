@@ -20,16 +20,18 @@
   </nav>
   <div class="paper">
     <div id="test_results"></div>
-    <table class="table" id="inputTable">
+    <table id="inputTable" class="fixed-width-table">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Connector</th>
+          <th>Destination</th>
+          <th style="padding-left: 1rem">
+            <input type="button" id="btnAdd" value="Add" onclick="addRowRedraw('inputTable');" style="padding: 2px 17px"/>
+          </th>
+        </tr>
+      </thead>
       <tbody>
-      <tr>
-        <td><input type="text" id="testing_input_1"></td>
-        <td></td>
-        <td><input type="text" id="testing_input_2"></td>
-      </tr>
-      <tr> 2 Don't add or delete these </tr>
-      <tr> 3 rows or change the table. </tr>
-      <tr> 4 It is needed for testing. </tr>
       </tbody>
     </table>
     <div id="div_for_testing">
@@ -37,6 +39,8 @@
     </div>
     <div id="drawing_div" class="border border-primary"></div>
     <a id="id_download" href="">Download</a>
+    <!--<input type="button" id="zzxxz" value="Add" onclick="$('#ttyyuuu').focus()"/>-->
+    <!--<input type="text" id="ttyyuuu" value=""/>-->
   </div> <!-- End the main div -->
   <!-- jQuery library javascript -->
   <script src="js/jquery-3.3.1.min.js"></script>
