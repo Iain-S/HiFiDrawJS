@@ -35,17 +35,17 @@ function countBodyRows(tableBody) {
     // Function-level strict mode syntax
     'use strict';
 
-    let tableRows = tableBody.children('tr');
+    const tableRows = tableBody.children('tr');
 
     return tableRows.length;
 }
 
 
-function makeConnectorMenu(value) {
+function makeConnectorMenu(value, id) {
     // Function-level strict mode syntax
     'use strict';
 
-    let arr = [
+    const arr = [
         {val: '', text: 'Simple'},
         {val: 'RCA<>RCA', text: 'RCA<>RCA'},
         {val: 'RCA<>TRS', text: 'RCA<>TRS'},
@@ -56,12 +56,13 @@ function makeConnectorMenu(value) {
         {val: 'XLR<>XLR', text: 'XLR<>XLR'},
         {val: 'XLR<>RCA', text: 'XLR<>RCA'},
         {val: 'XLR<>TRS', text: 'XLR<>TRS'},
-        {val: 'speaker cable', text: 'speaker cable'}
+        {val: 'speaker cable', text: 'speaker cable'},
+        {val: 'headphone cable', text: 'headphone cable'}
         //{val : 3, text: 'spare<>spare'},
         //{val : 3, text: 'Wireless'},
     ];
 
-    let sel = $('<select>');
+    const sel = $('<select>');
 
     $(arr).each(function () {
         sel.append($("<option>").attr('value',this.val).text(this.text));
@@ -69,56 +70,61 @@ function makeConnectorMenu(value) {
 
     sel.val(value);
 
+    if (id !== undefined) {
+        sel.attr("id", "id_conn_" + id.toString());
+    }
+
     return sel;
 }
 
 
-function makeSourceBox(value) {
+function makeSourceBox(value, id) {
     // Function-level strict mode syntax
     'use strict';
 
     //Create an input type dynamically.
-    let element = document.createElement("input");
+    const element = document.createElement("input");
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
     element.setAttribute("name", "Test Name");
     element.setAttribute("size", "7");
-    //element.setAttribute("id", "id_src_1");
     element.setAttribute("placeholder", "source");
     element.setAttribute("autocapitalize", 'none');
     element.setAttribute("style", "padding: 0.4rem 0.4rem");
 
     if (value) {
         element.setAttribute("value", value);
-    } else {
-        element.setAttribute("value", "");
+    }
+
+    if (id !== undefined) {
+        element.setAttribute("id", "id_dst_" + id.toString());
     }
 
     return $(element);
 }
 
 
-function makeDestinationBox(value) {
+function makeDestinationBox(value, id) {
     // Function-level strict mode syntax
     'use strict';
-
     //Create an input type dynamically.
-    let element = document.createElement("input");
+    const element = document.createElement("input");
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
     element.setAttribute("name", "Test Name");
     element.setAttribute("size", "7");
-    //element.setAttribute("id", "id_dst_1");
     element.setAttribute("placeholder", "destination");
     element.setAttribute("autocapitalize", 'none');
     element.setAttribute("style", "padding: 0.4rem 0.4rem");
 
     if (value) {
         element.setAttribute("value", value);
-    } else {
-        element.setAttribute("value", "");
+    }
+
+    if (id !== undefined) {
+        element.setAttribute("id", "id_dst_" + id.toString());
     }
 
     return $(element);
@@ -130,7 +136,7 @@ function makeDeleteButton() {
     'use strict';
 
     //Create an input type dynamically.
-    let element = document.createElement("input");
+    const element = document.createElement("input");
 
     //Assign different attributes to the element.
     element.setAttribute("type", "button");
@@ -159,7 +165,9 @@ function addRow(tableBody, source_val = null, dest_val = null, conn_val = null) 
 
     // Insert a cell in the row at index 0
     let srcCell = newRow.insertCell(0);
-    makeSourceBox(source_val).appendTo(srcCell);
+    let srcBox = makeSourceBox(source_val);
+    srcBox.appendTo(srcCell);
+    srcBox.focus();
 
     let conCell = newRow.insertCell(1);
     makeConnectorMenu(conn_val).appendTo(conCell);
@@ -185,11 +193,9 @@ function deleteLastDataRowFromID(tableID) {
 
     let tableBody = theTable.children('tbody').first();
 
-    if (tableBody.find('tr').length > 2) {
+    if (tableBody.find('tr').length > 1) {
         deleteRowFromID(tableID, tableBody.children('tr').length - 1);
     }
-
-    return;
 }
 
 
@@ -197,7 +203,7 @@ function rowIsValid(rowObj) {
     // Function-level strict mode syntax
     'use strict';
 
-    let tableTextBoxes = rowObj.find('input[type=text]');
+    const tableTextBoxes = rowObj.find('input[type=text]');
     let numberOfValidInputs = 0;
 
     // ToDo Check for valid selection option as well
@@ -208,11 +214,7 @@ function rowIsValid(rowObj) {
         }
     });
 
-    if (numberOfValidInputs === 2) {
-        return true;
-    } else {
-        return false;
-    }
+    return numberOfValidInputs === 2;
 }
 
 
@@ -222,8 +224,8 @@ function countValidRows(tableObj) {
     // Function-level strict mode syntax
     'use strict';
 
-    let tableBody = tableObj.children('tbody').first();
-    let tableRows = tableBody.children('tr');
+    const tableBody = tableObj.children('tbody').first();
+    const tableRows = tableBody.children('tr');
     let numberOfValidRows = 0;
 
     $.each(tableRows, function (ignore, value) {
@@ -247,7 +249,7 @@ function addNodeFromCell(tdObject, nodeArray) {
     'use strict';
 
     let id = null;
-    let input = tdObject.children('input').first();
+    const input = tdObject.children('input').first();
 
     // do we have a node for this already?
     nodeArray.some(function (element) {
@@ -280,30 +282,30 @@ function graphFromTable(tableObj) {
     // Function-level strict mode syntax
     'use strict';
 
-    let tableBody = tableObj.children('tbody').first();
-    let tableRows = tableBody.children('tr');
+    const tableBody = tableObj.children('tbody').first();
+    const tableRows = tableBody.children('tr');
 
     let nodes = [];
     let edges = [];
 
     $.each(tableRows, function (ignore, value) {
-        let tableRow = $(value);
+        const tableRow = $(value);
         if (rowIsValid(tableRow)) {
             // get source
-            let src_td = tableRow.children('td').eq(0);
+            const src_td = tableRow.children('td').eq(0);
 
             // if source is not in nodes already, add it
-            let src_id = addNodeFromCell(src_td, nodes);
+            const src_id = addNodeFromCell(src_td, nodes);
 
             // get dest
-            let dst_td = tableRow.children('td').eq(2);
+            const dst_td = tableRow.children('td').eq(2);
 
             // if dest is not in nodes already, add it
-            let dst_id = addNodeFromCell(dst_td, nodes);
+            const dst_id = addNodeFromCell(dst_td, nodes);
 
             // find label from drop-down
-            let conn_td = tableRow.children('td').eq(1);
-            let conn_label = conn_td.children('select').first().val();
+            const conn_td = tableRow.children('td').eq(1);
+            const conn_label = conn_td.children('select').first().val();
 
             // add edge
             edges.push({from: src_id,
@@ -313,29 +315,27 @@ function graphFromTable(tableObj) {
         }
     });
 
-    let data = {
+    return {
         nodes: nodes,
         edges: edges
     };
-
-    return data;
 }
 
 
 function redraw(drawingArea, tableObj) {
     // Function-level strict mode syntax
     'use strict';
+    // ToDo This function does too much, break it up
+    const graph = graphFromTable(tableObj);
 
-    let graph = graphFromTable(tableObj);
-
-    let link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
+    const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
     $('#id_export_link').text(link_url);
-    //console.log(link_url);
 
-    let vis_nodes = new vis.DataSet(graph.nodes);
-    let vis_edges = new vis.DataSet(graph.edges);
-    let vis_container = drawingArea[0];
-    let vis_options = {physics: true ,
+    const vis_nodes = new vis.DataSet(graph.nodes);
+    const vis_edges = new vis.DataSet(graph.edges);
+    const vis_container = drawingArea[0];
+    const vis_options = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
+                                       // we could give the user some warning to set one connector to simple
                        width: '100%',
                        height: '500px',
                        nodes: {
@@ -345,10 +345,9 @@ function redraw(drawingArea, tableObj) {
                        },
                        edges: {length: 100,
                                font: {size: 12,
-                                      face: 'Patrick Hand SC, arial'}
+                                      face: 'Patrick Hand SC, arial'},
+                               arrowStrikethrough: false // note we may want to make the node borders a little thicker
                        },
-                       // ,nodes: {shadow: true},
-                       // edges: {shadow: true}
                        layout: {
                            hierarchical: false,
                                // {direction: 'LR',
@@ -357,37 +356,49 @@ function redraw(drawingArea, tableObj) {
                        }
                       };
 
-    let vis_data = {nodes: vis_nodes,
-                    edges: vis_edges};
+    const vis_data = {nodes: vis_nodes,
+                      edges: vis_edges};
 
     // draw the thing
-    let network = new vis.Network(vis_container, vis_data, vis_options);
+    const network = new vis.Network(vis_container, vis_data, vis_options);
 
     network.on("afterDrawing", function (ignore) {
-        let download_link = document.getElementById('id_download');
-        let canvas = document.getElementsByTagName('canvas')[0];
+
+        const download_link = document.getElementById('id_download');
+        const network_canvas = document.getElementsByTagName('canvas')[0];
+
+        // make a new canvas so that we can add an opaque background
+        const download_canvas = document.createElement("canvas");
+
+        download_canvas.width = network_canvas.width;
+        download_canvas.height = network_canvas.height;
+        const download_context = download_canvas.getContext('2d');
+
+        //create a rectangle with the desired color
+        download_context.fillStyle = "#FFFFFF";
+        download_context.fillRect(0, 0, network_canvas.width, network_canvas.height);
+
+        //draw the original canvas onto the destination canvas
+        download_context.drawImage(network_canvas, 0, 0);
+
         download_link.setAttribute('download', 'HiFiDraw.png');
-        download_link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+        download_link.setAttribute('href', download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
 
         // In case you want to choose a different random seed
         // console.log("random seed: " + network.getSeed());
     });
 
     // get scale and position.  we won't reposition and will only rescale if scale is 1.0
-    // const current_position = network.getViewPosition();
-    // const current_scale = network.getScale();
-    //
-    // console.log('current scale: ' + current_scale);
-    //
-    // if (current_scale == 1) {
-    //     network.moveTo({
-    //         position: current_position,
-    //         scale: 400
-    //     });
-    //     network.redraw();
-    // }
-    //
-    // console.log('new scale: ' + network.getScale());
+    const current_position = network.getViewPosition();
+    const current_scale = network.getScale();
+
+    // x1 sees to be too conservative, at least in Firefox on Linux
+    if (current_scale === 1) {
+        network.moveTo({
+            position: current_position,
+            scale: 1.2
+        });
+    }
 }
 
 
@@ -396,13 +407,13 @@ function addRowRedraw(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
 
-    let tableObj = $("#" + sourceTableID);
+    const tableObj = $("#" + sourceTableID);
 
-    let tableBody = tableObj.children('tbody').first();
+    const tableBody = tableObj.children('tbody').first();
 
     addRow(tableBody);
 
-    let drawingArea = $('#drawing_div');
+    const drawingArea = $('#drawing_div');
 
     redraw(drawingArea, tableObj);
 }
@@ -412,13 +423,31 @@ function deleteRowFromID(tableID, idx) {
     // Function-level strict mode syntax
     'use strict';
 
-    let theTable = $("#" + tableID);
+    const theTable = $("#" + tableID);
 
-    let tableBody = theTable.children('tbody').first();
+    const tableBody = theTable.children('tbody').first();
+
+    // if the last row has focus, set the focus to the last but one destination input
+    const childRows = tableBody.children('tr');
+    const lastRowCells = childRows.eq(childRows.length - 1).children("td");
+    const lastButOneRow = childRows.eq(childRows.length - 2);
+    let lastRowHasFocus = false;
+
+    // Note, focus is lost if the user clicks a delete button
+    lastRowCells.each(function () {
+        // assume each cell only has one child element
+        if ($(this).children().first().is($(document.activeElement))) {
+            lastRowHasFocus = true;
+        }
+    });
+
+    if (lastRowHasFocus) {
+        lastButOneRow.children('td').eq(2).children('input').first().focus();
+    }
 
     tableBody.children('tr').eq(idx).remove();
 
-    let drawingArea = $('#drawing_div');
+    const drawingArea = $('#drawing_div');
 
     redraw(drawingArea, theTable);
 }
@@ -428,15 +457,29 @@ function addSampleData(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
 
-    let tableObj = $("#" + sourceTableID);
-
-    let tableBody = tableObj.children('tbody').first();
+    const tableObj = $("#" + sourceTableID);
+    const tableBody = tableObj.children('tbody').first();
 
     addRow(tableBody, 'phone', 'amp', 'XLR<>XLR');
     addRow(tableBody, 'amp', 'speakers');
+    addRow(tableBody);
 
-    let drawingArea = $('#drawing_div');
+    const drawingArea = $('#drawing_div');
 
+    redraw(drawingArea, tableObj);
+}
+
+
+function removeSampleData(sourceTableID) {
+    // Function-level strict mode syntax
+    'use strict';
+
+    const tableObj = $("#" + sourceTableID);
+
+    const tableBody = tableObj.children('tbody').first();
+    tableBody.empty();
+
+    const drawingArea = $('#drawing_div');
     redraw(drawingArea, tableObj);
 }
 
@@ -482,21 +525,50 @@ function getQueryParams(qs) {
 }
 
 
-function addDataFromURL(serialisedData, sourceTable) {
-    console.log(deserialiseGraph(serialisedData));
+function addDataFromURL(serialisedData, targetTableID) {
+    // Function-level strict mode syntax
+    'use strict';
+    const tableBody = $("#" + targetTableID).children('tbody').first();
+
+    const unpackedData = deserialiseGraph(serialisedData);
+
+    // ToDo Re-write this using array.some()
+    unpackedData.edges.forEach(function(edge) {
+        let from_label = null;
+        let to_label = null;
+
+        // get the labels for the nodes connected by this edge
+        unpackedData.nodes.forEach(function(node) {
+            if (node.id === edge.from) {
+                from_label = node.label;
+            }
+
+            if (node.id === edge.to) {
+                to_label = node.label;
+            }
+        });
+
+        if (from_label && to_label) {
+            addRow(tableBody, from_label, to_label, edge.label);
+        }
+    });
+
+    const drawingArea = $('#drawing_div');
+
+    redraw(drawingArea, $("#" + targetTableID));
 }
 
 
-function setUpPage(sourceTable) {
+function setUpPage(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
-    let query_params = getQueryParams(document.location.search);
+    const query_params = getQueryParams(document.location.search);
 
     if (query_params.hasOwnProperty('serialised')) {
-        addDataFromURL(query_params.serialised, sourceTable);
+        addDataFromURL(query_params.serialised, sourceTableID);
     } else {
         // Add a first row to save the user a click
-        addSampleData(sourceTable);
+        addSampleData(sourceTableID);
     }
 }
 
@@ -504,8 +576,7 @@ function setUpPage(sourceTable) {
 function copyToClipboard () {
     // Function-level strict mode syntax
     'use strict';
-    let str = $('#id_export_link').text();
-    console.log(str);
+    const str = $('#id_export_link').text();
     const el = document.createElement('textarea');  // Create a <textarea> element
     el.value = str;                                 // Set its value to the string that you want copied
     el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
