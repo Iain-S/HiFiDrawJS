@@ -70,7 +70,7 @@ function makeConnectorMenu(value, id) {
 
     sel.val(value);
 
-    if (typeof id !== "undefined") {
+    if (id !== undefined) {
         sel.attr("id", "id_conn_" + id.toString());
     }
 
@@ -97,7 +97,7 @@ function makeSourceBox(value, id) {
         element.setAttribute("value", value);
     }
 
-    if (typeof id !== "undefined") {
+    if (id !== undefined) {
         element.setAttribute("id", "id_dst_" + id.toString());
     }
 
@@ -108,7 +108,6 @@ function makeSourceBox(value, id) {
 function makeDestinationBox(value, id) {
     // Function-level strict mode syntax
     'use strict';
-    //console.log(id.toString());
     //Create an input type dynamically.
     const element = document.createElement("input");
 
@@ -124,7 +123,7 @@ function makeDestinationBox(value, id) {
         element.setAttribute("value", value);
     }
 
-    if (typeof id !== "undefined") {
+    if (id !== undefined) {
         element.setAttribute("id", "id_dst_" + id.toString());
     }
 
@@ -326,12 +325,11 @@ function graphFromTable(tableObj) {
 function redraw(drawingArea, tableObj) {
     // Function-level strict mode syntax
     'use strict';
-
+    // ToDo This function does too much, break it up
     const graph = graphFromTable(tableObj);
 
     const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
     $('#id_export_link').text(link_url);
-    //console.log(link_url);
 
     const vis_nodes = new vis.DataSet(graph.nodes);
     const vis_edges = new vis.DataSet(graph.edges);
@@ -359,12 +357,13 @@ function redraw(drawingArea, tableObj) {
                       };
 
     const vis_data = {nodes: vis_nodes,
-                    edges: vis_edges};
+                      edges: vis_edges};
 
     // draw the thing
     const network = new vis.Network(vis_container, vis_data, vis_options);
 
     network.on("afterDrawing", function (ignore) {
+
         const download_link = document.getElementById('id_download');
         const network_canvas = document.getElementsByTagName('canvas')[0];
 
@@ -393,8 +392,6 @@ function redraw(drawingArea, tableObj) {
     const current_position = network.getViewPosition();
     const current_scale = network.getScale();
 
-    // console.log('current scale: ' + current_scale);
-
     // x1 sees to be too conservative, at least in Firefox on Linux
     if (current_scale === 1) {
         network.moveTo({
@@ -402,8 +399,6 @@ function redraw(drawingArea, tableObj) {
             scale: 1.2
         });
     }
-
-    // console.log('new scale: ' + network.getScale());
 }
 
 
@@ -441,7 +436,7 @@ function deleteRowFromID(tableID, idx) {
     // Note, focus is lost if the user clicks a delete button
     lastRowCells.each(function () {
         // assume each cell only has one child element
-        if ($(this).children().first().is($(":focus"))) {
+        if ($(this).children().first().is($(document.activeElement))) {
             lastRowHasFocus = true;
         }
     });
@@ -530,21 +525,50 @@ function getQueryParams(qs) {
 }
 
 
-function addDataFromURL(serialisedData, sourceTable) {
-    // console.log(deserialiseGraph(serialisedData));
+function addDataFromURL(serialisedData, targetTableID) {
+    // Function-level strict mode syntax
+    'use strict';
+    const tableBody = $("#" + targetTableID).children('tbody').first();
+
+    const unpackedData = deserialiseGraph(serialisedData);
+
+    // ToDo Re-write this using array.some()
+    unpackedData.edges.forEach(function(edge) {
+        let from_label = null;
+        let to_label = null;
+
+        // get the labels for the nodes connected by this edge
+        unpackedData.nodes.forEach(function(node) {
+            if (node.id === edge.from) {
+                from_label = node.label;
+            }
+
+            if (node.id === edge.to) {
+                to_label = node.label;
+            }
+        });
+
+        if (from_label && to_label) {
+            addRow(tableBody, from_label, to_label, edge.label);
+        }
+    });
+
+    const drawingArea = $('#drawing_div');
+
+    redraw(drawingArea, $("#" + targetTableID));
 }
 
 
-function setUpPage(sourceTable) {
+function setUpPage(sourceTableID) {
     // Function-level strict mode syntax
     'use strict';
     const query_params = getQueryParams(document.location.search);
 
     if (query_params.hasOwnProperty('serialised')) {
-        addDataFromURL(query_params.serialised, sourceTable);
+        addDataFromURL(query_params.serialised, sourceTableID);
     } else {
         // Add a first row to save the user a click
-        addSampleData(sourceTable);
+        addSampleData(sourceTableID);
     }
 }
 
@@ -553,7 +577,6 @@ function copyToClipboard () {
     // Function-level strict mode syntax
     'use strict';
     const str = $('#id_export_link').text();
-    // console.log(str);
     const el = document.createElement('textarea');  // Create a <textarea> element
     el.value = str;                                 // Set its value to the string that you want copied
     el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof

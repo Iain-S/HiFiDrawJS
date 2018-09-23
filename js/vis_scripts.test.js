@@ -5,7 +5,7 @@ $(document).ready(function () {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
 
     // THE BIG LIST OF TEST FUNCTIONS
     let test_functions = [
@@ -33,6 +33,7 @@ $(document).ready(function () {
         test_add_node_from_cell,
         test_row_is_valid,
         test_add_sample_data,
+        test_add_data_from_url,
         test_serialise_graph,
         test_deserialise_graph,
         test_serialise_deserialise
@@ -76,7 +77,7 @@ function test_add_text_box() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let testing_div = $("#div_for_testing");
     let existing_text_box = testing_div.find('input[type="text"]');
 
@@ -95,7 +96,7 @@ function test_count_tbody_rows() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
 
     let tableRef = $("#inputTable");
     let tableBody = tableRef.children('tbody').first();
@@ -116,7 +117,7 @@ function test_make_connector_menu() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     // There should be one <select> element returned
     let connector_menu = makeConnectorMenu().filter('select');
     assert.equal(1, connector_menu.length);
@@ -127,7 +128,7 @@ function test_make_connector_menu_with_id() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let connector_menu = makeConnectorMenu(null, 0).filter('select');
     assert.equal('id_conn_0', connector_menu.attr("id"));
 
@@ -140,7 +141,7 @@ function test_make_connector_menu_with_selection() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let connector_menu = makeConnectorMenu('').filter('select');
     // ToDo finish this off
     // assert.equal('something', connector_menu.attr("id"));
@@ -154,7 +155,7 @@ function test_make_destination_box() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let destination_box = makeDestinationBox().filter('input');
     assert.equal(1, destination_box.length);
     assert.equal('none', destination_box.attr("autocapitalize"));
@@ -165,7 +166,7 @@ function test_make_destination_box_with_id() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let destination_box = makeDestinationBox(null, 0).filter('input');
     assert.equal('id_dst_0', destination_box.attr("id"));
 
@@ -178,7 +179,7 @@ function test_make_destination_box_with_value() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let source_box = makeDestinationBox("my value").filter('input');
     assert.equal(1, source_box.length);
     assert.equal("my value", source_box.val());
@@ -189,7 +190,7 @@ function test_make_source_box() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let source_box = makeSourceBox().filter('input');
     assert.equal(1, source_box.length);
     assert.equal('none', source_box.attr("autocapitalize"));
@@ -200,7 +201,7 @@ function test_make_source_box_with_id() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let source_box = makeSourceBox(null, 0).filter('input');
     assert.equal('id_dst_0', source_box.attr("id"));
 
@@ -213,7 +214,7 @@ function test_make_source_box_with_value() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let source_box = makeSourceBox("my value").filter('input');
     assert.equal(1, source_box.length);
     assert.equal("my value", source_box.val());
@@ -224,7 +225,7 @@ function test_make_delete_button() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let delete_button = makeDeleteButton().filter('input').first();
     assert.equal(delete_button.attr('type'), 'button');
     assert.equal(delete_button.attr('value'), 'Delete');
@@ -237,7 +238,7 @@ function test_add_and_delete_row() {
 
     // Unfortunately, add and delete are intertwined so we shall have to test them together
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let tableRef = $('#inputTable');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
@@ -266,7 +267,7 @@ function test_delete_last_row() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let tableRef = $('#inputTable');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
@@ -295,13 +296,14 @@ function test_delete_last_row_focus() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
 
-    // focus on the last destination box
+    // focus on the last destination input
     let tableObj = $("#inputTable");
     let tableBody = tableObj.children("tbody").first();
     let childRows = tableBody.children('tr');
 
+    // eq(0) is the source box, eq(1) is the drop-down and eq(2) is the destination input
     let lastDestinationInput = childRows.eq(childRows.length - 1).children("td").eq(2).children("input").first();
     let lastButOneDestinationInput = childRows.eq(childRows.length - 2).children("td").eq(2).children("input").first();
 
@@ -310,15 +312,15 @@ function test_delete_last_row_focus() {
 
     // Set focus on the last destination input
     lastDestinationInput.focus();
-
     deleteLastDataRowFromID("inputTable");
 
-    // Assert that focus is on last source input
+    // Assert that focus is on last destination input
     tableObj = $("#inputTable");
     tableBody = tableObj.children("tbody").first();
     childRows = tableBody.children('tr');
     lastDestinationInput = childRows.eq(childRows.length - 1).children("td").eq(2).children("input").first();
-    assert.isTrue(lastButOneDestinationInput.is($(":focus")));
+
+    assert.isTrue(lastButOneDestinationInput.is($(document.activeElement)));
 }
 
 
@@ -328,7 +330,7 @@ function test_delete_last_row_leaves_essentials() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
 
     // Add a table with two rows
     $(document.body).append('<table class="table" id="9029384093284023">\n' +
@@ -365,7 +367,7 @@ function test_new_row_has_right_num_of_cols() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let tableRef = $('#inputTable');
     let tableBody = tableRef.children('tbody').first();
     let tableRows = tableBody.children('tr');
@@ -392,7 +394,7 @@ function test_add_row() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let tableBody = $("<tbody></tbody>");
 
     addRow(tableBody);
@@ -407,7 +409,7 @@ function test_add_row_focus() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
 
     // focus on the first source box
     let tableObj = $("#inputTable");
@@ -442,7 +444,7 @@ function test_count_valid_rows() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
     let test_data = $("");
 
     assert.equal(countValidRows(test_data), 0);
@@ -483,7 +485,7 @@ function test_graph_from_table() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
 
     let test_data = $('<table class="table" id="9029384093284023">\n' +
                   '      <thead>\n' +
@@ -534,7 +536,7 @@ function test_row_is_valid() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
 
     let test_data = $('<tr>\n' +
                         '<td><input value="comp1" type="text"></td>\n' +
@@ -564,7 +566,7 @@ function test_add_node_from_cell() {
     // Function-level strict mode syntax
     'use strict';
 
-    let assert = chai.assert;
+    const assert = chai.assert;
 
     // Check that we can add a new node
     let cell = $("<td><input value=\"comp1\" type=\"text\"></td>");
@@ -589,7 +591,7 @@ function test_add_node_from_cell() {
 function test_add_sample_data() {
     // Function-level strict mode syntax
     'use strict';
-    let assert = chai.assert;
+    const assert = chai.assert;
     let tableRef = $('#inputTable');
     let tableBody = tableRef.children('tbody').first();
     let table_rows = tableBody.children('tr');
@@ -617,7 +619,7 @@ function test_add_sample_data() {
 function test_serialise_graph() {
     // Function-level strict mode syntax
     'use strict';
-    let assert = chai.assert;
+    const assert = chai.assert;
     let data = {nodes: {},
                 edges: {}};
 
@@ -630,7 +632,7 @@ function test_serialise_graph() {
 function test_deserialise_graph() {
     // Function-level strict mode syntax
     'use strict';
-    let assert = chai.assert;
+    const assert = chai.assert;
     let deserialised_graph = deserialiseGraph("{}");
 
     assert.equal(typeof(deserialised_graph), "object");
@@ -651,7 +653,7 @@ function generate_random_valid_graph() {
 function test_serialise_deserialise() {
     // Function-level strict mode syntax
     'use strict';
-    let assert = chai.assert;
+    const assert = chai.assert;
     let test_data_1 = {};
 
     assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_1)), test_data_1);
@@ -667,10 +669,50 @@ function test_serialise_deserialise() {
 }
 
 
+function test_add_data_from_url() {
+    // Function-level strict mode syntax
+    'use strict';
+    const assert = chai.assert;
+
+    // Create a test table and add it to our page
+    const test_data = $('<table class="table" id="id_data_from_url">\n' +
+                    '      <thead>\n' +
+                    '        <tr>\n' +
+                    '          <th>Source</th>\n' +
+                    '          <th>Connector</th>\n' +
+                    '          <th>Destination</th>\n' +
+                    '          <th>Other</th>\n' +
+                    '        </tr>\n' +
+                    '      </thead>\n' +
+                    '      <tbody>\n' +
+                    '      </tbody>\n' +
+                    '    </table>').appendTo(document.body);
+
+    const graph = {"nodes":[{"id":1, "label":"a", "shape":"box"},
+                            {"id":2, "label":"b", "shape":"box"},
+                            {"id":3, "label":"c", "shape":"box"},
+                            {"id":4, "label":"d", "shape":"box"},
+                            {"id":5, "label":"e", "shape":"box"}],
+                   "edges":[{"from":1, "to":1,"arrows":"to", "label":""},
+                            {"from":1, "to":2,"arrows":"to", "label":""},
+                            {"from":1, "to":3,"arrows":"to", "label":""},
+                            {"from":1, "to":4,"arrows":"to", "label":""},
+                            {"from":1, "to":5,"arrows":"to", "label":""}]};
+
+    const serialised_data = serialiseGraph(graph);
+
+    addDataFromURL(serialised_data, 'id_data_from_url');
+
+    const body_rows = $('#id_data_from_url').children('tbody').first().children('tr').length;
+
+    assert.equal(body_rows, 5);
+}
+
+
 function test_template() {
     // Function-level strict mode syntax
     'use strict';
-    let assert = chai.assert;
+    const assert = chai.assert;
 
     assert.equal(1, 2, "This is an error message.");
 }
