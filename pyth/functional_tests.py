@@ -50,29 +50,30 @@ class TestNewVisitor(unittest.TestCase):
         download_filename = download_button.get_attribute('download')
         self.assertEqual(download_filename, 'HiFiDraw.png')
 
-    def can_make_super_simple_diagram(self):
+    def test_can_make_super_simple_diagram(self):
         # Edith wants to make a super simple diagram to of her iPhone and active monitors.
         # Someone gives her a link to our site
 
         # She notices the page title and header mention to-do lists
         self.assertIn('HiFiDraw', self.browser.title)
 
-        # ToDo Come back to these
         page_header = self.browser.find_element_by_tag_name('h3').text
         self.assertIn('HiFi Draw', page_header)
 
         # She notices a table row, which seems to want some source input
-        src_input_box = self.browser.find_element_by_id('id_src_1')
+        table_cells = self.browser.find_elements_by_tag_name("input")
+        src_input_box = table_cells[4]
+        dst_input_box = table_cells[5]
+
         self.assertEqual(
             src_input_box.get_attribute('placeholder'),
-            'source name'
+            'source'
         )
 
         # She notices a table row, which seems to want some destination input
-        dst_input_box = self.browser.find_element_by_id('id_dst_1')
         self.assertEqual(
             dst_input_box.get_attribute('placeholder'),
-            'destination name'
+            'destination'
         )
     #
     #     # She notices that there is a blank area at the bottom of the page with no drawing in it
@@ -114,7 +115,7 @@ class TestNewVisitor(unittest.TestCase):
         # She notices a table row, which seems to want some source input
         table_cells = self.browser.find_elements_by_tag_name("input")
         src_input_box = table_cells[4]
-        dst_input_box = table_cells[8]
+        dst_input_box = table_cells[5]
 
         src_input_box.send_keys("Edith's iPhone")
         dst_input_box.send_keys("Mackie CR3s")
@@ -130,6 +131,7 @@ class TestNewVisitor(unittest.TestCase):
         # We begin with some rows
         start_rows = self.browser.find_elements_by_tag_name('tr')
         num_rows_start = len(start_rows)
+        self.assertEqual(num_rows_start, 4, "Expected four rows to begin with.")
 
         # Try to delete a row
         self.browser.find_element_by_xpath("//input[@value='Delete']").click()
