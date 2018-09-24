@@ -147,7 +147,13 @@ function makeDeleteButton() {
 
     jqe.click(
         function () {
+            const theTable = $(this).closest('table');
+            const drawingArea = $('#drawing_div');
+
             $(this).closest('tr').remove();
+
+            redraw(drawingArea, theTable);
+
             return false;
         }
     );
