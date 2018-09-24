@@ -1,5 +1,6 @@
 //var pressedKeys = {};
 /*global window, $, vis, document, event, console */
+/*jslint es6 */
 window.pressedKeys = {};
 
 $(document.body).keydown(function (evt) {
@@ -317,8 +318,8 @@ function graphFromTable(tableObj) {
 function getNodePositionsFromNetwork(graph, network) {
     'use strict';
     network.storePositions();
-    network.body.data.nodes.forEach(function(old_node, ignore) {
-       graph.nodes.forEach(function(new_node, ignore) {
+    network.body.data.nodes.forEach(function (old_node, ignore) {
+       graph.nodes.forEach(function (new_node, ignore) {
            // copy the Xs and Ys of the existing graph
            if (new_node.label === old_node.label) {
                new_node.x = old_node.x;
@@ -361,8 +362,7 @@ function makeNetwork(graph, drawingArea) {
                                  // {direction: 'LR',
                                  //  levelSeparation: 300}
                              randomSeed: 10161
-                         }
-                        };
+                         }};
 
     const vis_data = {nodes: vis_nodes,
                       edges: vis_edges};
@@ -370,6 +370,7 @@ function makeNetwork(graph, drawingArea) {
     // draw the thing
     return new vis.Network(vis_container, vis_data, vis_options);
 }
+
 
 function redraw(drawingArea, tableObj) {
     'use strict';
@@ -553,12 +554,12 @@ function addDataFromURL(serialisedData, targetTableID) {
     const unpackedData = deserialiseGraph(serialisedData);
 
     // ToDo Re-write this using array.some()
-    unpackedData.edges.forEach(function(edge) {
+    unpackedData.edges.forEach(function (edge) {
         let from_label = null;
         let to_label = null;
 
         // get the labels for the nodes connected by this edge
-        unpackedData.nodes.forEach(function(node) {
+        unpackedData.nodes.forEach(function (node) {
             if (node.id === edge.from) {
                 from_label = node.label;
             }
@@ -592,7 +593,7 @@ function setUpPage(sourceTableID) {
 }
 
 
-function copyToClipboard () {
+function copyToClipboard() {
     'use strict';
     const str = $('#id_export_link').text();
     const el = document.createElement('textarea');  // Create a <textarea> element
