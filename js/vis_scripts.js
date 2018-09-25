@@ -1,9 +1,9 @@
 //var pressedKeys = {};
 /*global window, $, vis, document, event, console */
+/*jslint es6 */
 window.pressedKeys = {};
 
 $(document.body).keydown(function (evt) {
-    // Function-level strict mode syntax
     'use strict';
 
     evt = evt || event; // to deal with IE
@@ -22,7 +22,6 @@ $(document.body).keydown(function (evt) {
 
 
 $(document.body).keyup(function (evt) {
-    // Function-level strict mode syntax
     'use strict';
 
     evt = evt || event; // to deal with IE
@@ -32,7 +31,6 @@ $(document.body).keyup(function (evt) {
 
 
 function countBodyRows(tableBody) {
-    // Function-level strict mode syntax
     'use strict';
 
     const tableRows = tableBody.children('tr');
@@ -42,7 +40,6 @@ function countBodyRows(tableBody) {
 
 
 function makeConnectorMenu(value, id) {
-    // Function-level strict mode syntax
     'use strict';
 
     const arr = [
@@ -79,7 +76,6 @@ function makeConnectorMenu(value, id) {
 
 
 function makeSourceBox(value, id) {
-    // Function-level strict mode syntax
     'use strict';
 
     //Create an input type dynamically.
@@ -106,8 +102,8 @@ function makeSourceBox(value, id) {
 
 
 function makeDestinationBox(value, id) {
-    // Function-level strict mode syntax
     'use strict';
+
     //Create an input type dynamically.
     const element = document.createElement("input");
 
@@ -132,7 +128,6 @@ function makeDestinationBox(value, id) {
 
 
 function makeDeleteButton() {
-    // Function-level strict mode syntax
     'use strict';
 
     //Create an input type dynamically.
@@ -147,7 +142,13 @@ function makeDeleteButton() {
 
     jqe.click(
         function () {
+            const theTable = $(this).closest('table');
+            const drawingArea = $('#drawing_div');
+
             $(this).closest('tr').remove();
+
+            redraw(drawingArea, theTable);
+
             return false;
         }
     );
@@ -185,8 +186,6 @@ function addRow(tableBody, source_val = null, dest_val = null, conn_val = null) 
 function deleteLastDataRowFromID(tableID) {
     /* This is a safe delete function, it will always leave the
     *  headers and the add button. */
-
-    // Function-level strict mode syntax
     'use strict';
 
     let theTable = $("#" + tableID);
@@ -200,7 +199,6 @@ function deleteLastDataRowFromID(tableID) {
 
 
 function rowIsValid(rowObj) {
-    // Function-level strict mode syntax
     'use strict';
 
     const tableTextBoxes = rowObj.find('input[type=text]');
@@ -220,8 +218,6 @@ function rowIsValid(rowObj) {
 
 function countValidRows(tableObj) {
     /* Count the number of valid table rows (rows with a source and destination)*/
-
-    // Function-level strict mode syntax
     'use strict';
 
     const tableBody = tableObj.children('tbody').first();
@@ -244,8 +240,6 @@ function addNodeFromCell(tdObject, nodeArray) {
     // Pass in a <td></td> and an array of nodes,
     // get back the id of any nodes added or the id
     // of the matching node if it was already in nodeArray
-
-    // Function-level strict mode syntax
     'use strict';
 
     let id = null;
@@ -279,7 +273,6 @@ function addNodeFromCell(tdObject, nodeArray) {
 
 
 function graphFromTable(tableObj) {
-    // Function-level strict mode syntax
     'use strict';
 
     const tableBody = tableObj.children('tbody').first();
@@ -322,89 +315,132 @@ function graphFromTable(tableObj) {
 }
 
 
-function redraw(drawingArea, tableObj) {
-    // Function-level strict mode syntax
+function getNodePositionsFromNetwork(graph, network) {
     'use strict';
-    // ToDo This function does too much, break it up
-    const graph = graphFromTable(tableObj);
+    network.storePositions();
+    network.body.data.nodes.forEach(function (old_node, ignore) {
+       graph.nodes.forEach(function (new_node, ignore) {
+           // copy the Xs and Ys of the existing graph
+           if (new_node.label === old_node.label) {
+               new_node.x = old_node.x;
+               new_node.y = old_node.y;
+           }
+       });
+    });
 
+}
+
+
+function updateExportURL(graph, linkObject) {
+    'use strict';
     const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
-    $('#id_export_link').text(link_url);
+    linkObject.text(link_url);
+}
 
+
+function makeNetwork(graph, drawingArea) {
+    'use strict';
     const vis_nodes = new vis.DataSet(graph.nodes);
     const vis_edges = new vis.DataSet(graph.edges);
     const vis_container = drawingArea[0];
     const vis_options = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
-                                       // we could give the user some warning to set one connector to simple
-                       width: '100%',
-                       height: '500px',
-                       nodes: {
-                           font: {size: 12,
-                                  face: 'Patrick Hand SC, arial'}
-                           //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
-                       },
-                       edges: {length: 100,
-                               font: {size: 12,
-                                      face: 'Patrick Hand SC, arial'},
-                               arrowStrikethrough: false // note we may want to make the node borders a little thicker
-                       },
-                       layout: {
-                           hierarchical: false,
-                               // {direction: 'LR',
-                               //  levelSeparation: 300}
-                           randomSeed: 10161
-                       }
-                      };
+                                         // we could give the user some warning to set one connector to simple
+                         width: '100%',
+                         height: '500px',
+                         nodes: {
+                             font: {size: 20,
+                                    face: 'Patrick Hand SC, arial'}
+                             //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
+                         },
+                         edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
+                                 font: {size: 15,
+                                        face: 'Patrick Hand SC, arial'},
+                                 arrowStrikethrough: false // note we may want to make the node borders a little thicker
+                         },
+                         layout: {
+                             hierarchical: false,
+                             randomSeed: 10161
+                         }};
 
     const vis_data = {nodes: vis_nodes,
                       edges: vis_edges};
 
     // draw the thing
-    const network = new vis.Network(vis_container, vis_data, vis_options);
+    return new vis.Network(vis_container, vis_data, vis_options);
+}
 
-    network.on("afterDrawing", function (ignore) {
 
-        const download_link = document.getElementById('id_download');
-        const network_canvas = document.getElementsByTagName('canvas')[0];
+function addDownloadLink() {
+    'use strict';
 
-        // make a new canvas so that we can add an opaque background
-        const download_canvas = document.createElement("canvas");
+    const download_link = document.getElementById('id_download');
+    const network_canvas = document.getElementsByTagName('canvas')[0];
 
-        download_canvas.width = network_canvas.width;
-        download_canvas.height = network_canvas.height;
-        const download_context = download_canvas.getContext('2d');
+    // make a new canvas so that we can add an opaque background
+    const download_canvas = document.createElement("canvas");
 
-        //create a rectangle with the desired color
-        download_context.fillStyle = "#FFFFFF";
-        download_context.fillRect(0, 0, network_canvas.width, network_canvas.height);
+    download_canvas.width = network_canvas.width;
+    download_canvas.height = network_canvas.height;
+    const download_context = download_canvas.getContext('2d');
 
-        //draw the original canvas onto the destination canvas
-        download_context.drawImage(network_canvas, 0, 0);
+    //create a rectangle with the desired color
+    download_context.fillStyle = "#FFFFFF";
+    download_context.fillRect(0, 0, network_canvas.width, network_canvas.height);
 
-        download_link.setAttribute('download', 'HiFiDraw.png');
-        download_link.setAttribute('href', download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+    //draw the original canvas onto the destination canvas
+    download_context.drawImage(network_canvas, 0, 0);
 
-        // In case you want to choose a different random seed
-        // console.log("random seed: " + network.getSeed());
+    download_link.setAttribute('download', 'HiFiDraw.png');
+    download_link.setAttribute('href', download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+
+    // In case you want to choose a different random seed
+    // console.log("random seed: " + network.getSeed());
+}
+
+
+function redraw(drawingArea, tableObj) {
+    'use strict';
+    // ToDo This function does too much, break it up
+    const graph = graphFromTable(tableObj);
+    let scale = undefined;
+    let position = undefined;
+
+    // We store the network in the window global object
+    // There is probably a nicer way to do this
+    if (window.network) {
+        getNodePositionsFromNetwork(graph, window.network);
+
+        scale = window.network.getScale();
+        position = window.network.getViewPosition();
+    }
+
+    updateExportURL(graph, $('#id_export_link'));
+
+    const network = makeNetwork(graph, drawingArea);
+
+    // remember it for next time
+    window.network = network;
+
+    // keep the old position if there is one else
+    if (position === undefined) {
+        position = network.getViewPosition();
+    }
+
+    if (scale === undefined) {
+        scale = 1.2;
+    }
+
+    network.moveTo({
+        position: position,
+        scale: scale
     });
 
-    // get scale and position.  we won't reposition and will only rescale if scale is 1.0
-    const current_position = network.getViewPosition();
-    const current_scale = network.getScale();
-
-    // x1 sees to be too conservative, at least in Firefox on Linux
-    if (current_scale === 1) {
-        network.moveTo({
-            position: current_position,
-            scale: 1.2
-        });
-    }
+    network.on("afterDrawing", addDownloadLink);
 }
 
 
 /* Add a source-connector-destination row at the end of the table */
 function addRowRedraw(sourceTableID) {
-    // Function-level strict mode syntax
     'use strict';
 
     const tableObj = $("#" + sourceTableID);
@@ -420,7 +456,6 @@ function addRowRedraw(sourceTableID) {
 
 
 function deleteRowFromID(tableID, idx) {
-    // Function-level strict mode syntax
     'use strict';
 
     const theTable = $("#" + tableID);
@@ -454,7 +489,6 @@ function deleteRowFromID(tableID, idx) {
 
 
 function addSampleData(sourceTableID) {
-    // Function-level strict mode syntax
     'use strict';
 
     const tableObj = $("#" + sourceTableID);
@@ -471,7 +505,6 @@ function addSampleData(sourceTableID) {
 
 
 function removeSampleData(sourceTableID) {
-    // Function-level strict mode syntax
     'use strict';
 
     const tableObj = $("#" + sourceTableID);
@@ -485,7 +518,6 @@ function removeSampleData(sourceTableID) {
 
 
 function serialiseGraph(graphData) {
-    // Function-level strict mode syntax
     'use strict';
     return JSON.stringify(graphData);
 }
@@ -503,7 +535,6 @@ function deserialiseGraph(serialisedGraph) {
         will return a dict with something and what as keys
    You can call it like this getQueryParams(document.location.search)*/
 function getQueryParams(qs) {
-    // Function-level strict mode syntax
     'use strict';
 
     qs = qs.split('+').join(' ');
@@ -526,19 +557,18 @@ function getQueryParams(qs) {
 
 
 function addDataFromURL(serialisedData, targetTableID) {
-    // Function-level strict mode syntax
     'use strict';
     const tableBody = $("#" + targetTableID).children('tbody').first();
 
     const unpackedData = deserialiseGraph(serialisedData);
 
     // ToDo Re-write this using array.some()
-    unpackedData.edges.forEach(function(edge) {
+    unpackedData.edges.forEach(function (edge) {
         let from_label = null;
         let to_label = null;
 
         // get the labels for the nodes connected by this edge
-        unpackedData.nodes.forEach(function(node) {
+        unpackedData.nodes.forEach(function (node) {
             if (node.id === edge.from) {
                 from_label = node.label;
             }
@@ -560,7 +590,6 @@ function addDataFromURL(serialisedData, targetTableID) {
 
 
 function setUpPage(sourceTableID) {
-    // Function-level strict mode syntax
     'use strict';
     const query_params = getQueryParams(document.location.search);
 
@@ -573,8 +602,7 @@ function setUpPage(sourceTableID) {
 }
 
 
-function copyToClipboard () {
-    // Function-level strict mode syntax
+function copyToClipboard() {
     'use strict';
     const str = $('#id_export_link').text();
     const el = document.createElement('textarea');  // Create a <textarea> element

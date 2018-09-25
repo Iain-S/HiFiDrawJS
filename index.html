@@ -60,10 +60,6 @@
     <div class="md-6 col">
       <div class="paper">
         <div id="drawing_div" class="border border-primary"></div>
-        <br/>
-        <a id="id_download" href="">Download image</a>
-        <p id="id_export_link">something</p>
-        <input type="button" onclick="copyToClipboard('id_export_link');" value="Copy link"/>
       </div>
     </div>
     <div class="md-3 col">
@@ -73,6 +69,11 @@
           ENTER: Add new row to the end of the table.<br>
           SHIFT + ENTER: Remove the last row from the table.
         </p>
+        <div class="row">
+          <div class="md-6 align-middle"><a id="id_download" class="paper-btn" href="">Download image</a></div>
+          <div class="md-6 align-middle"><input type="button" onclick="copyToClipboard('id_export_link');" value="Copy link"/></div>
+        </div>
+        <p id="id_export_link"></p>
       </div>
     </div>
 

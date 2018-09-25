@@ -1,18 +1,15 @@
+body {
+    /* Background pattern from Toptal Subtle Patterns */
+    background-image: url("../images/subtle_white_feathers.png");
+}
+
+
 table.fixed-width-table {
     table-layout: fixed;
     width: 100%;
     /*padding: 0rem*/
 }
 
-/*input[type=submit], input[type=text] {*/
-  /*!*font-size: 18px;*!*/
-  /*!*line-height: 18px;*!*/
-  /*!*float: left;*!*/
-  /*!*border: 0;*!*/
-  /*!*display: block;*!*/
-  /*margin: 0;*/
-  /*!*height: 50px;*!*/
-/*}*/
 
 select {
     padding: 8px;
@@ -20,11 +17,20 @@ select {
     margin-left: 0.5rem;
 }
 
+
 td, th {
     text-align: center;
 }
 
-/*override the paper padding to make more room for the table*/
+
+.thisisanexperiment:hover {
+    -webkit-transform: translate3d(0,100px,0);
+    -ms-transform: translate3d(0,100px,0);
+    transform: translate3d(0,100px,0);
+    box-shadow: 2px 8px 40px -5px rgba(0,0,0,.3)
+}
+
+/* Override the paper padding to make more room for the table*/
 .paper {
   /*background-color: #fff;*/
   /*border: 1px solid #c1c0bd;*/
