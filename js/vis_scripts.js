@@ -331,10 +331,10 @@ function getNodePositionsFromNetwork(graph, network) {
 }
 
 
-function updateExportURL(graph) {
+function updateExportURL(graph, linkObject) {
     'use strict';
     const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
-    $('#id_export_link').text(link_url);
+    linkObject.text(link_url);
 }
 
 
@@ -348,19 +348,17 @@ function makeNetwork(graph, drawingArea) {
                          width: '100%',
                          height: '500px',
                          nodes: {
-                             font: {size: 12,
+                             font: {size: 20,
                                     face: 'Patrick Hand SC, arial'}
                              //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                          },
-                         edges: {length: 100,
-                                 font: {size: 12,
+                         edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
+                                 font: {size: 15,
                                         face: 'Patrick Hand SC, arial'},
                                  arrowStrikethrough: false // note we may want to make the node borders a little thicker
                          },
                          layout: {
                              hierarchical: false,
-                                 // {direction: 'LR',
-                                 //  levelSeparation: 300}
                              randomSeed: 10161
                          }};
 
@@ -372,61 +370,72 @@ function makeNetwork(graph, drawingArea) {
 }
 
 
+function addDownloadLink() {
+    'use strict';
+
+    const download_link = document.getElementById('id_download');
+    const network_canvas = document.getElementsByTagName('canvas')[0];
+
+    // make a new canvas so that we can add an opaque background
+    const download_canvas = document.createElement("canvas");
+
+    download_canvas.width = network_canvas.width;
+    download_canvas.height = network_canvas.height;
+    const download_context = download_canvas.getContext('2d');
+
+    //create a rectangle with the desired color
+    download_context.fillStyle = "#FFFFFF";
+    download_context.fillRect(0, 0, network_canvas.width, network_canvas.height);
+
+    //draw the original canvas onto the destination canvas
+    download_context.drawImage(network_canvas, 0, 0);
+
+    download_link.setAttribute('download', 'HiFiDraw.png');
+    download_link.setAttribute('href', download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+
+    // In case you want to choose a different random seed
+    // console.log("random seed: " + network.getSeed());
+}
+
+
 function redraw(drawingArea, tableObj) {
     'use strict';
     // ToDo This function does too much, break it up
     const graph = graphFromTable(tableObj);
+    let scale = undefined;
+    let position = undefined;
 
     // We store the network in the window global object
     // There is probably a nicer way to do this
     if (window.network) {
         getNodePositionsFromNetwork(graph, window.network);
+
+        scale = window.network.getScale();
+        position = window.network.getViewPosition();
     }
 
-    updateExportURL(graph);
+    updateExportURL(graph, $('#id_export_link'));
 
     const network = makeNetwork(graph, drawingArea);
 
     // remember it for next time
     window.network = network;
 
-    network.on("afterDrawing", function (ignore) {
+    // keep the old position if there is one else
+    if (position === undefined) {
+        position = network.getViewPosition();
+    }
 
-        const download_link = document.getElementById('id_download');
-        const network_canvas = document.getElementsByTagName('canvas')[0];
+    if (scale === undefined) {
+        scale = 1.2;
+    }
 
-        // make a new canvas so that we can add an opaque background
-        const download_canvas = document.createElement("canvas");
-
-        download_canvas.width = network_canvas.width;
-        download_canvas.height = network_canvas.height;
-        const download_context = download_canvas.getContext('2d');
-
-        //create a rectangle with the desired color
-        download_context.fillStyle = "#FFFFFF";
-        download_context.fillRect(0, 0, network_canvas.width, network_canvas.height);
-
-        //draw the original canvas onto the destination canvas
-        download_context.drawImage(network_canvas, 0, 0);
-
-        download_link.setAttribute('download', 'HiFiDraw.png');
-        download_link.setAttribute('href', download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
-
-        // In case you want to choose a different random seed
-        // console.log("random seed: " + network.getSeed());
+    network.moveTo({
+        position: position,
+        scale: scale
     });
 
-    // get scale and position.  we won't reposition and will only rescale if scale is 1.0
-    const current_position = network.getViewPosition();
-    const current_scale = network.getScale();
-
-    // x1 sees to be too conservative, at least in Firefox on Linux
-    if (current_scale === 1) {
-        network.moveTo({
-            position: current_position,
-            scale: 1.2
-        });
-    }
+    network.on("afterDrawing", addDownloadLink);
 }
 
 

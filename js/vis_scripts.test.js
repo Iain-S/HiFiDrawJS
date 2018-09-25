@@ -5,7 +5,7 @@ $(document).ready(function () {
     // Function-level strict mode syntax
     'use strict';
 
-    const assert = chai.assert;
+    const total_time_start = performance.now();
 
     // THE BIG LIST OF TEST FUNCTIONS
     let test_functions = [
@@ -43,19 +43,30 @@ $(document).ready(function () {
     let number_of_tests = test_functions.length;
     let passed_tests = 0;
 
-    test_functions.forEach(function (element) {
+    test_functions.forEach(function (test_function) {
         //let test_result_area = $("#test_results");
-        let append_string = "<p>" + "Running " + element.name + "...";
+        let append_string = "<p>" + "Running " + test_function.name + "...  ";
 
         // setUp
         addSampleData('inputTable');
 
+        const time_started = performance.now();
+
         try {
-            element();
-            append_string += "<span style=\"color:green\">" + element.name + " passed." + "</span></p>";
+
+            test_function();
+            const ms_taken = performance.now() - time_started;
+
+            append_string += "<span style=\"color:green\">" + test_function.name + " passed in " +
+                ms_taken + " ms." + "</span></p>";
+
             passed_tests += 1;
         } catch (err) {
-            append_string += "<span style=\"color:red\">" + element.name + " failed. " + err + "</span></p>";
+            const ms_taken = performance.now() - time_started;
+
+            append_string += "<span style=\"color:red\">" + test_function.name + " failed in " +
+                ms_taken + "ms.  " + err + "</span></p>";
+
         }
 
         // tearDown
@@ -64,12 +75,17 @@ $(document).ready(function () {
         test_result_area.append(append_string);
     });
 
-    test_result_area.prepend("<strong>" + passed_tests.toString() + " of " +
-        number_of_tests.toString() + " tests passed." + "</strong>");
-    test_result_area.append("<p><br><br></p>");
-
     // not essential but nice to have some data when looking at the page
     addSampleData('inputTable');
+
+    const total_ms_taken = performance.now() - total_time_start;
+
+    test_result_area.prepend("<strong>" + passed_tests.toString() + " of " +
+        number_of_tests.toString() + " tests passed in " + total_ms_taken + "ms." + "</strong>");
+    test_result_area.append("<p><br><br></p>");
+
+    // Go to the top so that we can see how many tests are passing
+    $('html,body').scrollTop(0);
 });
 
 
