@@ -25,6 +25,7 @@ $(document).ready(function () {
         test_add_and_delete_row,
         test_add_row,
         test_add_row_focus,
+        test_add_row_focus_two,
         test_new_row_has_right_num_of_cols,
         test_delete_last_row,
         test_delete_last_row_focus,
@@ -36,7 +37,8 @@ $(document).ready(function () {
         test_add_data_from_url,
         test_serialise_graph,
         test_deserialise_graph,
-        test_serialise_deserialise
+        test_serialise_deserialise,
+        test_update_export_url
     ];
 
     let test_result_area = $("#test_results");
@@ -411,13 +413,13 @@ function test_add_row() {
     'use strict';
 
     const assert = chai.assert;
-    let tableBody = $("<tbody></tbody>");
+    let tableObj = $("<table><tbody></tbody></table>");
 
-    addRow(tableBody);
-    assert.equal(tableBody.children('tr').length, 1);
+    addRow(tableObj);
+    assert.equal(tableObj.children('tbody').first().children('tr').length, 1);
 
-    addRow(tableBody);
-    assert.equal(tableBody.children('tr').length, 2);
+    addRow(tableObj);
+    assert.equal(tableObj.children('tbody').first().children('tr').length, 2);
 }
 
 
@@ -443,15 +445,48 @@ function test_add_row_focus() {
     firstSourceInput.focus();
 
     // Call addRow
-    addRow(tableBody);
+    addRow(tableObj);
 
-    // Assert that focus is on last source input
+    // Assert that focus is not on last source input
     tableObj = $("#inputTable");
     tableBody = tableObj.children("tbody").first();
     childRows = tableBody.children('tr');
     lastRow = childRows.eq(childRows.length -1);
     lastSourceInput = lastRow.children("td").first().children("input").first();
     // console.log(document.activeElement.getAttribute("id"));
+    assert.notEqual(lastSourceInput[0], document.activeElement);
+}
+
+
+function test_add_row_focus_two() {
+    // Function-level strict mode syntax
+    'use strict';
+
+    const assert = chai.assert;
+
+    // focus on the last-but-one source box
+    let tableObj = $("#inputTable");
+    let tableBody = tableObj.children("tbody").first();
+    let childRows = tableBody.children('tr');
+    let lastSourceInput = childRows.eq(childRows.length - 1).children("td").eq(0).children("input").first();
+
+    assert.equal(lastSourceInput[0], lastSourceInput[0]);  // Check that this equal() function does as it should
+
+    // Set focus on first source input
+    lastSourceInput.focus();
+    assert.isTrue(lastSourceInput.is($(document.activeElement)));
+
+    // Call addRow
+    addRow(tableObj);
+
+    // Assert that focus is on last source input
+    tableObj = $("#inputTable");
+    tableBody = tableObj.children("tbody").first();
+    childRows = tableBody.children('tr');
+    lastSourceInput = childRows.eq(childRows.length - 1).children("td").eq(0).children("input").first();
+
+    let some_var = lastSourceInput.is($(document.activeElement));
+
     assert.equal(lastSourceInput[0], document.activeElement);
 }
 
@@ -621,14 +656,6 @@ function test_add_sample_data() {
     tableBody = tableRef.children('tbody').first();
     table_rows = tableBody.children('tr');
     assert.equal(6, table_rows.length, "Expected a different number of rows after calling addSampleData.");
-
-    // Reset the table so it is back to where we started
-    deleteLastDataRowFromID('inputTable');
-    deleteLastDataRowFromID('inputTable');
-    deleteLastDataRowFromID('inputTable');
-
-    table_rows = tableBody.children('tr');
-    assert.equal(3, table_rows.length, "Expected a different number of rows.");
 }
 
 
@@ -670,16 +697,16 @@ function test_serialise_deserialise() {
     // Function-level strict mode syntax
     'use strict';
     const assert = chai.assert;
-    let test_data_1 = {};
+    const test_data_1 = {};
 
     assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_1)), test_data_1);
 
-    let test_data_2 = {nodes: [],
-                       edges: []};
+    const test_data_2 = {nodes: [],
+                         edges: []};
 
     assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_2)), test_data_2);
 
-    let test_data_3 = generate_random_valid_graph();
+    const test_data_3 = generate_random_valid_graph();
 
     assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_3)), test_data_3);
 }
@@ -725,8 +752,39 @@ function test_add_data_from_url() {
 }
 
 
+function test_update_export_url() {
+    'use strict';
+    const assert = chai.assert;
+
+    const para = $("<p></p>");
+
+    const pass_fail = [];
+
+    updateExportURL(generate_random_valid_graph(), para);
+
+    const export_url = para.text();
+
+    $.ajax({
+        type: 'HEAD',
+        async: false,
+        url: export_url,
+        success: function() {pass_fail.push('success');},
+        error: function(jqXHR) {pass_fail.push('fail');}
+    });
+
+    assert.equal(pass_fail[0], 'success');
+}
+
+
 function test_template() {
-    // Function-level strict mode syntax
+    'use strict';
+    const assert = chai.assert;
+
+    assert.equal(1, 2, "This is an error message.");
+}
+
+
+function test_template() {
     'use strict';
     const assert = chai.assert;
 

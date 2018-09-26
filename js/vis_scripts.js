@@ -157,26 +157,53 @@ function makeDeleteButton() {
 }
 
 
-function addRow(tableBody, source_val = null, dest_val = null, conn_val = null) {
+function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
 
-    //let currentRows = countBodyRows(tableBody);
+    const tableBody = tableObj.children('tbody').first();
+
+    // if the last row has focus, we will later set the focus to the last source input
+    const childRows = tableBody.children('tr');
+    const lastRowCells = childRows.eq(childRows.length - 1).children("td");
+    let lastRowHasFocus = false;
+
+    // Note, focus is lost if the user clicks a delete button
+    lastRowCells.each(function () {
+        // assume each cell only has one child element
+        if ($(this).children().first().is($(document.activeElement))) {
+            lastRowHasFocus = true;
+        }
+    });
 
     // Insert a row at the end of the table
-    let newRow = tableBody[0].insertRow(tableBody[0].rows.length);
+    const newRow = tableBody[0].insertRow(tableBody[0].rows.length);
 
     // Insert a cell in the row at index 0
     let srcCell = newRow.insertCell(0);
     let srcBox = makeSourceBox(source_val);
-    srcBox.appendTo(srcCell);
-    srcBox.focus();
 
-    let conCell = newRow.insertCell(1);
+    srcBox.focusout(function () {
+        redraw($('#drawing_div'), tableObj)
+    });
+
+    srcBox.appendTo(srcCell);
+
+    if (lastRowHasFocus) {
+        srcBox.focus();
+    }
+
+    const conCell = newRow.insertCell(1);
     makeConnectorMenu(conn_val).appendTo(conCell);
 
-    let dstCell = newRow.insertCell(2);
-    makeDestinationBox(dest_val).appendTo(dstCell);
+    const dstCell = newRow.insertCell(2);
+    const dstBox = makeDestinationBox(dest_val);
 
-    let deleteCell = newRow.insertCell(3);
+    dstBox.focusout(function () {
+        redraw($('#drawing_div'), tableObj)
+    });
+
+    dstBox.appendTo(dstCell);
+
+    const deleteCell = newRow.insertCell(3);
     makeDeleteButton().appendTo(deleteCell);
 
     return tableBody;
@@ -188,9 +215,9 @@ function deleteLastDataRowFromID(tableID) {
     *  headers and the add button. */
     'use strict';
 
-    let theTable = $("#" + tableID);
+    const theTable = $("#" + tableID);
 
-    let tableBody = theTable.children('tbody').first();
+    const tableBody = theTable.children('tbody').first();
 
     if (tableBody.find('tr').length > 1) {
         deleteRowFromID(tableID, tableBody.children('tr').length - 1);
@@ -278,8 +305,8 @@ function graphFromTable(tableObj) {
     const tableBody = tableObj.children('tbody').first();
     const tableRows = tableBody.children('tr');
 
-    let nodes = [];
-    let edges = [];
+    const nodes = [];
+    const edges = [];
 
     $.each(tableRows, function (ignore, value) {
         const tableRow = $(value);
@@ -445,9 +472,7 @@ function addRowRedraw(sourceTableID) {
 
     const tableObj = $("#" + sourceTableID);
 
-    const tableBody = tableObj.children('tbody').first();
-
-    addRow(tableBody);
+    addRow(tableObj);
 
     const drawingArea = $('#drawing_div');
 
@@ -492,11 +517,10 @@ function addSampleData(sourceTableID) {
     'use strict';
 
     const tableObj = $("#" + sourceTableID);
-    const tableBody = tableObj.children('tbody').first();
 
-    addRow(tableBody, 'phone', 'amp', 'XLR<>XLR');
-    addRow(tableBody, 'amp', 'speakers');
-    addRow(tableBody);
+    addRow(tableObj, 'phone', 'amp', 'XLR<>XLR');
+    addRow(tableObj, 'amp', 'speakers');
+    addRow(tableObj);
 
     const drawingArea = $('#drawing_div');
 
@@ -558,7 +582,7 @@ function getQueryParams(qs) {
 
 function addDataFromURL(serialisedData, targetTableID) {
     'use strict';
-    const tableBody = $("#" + targetTableID).children('tbody').first();
+    const tableObj = $("#" + targetTableID);
 
     const unpackedData = deserialiseGraph(serialisedData);
 
@@ -579,13 +603,13 @@ function addDataFromURL(serialisedData, targetTableID) {
         });
 
         if (from_label && to_label) {
-            addRow(tableBody, from_label, to_label, edge.label);
+            addRow(tableObj, from_label, to_label, edge.label);
         }
     });
 
     const drawingArea = $('#drawing_div');
 
-    redraw(drawingArea, $("#" + targetTableID));
+    redraw(drawingArea, tableObj);
 }
 
 
@@ -601,6 +625,16 @@ function setUpPage(sourceTableID) {
     }
 }
 
+
+function refresh(sourceTableID) {
+    if (window.network) {
+
+        const tableObj = $("#" + sourceTableID);
+        const drawingArea = $('#drawing_div');
+
+        redraw(drawingArea, tableObj);
+    }
+}
 
 function copyToClipboard() {
     'use strict';

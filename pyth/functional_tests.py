@@ -27,14 +27,16 @@ def wait_ten_seconds_for_one(some_function):
 
 
 class TestNewVisitor(unittest.TestCase):
+    port = '8009'
+
     def setUp(self):
         options = Options()
         options.add_argument("--headless")
         self.browser = webdriver.Firefox(options=options)
         try:
-            self.browser.get('http://localhost:8009/')
+            self.browser.get('http://localhost:{}/'.format(self.port))
         except WebDriverException:
-            print("Exception in setUp().  Have you remembered to start a webserver?")
+            print("Exception in setUp().  Have you remembered to start a webserver on port {}?".format(self.port))
             self.browser.quit()
             raise
 
