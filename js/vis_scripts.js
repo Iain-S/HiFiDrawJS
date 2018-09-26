@@ -1,4 +1,3 @@
-//var pressedKeys = {};
 /*global window, $, vis, document, event, console */
 /*jslint es6 */
 window.pressedKeys = {};
@@ -363,7 +362,13 @@ function getNodePositionsFromNetwork(graph, network) {
 function updateExportURL(graph, linkObject) {
     'use strict';
     const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
-    linkObject.text(link_url);
+
+    if (link_url.length > 2082) {
+        linkObject.text('The URL would have been over 2,083 characters.  ' +
+            'That is the upper limit of some browsers.  Consider shortening the names of some of your components.');
+    } else {
+        linkObject.text(link_url);
+    }
 }
 
 

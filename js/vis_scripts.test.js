@@ -1,5 +1,5 @@
 /*global $, chai, document */
-
+/*jslint es6 */
 /* Things to do once the unit_tests page has loaded */
 $(document).ready(function () {
     // Function-level strict mode syntax
@@ -38,7 +38,8 @@ $(document).ready(function () {
         test_serialise_graph,
         test_deserialise_graph,
         test_serialise_deserialise,
-        test_update_export_url
+        test_update_export_url,
+        test_long_export_url_error_message
     ];
 
     let test_result_area = $("#test_results");
@@ -53,18 +54,19 @@ $(document).ready(function () {
         addSampleData('inputTable');
 
         const time_started = performance.now();
+        let ms_taken = undefined;
 
         try {
 
             test_function();
-            const ms_taken = performance.now() - time_started;
+            ms_taken = performance.now() - time_started;
 
             append_string += "<span style=\"color:green\">" + test_function.name + " passed in " +
                 ms_taken + " ms." + "</span></p>";
 
             passed_tests += 1;
         } catch (err) {
-            const ms_taken = performance.now() - time_started;
+            ms_taken = performance.now() - time_started;
 
             append_string += "<span style=\"color:red\">" + test_function.name + " failed in " +
                 ms_taken + "ms.  " + err + "</span></p>";
@@ -92,7 +94,6 @@ $(document).ready(function () {
 
 
 function test_add_text_box() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -111,7 +112,6 @@ function test_add_text_box() {
 
 
 function test_count_tbody_rows() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -132,7 +132,6 @@ function test_count_tbody_rows() {
 
 
 function test_make_connector_menu() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -143,7 +142,6 @@ function test_make_connector_menu() {
 
 
 function test_make_connector_menu_with_id() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -156,7 +154,6 @@ function test_make_connector_menu_with_id() {
 
 
 function test_make_connector_menu_with_selection() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -170,7 +167,6 @@ function test_make_connector_menu_with_selection() {
 
 
 function test_make_destination_box() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -181,7 +177,6 @@ function test_make_destination_box() {
 
 
 function test_make_destination_box_with_id() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -194,7 +189,6 @@ function test_make_destination_box_with_id() {
 
 
 function test_make_destination_box_with_value() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -205,7 +199,6 @@ function test_make_destination_box_with_value() {
 
 
 function test_make_source_box() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -216,7 +209,6 @@ function test_make_source_box() {
 
 
 function test_make_source_box_with_id() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -229,7 +221,6 @@ function test_make_source_box_with_id() {
 
 
 function test_make_source_box_with_value() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -240,7 +231,6 @@ function test_make_source_box_with_value() {
 
 
 function test_make_delete_button() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -251,7 +241,6 @@ function test_make_delete_button() {
 
 
 function test_add_and_delete_row() {
-    // Function-level strict mode syntax
     'use strict';
 
     // Unfortunately, add and delete are intertwined so we shall have to test them together
@@ -282,7 +271,6 @@ function test_add_and_delete_row() {
 
 
 function test_delete_last_row() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -311,7 +299,6 @@ function test_delete_last_row() {
 
 
 function test_delete_last_row_focus() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -344,8 +331,6 @@ function test_delete_last_row_focus() {
 
 function test_delete_last_row_leaves_essentials() {
     // Check that we always leave at least one row in the table (because having none doesn't make sense)
-
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -382,7 +367,6 @@ function test_delete_last_row_leaves_essentials() {
 
 
 function test_new_row_has_right_num_of_cols() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -409,7 +393,6 @@ function test_new_row_has_right_num_of_cols() {
 
 
 function test_add_row() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -424,7 +407,6 @@ function test_add_row() {
 
 
 function test_add_row_focus() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -459,7 +441,6 @@ function test_add_row_focus() {
 
 
 function test_add_row_focus_two() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -485,14 +466,11 @@ function test_add_row_focus_two() {
     childRows = tableBody.children('tr');
     lastSourceInput = childRows.eq(childRows.length - 1).children("td").eq(0).children("input").first();
 
-    let some_var = lastSourceInput.is($(document.activeElement));
-
     assert.equal(lastSourceInput[0], document.activeElement);
 }
 
 
 function test_count_valid_rows() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -533,7 +511,6 @@ function test_count_valid_rows() {
 
 
 function test_graph_from_table() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -584,7 +561,6 @@ function test_graph_from_table() {
 
 
 function test_row_is_valid() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -614,7 +590,6 @@ function test_row_is_valid() {
 
 
 function test_add_node_from_cell() {
-    // Function-level strict mode syntax
     'use strict';
 
     const assert = chai.assert;
@@ -640,7 +615,6 @@ function test_add_node_from_cell() {
 
 
 function test_add_sample_data() {
-    // Function-level strict mode syntax
     'use strict';
     const assert = chai.assert;
     let tableRef = $('#inputTable');
@@ -660,7 +634,6 @@ function test_add_sample_data() {
 
 
 function test_serialise_graph() {
-    // Function-level strict mode syntax
     'use strict';
     const assert = chai.assert;
     let data = {nodes: {},
@@ -673,7 +646,6 @@ function test_serialise_graph() {
 
 
 function test_deserialise_graph() {
-    // Function-level strict mode syntax
     'use strict';
     const assert = chai.assert;
     let deserialised_graph = deserialiseGraph("{}");
@@ -694,7 +666,6 @@ function generate_random_valid_graph() {
 }
 
 function test_serialise_deserialise() {
-    // Function-level strict mode syntax
     'use strict';
     const assert = chai.assert;
     const test_data_1 = {};
@@ -713,12 +684,11 @@ function test_serialise_deserialise() {
 
 
 function test_add_data_from_url() {
-    // Function-level strict mode syntax
     'use strict';
     const assert = chai.assert;
 
     // Create a test table and add it to our page
-    const test_data = $('<table class="table" id="id_data_from_url">\n' +
+    $('<table class="table" id="id_data_from_url">\n' +
                     '      <thead>\n' +
                     '        <tr>\n' +
                     '          <th>Source</th>\n' +
@@ -755,9 +725,7 @@ function test_add_data_from_url() {
 function test_update_export_url() {
     'use strict';
     const assert = chai.assert;
-
     const para = $("<p></p>");
-
     const pass_fail = [];
 
     updateExportURL(generate_random_valid_graph(), para);
@@ -769,10 +737,37 @@ function test_update_export_url() {
         async: false,
         url: export_url,
         success: function() {pass_fail.push('success');},
-        error: function(jqXHR) {pass_fail.push('fail');}
+        error: function() {pass_fail.push('fail');}
     });
 
     assert.equal(pass_fail[0], 'success');
+}
+
+
+function test_long_export_url_error_message() {
+    'use strict';
+    const assert = chai.assert;
+    const para = $("<p></p>");
+    const thousand_chars = 'nkrNE2fiFbcJPfNF8LhTpoSHwyz0jDb7PPk5cB4ZAag6j6PEGEmcDeani3rMwtSm48PozXSnKuhbXGDRfzj4Hrtz' +
+        'c4IJ4vBKEgYxPECwkg2gyoqyQBVZfZpkfREzkh9vY2CvuiGlAXsGCRdhnsJQ6DMUPUDEy19d30xxlAXL9klsaVcWcVLBXX2WX9DGm2WxvN0' +
+        'aIfbtaS935wzLmnpmL3BKgBhrno3Y6rUVmrjvtzoMb2LKVPENc0rV05ISxTrizCTW8H09uaH9vJtqHla2Bh3KQlbvMQ5nMck9wWH74YL2lV' +
+        'hZjCi2NoDLbyuAx00Out7OACiVvVgATGe6l4n3A2tEy9tRLobPv5fKt25VPmDa6pKcx45ni6iKffuKPOAmMLYlGXaeZY9FgfkgW1wMYhQma' +
+        '9uExUfygxXHOYdjV3W3AAhN38wMdowjy03RuThvnDJiRzRfp2VJULPKqZoOWvvPIpCCMjn1lb6YjjyZaQcs7yqSf4l7fr4m9TnGmNVYNXzC' +
+        'AhuPYG0x2gA7ucg2yItu8ZUYcCcMpKc5skbyyR6CU45STGg2npM4CdemiKjwzJJd5ogahITfnrYzAe5fUcYc6dGmusHrkva7Xvt5OVPRsRf' +
+        'fJW2VJUQNR1mpCkPEuaI3FIn89vMxfDjnFBpQVqAWEpuD4frs8b9JpnxVgdV4HgSS8exuWa6r9SCQSy22Ui8zmslHN5DzLM9ilKFqQBgZ6K' +
+        'Ye2dkGRjW4M44LVCQumv69l1BDMP8NSjKGOqXDD0NeZJgiYVQ8CCgQu8ibKQPZnYUmNs6hZDemtthxKaqdwqiGGyhp8TVrTPii4sqFWMI0v' +
+        'bTv6fjQOXSzZbhxdkIvJjEz4iMvQGckJqFuXyBD4ZwN90KSDZsoshZjML7XfHzKmPdJszUMAMAHK5mc3N7gP2SXk1cbZRuGIleifchAR7DD' +
+        'LXFUo7jyeoWsYZaPSXmJZim8l9KEEkuA9zEBeXH12AjSGOkvFOrnyhpa';
+
+    const graph_with_long_labels =
+        {"nodes":[{"id":1,"label":"1" + thousand_chars,"shape":"box"},
+                {"id":2,"label":"2" + thousand_chars,"shape":"box"}],
+        "edges":[{"from":1,"to":2,"arrows":"to","label":"3" + thousand_chars}]};
+
+    updateExportURL(graph_with_long_labels, para);
+
+    assert.equal(para.text(), 'The URL would have been over 2,083 characters.  ' +
+        'That is the upper limit of some browsers.  Consider shortening the names of some of your components.');
 }
 
 
