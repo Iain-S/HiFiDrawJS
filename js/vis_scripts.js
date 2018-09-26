@@ -166,6 +166,8 @@ function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
     const lastRowCells = childRows.eq(childRows.length - 1).children("td");
     let lastRowHasFocus = false;
 
+    const redraw_func = function () {redraw($('#drawing_div'), tableObj);};
+
     // Note, focus is lost if the user clicks a delete button
     lastRowCells.each(function () {
         // assume each cell only has one child element
@@ -181,9 +183,7 @@ function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
     let srcCell = newRow.insertCell(0);
     let srcBox = makeSourceBox(source_val);
 
-    srcBox.focusout(function () {
-        redraw($('#drawing_div'), tableObj)
-    });
+    srcBox.focusout(redraw_func);
 
     srcBox.appendTo(srcCell);
 
@@ -191,15 +191,17 @@ function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
         srcBox.focus();
     }
 
-    const conCell = newRow.insertCell(1);
-    makeConnectorMenu(conn_val).appendTo(conCell);
+    const connCell = newRow.insertCell(1);
+    const connMenu = makeConnectorMenu(conn_val);
+
+    connMenu.focusout(redraw_func);
+
+    connMenu.appendTo(connCell);
 
     const dstCell = newRow.insertCell(2);
     const dstBox = makeDestinationBox(dest_val);
 
-    dstBox.focusout(function () {
-        redraw($('#drawing_div'), tableObj)
-    });
+    dstBox.focusout(redraw_func);
 
     dstBox.appendTo(dstCell);
 
@@ -627,6 +629,7 @@ function setUpPage(sourceTableID) {
 
 
 function refresh(sourceTableID) {
+    'use strict';
     if (window.network) {
 
         const tableObj = $("#" + sourceTableID);
