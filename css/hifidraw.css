@@ -12,22 +12,36 @@ table.fixed-width-table {
 
 
 select {
-    padding: 8px;
+    padding: 7px;
     width: 4rem;
     margin-left: 0.5rem;
 }
 
 
 td, th {
-    text-align: center;
+    /*padding: 6px;*/
+    /*vertical-align: text-top;*/
 }
 
+table input {
+    /*padding: 6px;*/
+    vertical-align: bottom;
+    background-color: #a7342d;
+}
 
-.thisisanexperiment:hover {
-    -webkit-transform: translate3d(0,100px,0);
-    -ms-transform: translate3d(0,100px,0);
-    transform: translate3d(0,100px,0);
-    box-shadow: 2px 8px 40px -5px rgba(0,0,0,.3)
+input[type="button"] {
+    background-color: #86a361;
+    margin: 0rem;
+}
+
+table {
+    color: red;
+}
+
+.hfmin {
+    padding: 0.5rem;
+    color: blue;
+    min-width: 1000px;
 }
 
 /* Override the paper padding to make more room for the table*/
@@ -39,5 +53,6 @@ td, th {
   /*box-shadow: -1px 5px 35px -9px rgba(0,0,0,.2);*/
   /*margin-bottom: 1rem;*/
   /*margin-top: 1rem;*/
-  padding: 1rem
+    margin-left: 0rem;
+    padding: 0.5rem;
 }
