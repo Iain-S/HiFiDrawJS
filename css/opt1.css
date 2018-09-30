@@ -1,0 +1,12 @@
+body {
+    /* Background pattern from Toptal Subtle Patterns */
+    background-image: url("../images/subtle_white_feathers.png");
+}
+
+.minwid {
+    min-width: 20rem;
+}
+
+.thinmargin {
+    margin: 0.5rem;
+}

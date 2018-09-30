@@ -108,7 +108,7 @@ function makeDestinationBox(value, id) {
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
     element.setAttribute("size", "7");
-    element.setAttribute("placeholder", "destination");
+    element.setAttribute("placeholder", "dest");
     element.setAttribute("autocapitalize", 'none');
     element.setAttribute("style", "padding: 0.4rem 0.4rem");
 
