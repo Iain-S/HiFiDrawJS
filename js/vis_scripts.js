@@ -82,7 +82,6 @@ function makeSourceBox(value, id) {
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
-    element.setAttribute("name", "Test Name");
     element.setAttribute("size", "7");
     element.setAttribute("placeholder", "source");
     element.setAttribute("autocapitalize", 'none');
@@ -108,7 +107,6 @@ function makeDestinationBox(value, id) {
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
-    element.setAttribute("name", "Test Name");
     element.setAttribute("size", "7");
     element.setAttribute("placeholder", "destination");
     element.setAttribute("autocapitalize", 'none');
@@ -383,7 +381,9 @@ function makeNetwork(graph, drawingArea) {
                          height: '500px',
                          nodes: {
                              font: {size: 20,
-                                    face: 'Patrick Hand SC, arial'}
+                                    face: 'Patrick Hand SC, arial',
+                                    vadjust: -2,
+                                    }
                              //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                          },
                          edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...

@@ -3,31 +3,24 @@ body {
     background-image: url("../images/subtle_white_feathers.png");
 }
 
-
 table.fixed-width-table {
     table-layout: fixed;
     width: 100%;
     /*padding: 0rem*/
 }
 
-
 select {
-    padding: 8px;
+    padding: 7px;
     width: 4rem;
     margin-left: 0.5rem;
 }
-
 
 td, th {
     text-align: center;
 }
 
-
-.thisisanexperiment:hover {
-    -webkit-transform: translate3d(0,100px,0);
-    -ms-transform: translate3d(0,100px,0);
-    transform: translate3d(0,100px,0);
-    box-shadow: 2px 8px 40px -5px rgba(0,0,0,.3)
+table input[type="button"] {
+    margin: 0rem;
 }
 
 /* Override the paper padding to make more room for the table*/
