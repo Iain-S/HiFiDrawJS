@@ -2,20 +2,48 @@
 
 <html lang="en">
 <head>
+  <!-- Required meta tags -->
   <meta charset="utf-8">
+  <meta name="description" content="Create wiring diagrams for your HiFi to share with others.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>The HTML5 Herald</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
+  <title>HiFiDraw</title>
+  <link rel="shortcut icon" type="image/png" href="images/pencil_favicon_small.png"/>
 
-  <link rel="stylesheet" href="css/styles.css?v=1.0">
+  <link rel="stylesheet" href="css/paper.css">
+  <link rel="stylesheet" href="css/myflex.css">
 
-  <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-  <![endif]-->
 </head>
-
 <body>
-  <script src="js/scripts.js"></script>
+<nav class="split-nav">
+  <div class="nav-brand">
+    <h3><a href="#">HiFi Draw</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+    <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+        <!--<li><a href="#">Examples</a></li>-->
+        <li><a href="https://github.com/Iain-S/HiFiDrawJS">Github</a></li>
+        <!--<li><a href="#">About</a></li>-->
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="row">
+  <div class="xs-12 md-3 col border">
+  </div>
+  <div class="xs-12 md-6 col border">
+  </div>
+  <div class="xs-12 md-3 col border">
+  </div>
+</div>
 </body>
 </html>

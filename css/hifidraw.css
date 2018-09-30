@@ -23,6 +23,11 @@ table input[type="button"] {
     margin: 0rem;
 }
 
+.hifid {
+    min-width: 500px;
+    /*background-color: #ddcd45;*/
+}
+
 /* Override the paper padding to make more room for the table*/
 .paper {
   /*background-color: #fff;*/
@@ -32,5 +37,6 @@ table input[type="button"] {
   /*box-shadow: -1px 5px 35px -9px rgba(0,0,0,.2);*/
   /*margin-bottom: 1rem;*/
   /*margin-top: 1rem;*/
-  padding: 1rem
+    /*flex-wrap: wrap;*/
+    /*padding: 1rem*/
 }
