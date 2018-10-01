@@ -82,11 +82,8 @@ function makeSourceBox(value, id) {
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
-    element.setAttribute("name", "Test Name");
-    element.setAttribute("size", "7");
     element.setAttribute("placeholder", "source");
     element.setAttribute("autocapitalize", 'none');
-    element.setAttribute("style", "padding: 0.4rem 0.4rem");
 
     if (value) {
         element.setAttribute("value", value);
@@ -108,11 +105,8 @@ function makeDestinationBox(value, id) {
 
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
-    element.setAttribute("name", "Test Name");
-    element.setAttribute("size", "7");
-    element.setAttribute("placeholder", "destination");
+    element.setAttribute("placeholder", "dest");
     element.setAttribute("autocapitalize", 'none');
-    element.setAttribute("style", "padding: 0.4rem 0.4rem");
 
     if (value) {
         element.setAttribute("value", value);
@@ -135,7 +129,6 @@ function makeDeleteButton() {
     //Assign different attributes to the element.
     element.setAttribute("type", "button");
     element.setAttribute("value", "Delete");
-    element.setAttribute("style", "padding: 8px 8px");
 
     let jqe = $(element);
 
@@ -383,7 +376,9 @@ function makeNetwork(graph, drawingArea) {
                          height: '500px',
                          nodes: {
                              font: {size: 20,
-                                    face: 'Patrick Hand SC, arial'}
+                                    face: 'Patrick Hand SC, arial'
+                                    //vadjust: -2,
+                                    }
                              //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                          },
                          edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
