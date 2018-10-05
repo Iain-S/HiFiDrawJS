@@ -128,7 +128,7 @@ function makeDeleteButton() {
 
     //Assign different attributes to the element.
     element.setAttribute("type", "button");
-    element.setAttribute("value", "Delete");
+    element.setAttribute("value", "-");
 
     let jqe = $(element);
 
@@ -159,7 +159,7 @@ function makeTable() {
         "          <th>Connector</th>\n" +
         "          <th>Destination</th>\n" +
         "          <th style='padding-left: 1rem'>\n" +
-        "            <input type='button' id='btnAdd' value='Add' onclick='addRowRedraw(\"inputTable\");' style='padding: 2px 17px'/>\n" +
+        "            <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"inputTable\");' style='padding: 2px 17px'/>\n" +
         "          </th>\n" +
         "        </tr>\n" +
         "      </thead>\n" +

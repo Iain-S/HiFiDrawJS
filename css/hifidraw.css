@@ -59,6 +59,7 @@ table th input[type="button"] {
 }
 
 div table th tr td {
+    /* Make the table cells a little smaller */
     padding: 0.1rem;
 }
 
