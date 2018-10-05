@@ -3,65 +3,65 @@
 window.pressedKeys = {};
 
 $(document.body).keydown(function (evt) {
-    'use strict';
+    "use strict";
 
     evt = evt || event; // to deal with IE
 
-    window.pressedKeys[evt.keyCode] = evt.type === 'keydown';
+    window.pressedKeys[evt.keyCode] = evt.type === "keydown";
 
     // Shift + Enter to delete last row or Enter for new row
     if (window.pressedKeys[13]) {
         if (window.pressedKeys[16]) {
-            deleteLastDataRowFromID('inputTable');
+            deleteLastDataRowFromID("inputTable");
         } else {
-            addRowRedraw('inputTable');
+            addRowRedraw("inputTable");
         }
     }
 });
 
 
 $(document.body).keyup(function (evt) {
-    'use strict';
+    "use strict";
 
     evt = evt || event; // to deal with IE
 
-    window.pressedKeys[evt.keyCode] = evt.type === 'keydown';
+    window.pressedKeys[evt.keyCode] = evt.type === "keydown";
 });
 
 
 function countBodyRows(tableBody) {
-    'use strict';
+    "use strict";
 
-    const tableRows = tableBody.children('tr');
+    const tableRows = tableBody.children("tr");
 
     return tableRows.length;
 }
 
 
 function makeConnectorMenu(value, id) {
-    'use strict';
+    "use strict";
 
     const arr = [
-        {val: '', text: 'Simple'},
-        {val: 'RCA<>RCA', text: 'RCA<>RCA'},
-        {val: 'RCA<>TRS', text: 'RCA<>TRS'},
-        {val: 'RCA<>XLR', text: 'RCA<>XLR'},
-        {val: 'TRS<>TRS', text: 'TRS<>TRS'},
-        {val: 'TRS<>RCA', text: 'TRS<>RCA'},
-        {val: 'TRS<>XLR', text: 'TRS<>XLR'},
-        {val: 'XLR<>XLR', text: 'XLR<>XLR'},
-        {val: 'XLR<>RCA', text: 'XLR<>RCA'},
-        {val: 'XLR<>TRS', text: 'XLR<>TRS'},
-        {val: 'speaker cable', text: 'speaker cable'},
-        {val: 'headphone cable', text: 'headphone cable'}
-        //{val : 3, text: 'spare<>spare'},
-        //{val : 3, text: 'Wireless'},
+        {val: "", text: "Simple"},
+        {val: "RCA<>RCA", text: "RCA<>RCA"},
+        {val: "RCA<>TRS", text: "RCA<>TRS"},
+        {val: "RCA<>XLR", text: "RCA<>XLR"},
+        {val: "TRS<>TRS", text: "TRS<>TRS"},
+        {val: "TRS<>RCA", text: "TRS<>RCA"},
+        {val: "TRS<>XLR", text: "TRS<>XLR"},
+        {val: "XLR<>XLR", text: "XLR<>XLR"},
+        {val: "XLR<>RCA", text: "XLR<>RCA"},
+        {val: "XLR<>TRS", text: "XLR<>TRS"},
+        {val: "speaker cable", text: "speaker cable"},
+        {val: "headphone cable", text: "headphone cable"}
+        //{val : 3, text: "spare<>spare"},
+        //{val : 3, text: "Wireless"},
     ];
 
-    const sel = $('<select>');
+    const sel = $("<select>");
 
     $(arr).each(function () {
-        sel.append($("<option>").attr('value',this.val).text(this.text));
+        sel.append($("<option>").attr("value",this.val).text(this.text));
     });
 
     sel.val(value);
@@ -75,7 +75,7 @@ function makeConnectorMenu(value, id) {
 
 
 function makeSourceBox(value, id) {
-    'use strict';
+    "use strict";
 
     //Create an input type dynamically.
     const element = document.createElement("input");
@@ -83,7 +83,7 @@ function makeSourceBox(value, id) {
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
     element.setAttribute("placeholder", "source");
-    element.setAttribute("autocapitalize", 'none');
+    element.setAttribute("autocapitalize", "none");
 
     if (value) {
         element.setAttribute("value", value);
@@ -98,7 +98,7 @@ function makeSourceBox(value, id) {
 
 
 function makeDestinationBox(value, id) {
-    'use strict';
+    "use strict";
 
     //Create an input type dynamically.
     const element = document.createElement("input");
@@ -106,7 +106,7 @@ function makeDestinationBox(value, id) {
     //Assign different attributes to the element.
     element.setAttribute("type", "text");
     element.setAttribute("placeholder", "dest");
-    element.setAttribute("autocapitalize", 'none');
+    element.setAttribute("autocapitalize", "none");
 
     if (value) {
         element.setAttribute("value", value);
@@ -121,7 +121,7 @@ function makeDestinationBox(value, id) {
 
 
 function makeDeleteButton() {
-    'use strict';
+    "use strict";
 
     //Create an input type dynamically.
     const element = document.createElement("input");
@@ -134,10 +134,10 @@ function makeDeleteButton() {
 
     jqe.click(
         function () {
-            const theTable = $(this).closest('table');
-            const drawingArea = $('#drawing_div');
+            const theTable = $(this).closest("table");
+            const drawingArea = $("#drawing_div");
 
-            $(this).closest('tr').remove();
+            $(this).closest("tr").remove();
 
             redraw(drawingArea, theTable);
 
@@ -149,16 +149,36 @@ function makeDeleteButton() {
 }
 
 
+function makeTable() {
+    "use strict";
+
+    return $("<table id='inputTable'>\n" +
+        "      <thead>\n" +
+        "        <tr>\n" +
+        "          <th>Source</th>\n" +
+        "          <th>Connector</th>\n" +
+        "          <th>Destination</th>\n" +
+        "          <th style='padding-left: 1rem'>\n" +
+        "            <input type='button' id='btnAdd' value='Add' onclick='addRowRedraw(\"inputTable\");' style='padding: 2px 17px'/>\n" +
+        "          </th>\n" +
+        "        </tr>\n" +
+        "      </thead>\n" +
+        "      <tbody>\n" +
+        "      </tbody>\n" +
+        "    </table>");
+}
+
+
 function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
 
-    const tableBody = tableObj.children('tbody').first();
+    const tableBody = tableObj.children("tbody").first();
 
     // if the last row has focus, we will later set the focus to the last source input
-    const childRows = tableBody.children('tr');
+    const childRows = tableBody.children("tr");
     const lastRowCells = childRows.eq(childRows.length - 1).children("td");
     let lastRowHasFocus = false;
 
-    const redraw_func = function () {redraw($('#drawing_div'), tableObj);};
+    const redraw_func = function () {redraw($("#drawing_div"), tableObj);};
 
     // Note, focus is lost if the user clicks a delete button
     lastRowCells.each(function () {
@@ -207,22 +227,22 @@ function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
 function deleteLastDataRowFromID(tableID) {
     /* This is a safe delete function, it will always leave the
     *  headers and the add button. */
-    'use strict';
+    "use strict";
 
     const theTable = $("#" + tableID);
 
-    const tableBody = theTable.children('tbody').first();
+    const tableBody = theTable.children("tbody").first();
 
-    if (tableBody.find('tr').length > 1) {
-        deleteRowFromID(tableID, tableBody.children('tr').length - 1);
+    if (tableBody.find("tr").length > 1) {
+        deleteRowFromID(tableID, tableBody.children("tr").length - 1);
     }
 }
 
 
 function rowIsValid(rowObj) {
-    'use strict';
+    "use strict";
 
-    const tableTextBoxes = rowObj.find('input[type=text]');
+    const tableTextBoxes = rowObj.find("input[type=text]");
     let numberOfValidInputs = 0;
 
     // ToDo Check for valid selection option as well
@@ -239,10 +259,10 @@ function rowIsValid(rowObj) {
 
 function countValidRows(tableObj) {
     /* Count the number of valid table rows (rows with a source and destination)*/
-    'use strict';
+    "use strict";
 
-    const tableBody = tableObj.children('tbody').first();
-    const tableRows = tableBody.children('tr');
+    const tableBody = tableObj.children("tbody").first();
+    const tableRows = tableBody.children("tr");
     let numberOfValidRows = 0;
 
     $.each(tableRows, function (ignore, value) {
@@ -261,10 +281,10 @@ function addNodeFromCell(tdObject, nodeArray) {
     // Pass in a <td></td> and an array of nodes,
     // get back the id of any nodes added or the id
     // of the matching node if it was already in nodeArray
-    'use strict';
+    "use strict";
 
     let id = null;
-    const input = tdObject.children('input').first();
+    const input = tdObject.children("input").first();
 
     // do we have a node for this already?
     nodeArray.some(function (element) {
@@ -294,10 +314,10 @@ function addNodeFromCell(tdObject, nodeArray) {
 
 
 function graphFromTable(tableObj) {
-    'use strict';
+    "use strict";
 
-    const tableBody = tableObj.children('tbody').first();
-    const tableRows = tableBody.children('tr');
+    const tableBody = tableObj.children("tbody").first();
+    const tableRows = tableBody.children("tr");
 
     const nodes = [];
     const edges = [];
@@ -306,25 +326,25 @@ function graphFromTable(tableObj) {
         const tableRow = $(value);
         if (rowIsValid(tableRow)) {
             // get source
-            const src_td = tableRow.children('td').eq(0);
+            const src_td = tableRow.children("td").eq(0);
 
             // if source is not in nodes already, add it
             const src_id = addNodeFromCell(src_td, nodes);
 
             // get dest
-            const dst_td = tableRow.children('td').eq(2);
+            const dst_td = tableRow.children("td").eq(2);
 
             // if dest is not in nodes already, add it
             const dst_id = addNodeFromCell(dst_td, nodes);
 
             // find label from drop-down
-            const conn_td = tableRow.children('td').eq(1);
-            const conn_label = conn_td.children('select').first().val();
+            const conn_td = tableRow.children("td").eq(1);
+            const conn_label = conn_td.children("select").first().val();
 
             // add edge
             edges.push({from: src_id,
                         to: dst_id,
-                        arrows: 'to',
+                        arrows: "to",
                         label: conn_label});
         }
     });
@@ -337,7 +357,7 @@ function graphFromTable(tableObj) {
 
 
 function getNodePositionsFromNetwork(graph, network) {
-    'use strict';
+    "use strict";
     network.storePositions();
     network.body.data.nodes.forEach(function (old_node, ignore) {
        graph.nodes.forEach(function (new_node, ignore) {
@@ -353,12 +373,12 @@ function getNodePositionsFromNetwork(graph, network) {
 
 
 function updateExportURL(graph, linkObject) {
-    'use strict';
+    "use strict";
     const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
 
     if (link_url.length > 2082) {
-        linkObject.text('The URL would have been over 2,083 characters.  ' +
-            'That is the upper limit of some browsers.  Consider shortening the names of some of your components.');
+        linkObject.text("The URL would have been over 2,083 characters.  " +
+            "That is the upper limit of some browsers.  Consider shortening the names of some of your components.");
     } else {
         linkObject.text(link_url);
     }
@@ -366,24 +386,24 @@ function updateExportURL(graph, linkObject) {
 
 
 function makeNetwork(graph, drawingArea) {
-    'use strict';
+    "use strict";
     const vis_nodes = new vis.DataSet(graph.nodes);
     const vis_edges = new vis.DataSet(graph.edges);
     const vis_container = drawingArea[0];
     const vis_options = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
                                          // we could give the user some warning to set one connector to simple
-                         width: '100%',
-                         height: '500px',
+                         width: "100%",
+                         height: "500px",
                          nodes: {
                              font: {size: 20,
-                                    face: 'Patrick Hand SC, arial'
+                                    face: "Patrick Hand SC, arial"
                                     //vadjust: -2,
                                     }
                              //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                          },
-                         edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
+                         edges: {length: 1000, // this doesn"t seem to do anything.  Confirm and report a bug...
                                  font: {size: 15,
-                                        face: 'Patrick Hand SC, arial'},
+                                        face: "Patrick Hand SC, arial"},
                                  arrowStrikethrough: false // note we may want to make the node borders a little thicker
                          },
                          layout: {
@@ -400,17 +420,17 @@ function makeNetwork(graph, drawingArea) {
 
 
 function addDownloadLink() {
-    'use strict';
+    "use strict";
 
-    const download_link = document.getElementById('id_download');
-    const network_canvas = document.getElementsByTagName('canvas')[0];
+    const download_link = document.getElementById("id_download");
+    const network_canvas = document.getElementsByTagName("canvas")[0];
 
     // make a new canvas so that we can add an opaque background
     const download_canvas = document.createElement("canvas");
 
     download_canvas.width = network_canvas.width;
     download_canvas.height = network_canvas.height;
-    const download_context = download_canvas.getContext('2d');
+    const download_context = download_canvas.getContext("2d");
 
     //create a rectangle with the desired color
     download_context.fillStyle = "#FFFFFF";
@@ -419,8 +439,8 @@ function addDownloadLink() {
     //draw the original canvas onto the destination canvas
     download_context.drawImage(network_canvas, 0, 0);
 
-    download_link.setAttribute('download', 'HiFiDraw.png');
-    download_link.setAttribute('href', download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+    download_link.setAttribute("download", "HiFiDraw.png");
+    download_link.setAttribute("href", download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
 
     // In case you want to choose a different random seed
     // console.log("random seed: " + network.getSeed());
@@ -428,7 +448,7 @@ function addDownloadLink() {
 
 
 function redraw(drawingArea, tableObj) {
-    'use strict';
+    "use strict";
     // ToDo This function does too much, break it up
     const graph = graphFromTable(tableObj);
     let scale = undefined;
@@ -443,7 +463,7 @@ function redraw(drawingArea, tableObj) {
         position = window.network.getViewPosition();
     }
 
-    updateExportURL(graph, $('#id_export_link'));
+    updateExportURL(graph, $("#id_export_link"));
 
     const network = makeNetwork(graph, drawingArea);
 
@@ -470,27 +490,27 @@ function redraw(drawingArea, tableObj) {
 
 /* Add a source-connector-destination row at the end of the table */
 function addRowRedraw(sourceTableID) {
-    'use strict';
+    "use strict";
 
     const tableObj = $("#" + sourceTableID);
 
     addRow(tableObj);
 
-    const drawingArea = $('#drawing_div');
+    const drawingArea = $("#drawing_div");
 
     redraw(drawingArea, tableObj);
 }
 
 
 function deleteRowFromID(tableID, idx) {
-    'use strict';
+    "use strict";
 
     const theTable = $("#" + tableID);
 
-    const tableBody = theTable.children('tbody').first();
+    const tableBody = theTable.children("tbody").first();
 
     // if the last row has focus, set the focus to the last but one destination input
-    const childRows = tableBody.children('tr');
+    const childRows = tableBody.children("tr");
     const lastRowCells = childRows.eq(childRows.length - 1).children("td");
     const lastButOneRow = childRows.eq(childRows.length - 2);
     let lastRowHasFocus = false;
@@ -504,54 +524,54 @@ function deleteRowFromID(tableID, idx) {
     });
 
     if (lastRowHasFocus) {
-        lastButOneRow.children('td').eq(2).children('input').first().focus();
+        lastButOneRow.children("td").eq(2).children("input").first().focus();
     }
 
-    tableBody.children('tr').eq(idx).remove();
+    tableBody.children("tr").eq(idx).remove();
 
-    const drawingArea = $('#drawing_div');
+    const drawingArea = $("#drawing_div");
 
     redraw(drawingArea, theTable);
 }
 
 
 function addSampleData(sourceTableID) {
-    'use strict';
+    "use strict";
 
     const tableObj = $("#" + sourceTableID);
 
-    addRow(tableObj, 'phone', 'amp', 'XLR<>XLR');
-    addRow(tableObj, 'amp', 'speakers');
+    addRow(tableObj, "phone", "amp", "XLR<>XLR");
+    addRow(tableObj, "amp", "speakers");
     addRow(tableObj);
 
-    const drawingArea = $('#drawing_div');
+    const drawingArea = $("#drawing_div");
 
     redraw(drawingArea, tableObj);
 }
 
 
 function removeSampleData(sourceTableID) {
-    'use strict';
+    "use strict";
 
     const tableObj = $("#" + sourceTableID);
 
-    const tableBody = tableObj.children('tbody').first();
+    const tableBody = tableObj.children("tbody").first();
     tableBody.empty();
 
-    const drawingArea = $('#drawing_div');
+    const drawingArea = $("#drawing_div");
     redraw(drawingArea, tableObj);
 }
 
 
 function serialiseGraph(graphData) {
-    'use strict';
+    "use strict";
     return JSON.stringify(graphData);
 }
 
 
 function deserialiseGraph(serialisedGraph) {
     // Function-level strict mode syntax
-    'use strict';
+    "use strict";
     return JSON.parse(serialisedGraph);
 }
 
@@ -561,9 +581,9 @@ function deserialiseGraph(serialisedGraph) {
         will return a dict with something and what as keys
    You can call it like this getQueryParams(document.location.search)*/
 function getQueryParams(qs) {
-    'use strict';
+    "use strict";
 
-    qs = qs.split('+').join(' ');
+    qs = qs.split("+").join(" ");
 
     let params = {},
         tokens,
@@ -583,7 +603,7 @@ function getQueryParams(qs) {
 
 
 function addDataFromURL(serialisedData, targetTableID) {
-    'use strict';
+    "use strict";
     const tableObj = $("#" + targetTableID);
 
     const unpackedData = deserialiseGraph(serialisedData);
@@ -609,51 +629,58 @@ function addDataFromURL(serialisedData, targetTableID) {
         }
     });
 
-    const drawingArea = $('#drawing_div');
+    const drawingArea = $("#drawing_div");
 
     redraw(drawingArea, tableObj);
 }
 
 
-function setUpPage(sourceTableID) {
-    'use strict';
+function setUpSingleDrawingPage(divToCanvasList) {
+    "use strict";
     const query_params = getQueryParams(document.location.search);
 
-    if (query_params.hasOwnProperty('serialised')) {
-        addDataFromURL(query_params.serialised, sourceTableID);
+    const inputDivID = divToCanvasList[0].inputDivID;
+
+    const inputDiv = $("#"+inputDivID);
+
+    inputDiv.append(makeTable());
+
+    if (query_params.hasOwnProperty("serialised")) {
+        addDataFromURL(query_params.serialised, "inputTable");
     } else {
         // Add a first row to save the user a click
-        addSampleData(sourceTableID);
+        addSampleData("inputTable");
     }
 }
 
 
 function refresh(sourceTableID) {
-    'use strict';
+    "use strict";
     if (window.network) {
 
         const tableObj = $("#" + sourceTableID);
-        const drawingArea = $('#drawing_div');
+        const drawingArea = $("#drawing_div");
 
         redraw(drawingArea, tableObj);
     }
 }
 
+
 function copyToClipboard() {
-    'use strict';
-    const str = $('#id_export_link').text();
-    const el = document.createElement('textarea');  // Create a <textarea> element
+    "use strict";
+    const str = $("#id_export_link").text();
+    const el = document.createElement("textarea");  // Create a <textarea> element
     el.value = str;                                 // Set its value to the string that you want copied
-    el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';                      // Move outside the screen to make it invisible
+    el.setAttribute("readonly", "");                // Make it readonly to be tamper-proof
+    el.style.position = "absolute";
+    el.style.left = "-9999px";                      // Move outside the screen to make it invisible
     document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
     const selected =
         document.getSelection().rangeCount > 0      // Check if there is any content selected previously
         ? document.getSelection().getRangeAt(0)     // Store selection if found
         : false;                                    // Mark as false to know no selection existed before
     el.select();                                    // Select the <textarea> content
-    document.execCommand('copy');                   // Copy - only works as a result of a user action (e.g. click events)
+    document.execCommand("copy");                   // Copy - only works as a result of a user action (e.g. click events)
     document.body.removeChild(el);                  // Remove the <textarea> element
     if (selected) {                                 // If a selection existed before copying
         document.getSelection().removeAllRanges();  // Unselect everything on the HTML document
