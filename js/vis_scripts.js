@@ -153,19 +153,19 @@ function makeTable() {
     "use strict";
 
     return $("<table id='inputTable'>\n" +
-        "      <thead>\n" +
-        "        <tr>\n" +
-        "          <th>Source</th>\n" +
-        "          <th>Connector</th>\n" +
-        "          <th>Destination</th>\n" +
-        "          <th>\n" +
-        "            <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"inputTable\");'/>\n" +
-        "          </th>\n" +
-        "        </tr>\n" +
-        "      </thead>\n" +
-        "      <tbody>\n" +
-        "      </tbody>\n" +
-        "    </table>");
+        "       <thead>\n" +
+        "         <tr>\n" +
+        "           <th>Source</th>\n" +
+        "           <th>Connector</th>\n" +
+        "           <th>Destination</th>\n" +
+        "           <th>\n" +
+        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"inputTable\");'/>\n" +
+        "           </th>\n" +
+        "         </tr>\n" +
+        "       </thead>\n" +
+        "       <tbody>\n" +
+        "       </tbody>\n" +
+        "     </table>");
 }
 
 
@@ -602,9 +602,8 @@ function getQueryParams(qs) {
 }
 
 
-function addDataFromURL(serialisedData, targetTableID) {
+function addDataFromURL(serialisedData, tableObj) {
     "use strict";
-    const tableObj = $("#" + targetTableID);
 
     const unpackedData = deserialiseGraph(serialisedData);
 
@@ -646,7 +645,7 @@ function setUpSingleDrawingPage(divToCanvasList) {
     inputDiv.append(makeTable());
 
     if (query_params.hasOwnProperty("serialised")) {
-        addDataFromURL(query_params.serialised, "inputTable");
+        addDataFromURL(query_params.serialised, inputDiv.children("table").first());
     } else {
         // Add a first row to save the user a click
         addSampleData("inputTable");

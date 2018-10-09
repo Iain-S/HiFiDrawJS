@@ -237,7 +237,7 @@ function test_make_delete_button() {
     const assert = chai.assert;
     const delete_button = makeDeleteButton().filter("input").first();
     assert.equal(delete_button.attr("type"), "button");
-    assert.equal(delete_button.attr("value"), "Delete");
+    assert.equal(delete_button.attr("value"), "-");
 }
 
 
@@ -249,21 +249,12 @@ function test_make_table(){
 
     assert.equal(table.length, 1);
 
+    const fourth_column = table.children("thead").first().children("tr").first().children("th").eq(3);
+
+    const add_button = fourth_column.children("input").first();
+
+    assert.equal(add_button.attr("value"), "+");
 }
-// <table id="inputTable">
-//       <thead>
-//         <tr>
-//           <th>Source</th>
-//           <th>Connector</th>
-//           <th>Destination</th>
-//           <th style="padding-left: 1rem">
-//             <input type="button" id="btnAdd" value="Add" onclick="addRowRedraw("inputTable");" style="padding: 2px 17px"/>
-//           </th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//       </tbody>
-//     </table>
 
 
 function test_add_and_delete_row() {
@@ -714,18 +705,18 @@ function test_add_data_from_url() {
     const assert = chai.assert;
 
     // Create a test table and add it to our page
-    $("<table class='table' id='id_data_from_url'>\n" +
-                    "      <thead>\n" +
-                    "        <tr>\n" +
-                    "          <th>Source</th>\n" +
-                    "          <th>Connector</th>\n" +
-                    "          <th>Destination</th>\n" +
-                    "          <th>Other</th>\n" +
-                    "        </tr>\n" +
-                    "      </thead>\n" +
-                    "      <tbody>\n" +
-                    "      </tbody>\n" +
-                    "    </table>").appendTo(document.body);
+    const table = $("<table class='table' id='id_data_from_url'>\n" +
+                    "  <thead>\n" +
+                    "    <tr>\n" +
+                    "      <th>Source</th>\n" +
+                    "      <th>Connector</th>\n" +
+                    "      <th>Destination</th>\n" +
+                    "      <th>Other</th>\n" +
+                    "    </tr>\n" +
+                    "  </thead>\n" +
+                    "<tbody>\n" +
+                    "</tbody>\n" +
+                    "</table>"); //.appendTo(document.body);
 
     const graph = {"nodes":[{"id":1, "label":"a", "shape":"box"},
                             {"id":2, "label":"b", "shape":"box"},
@@ -740,9 +731,9 @@ function test_add_data_from_url() {
 
     const serialised_data = serialiseGraph(graph);
 
-    addDataFromURL(serialised_data, 'id_data_from_url');
+    addDataFromURL(serialised_data, table);
 
-    const body_rows = $('#id_data_from_url').children('tbody').first().children('tr').length;
+    const body_rows = table.children("tbody").first().children("tr").length;
 
     assert.equal(body_rows, 5);
 }
