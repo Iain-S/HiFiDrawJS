@@ -158,8 +158,8 @@ function makeTable() {
         "          <th>Source</th>\n" +
         "          <th>Connector</th>\n" +
         "          <th>Destination</th>\n" +
-        "          <th style='padding-left: 1rem'>\n" +
-        "            <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"inputTable\");' style='padding: 2px 17px'/>\n" +
+        "          <th>\n" +
+        "            <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"inputTable\");'/>\n" +
         "          </th>\n" +
         "        </tr>\n" +
         "      </thead>\n" +

@@ -31,6 +31,7 @@ body {
 }
 
 .paper.small-text {
+    /* fit more in each paper element */
     font-size: 0.75rem;
 }
 
