@@ -52,7 +52,7 @@ $(document).ready(function () {
         let append_string = "<p>" + "Running " + test_function.name + "...  ";
 
         // setUp
-        addSampleData("inputTable");
+        addSampleData($("#inputTable"));
 
         const time_started = performance.now();
         let ms_taken = undefined;
@@ -81,7 +81,7 @@ $(document).ready(function () {
     });
 
     // not essential but nice to have some data when looking at the page
-    addSampleData("inputTable");
+    addSampleData($("#inputTable"));
 
     const total_ms_taken = performance.now() - total_time_start;
 
@@ -641,7 +641,7 @@ function test_add_sample_data() {
     assert.equal(3, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
     try {
-        addSampleData("inputTable");
+        addSampleData(tableRef);
     } catch (ignore) {}
 
     tableBody = tableRef.children("tbody").first();

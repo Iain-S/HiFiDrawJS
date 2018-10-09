@@ -535,18 +535,11 @@ function deleteRowFromID(tableID, idx) {
 }
 
 
-function addSampleData(sourceTableID) {
+function addSampleData(tableObj) {
     "use strict";
-
-    const tableObj = $("#" + sourceTableID);
-
     addRow(tableObj, "phone", "amp", "XLR<>XLR");
     addRow(tableObj, "amp", "speakers");
     addRow(tableObj);
-
-    const drawingArea = $("#drawing_div");
-
-    redraw(drawingArea, tableObj);
 }
 
 
@@ -627,10 +620,6 @@ function addDataFromURL(serialisedData, tableObj) {
             addRow(tableObj, from_label, to_label, edge.label);
         }
     });
-
-    const drawingArea = $("#drawing_div");
-
-    redraw(drawingArea, tableObj);
 }
 
 
@@ -638,18 +627,22 @@ function setUpSingleDrawingPage(divToCanvasList) {
     "use strict";
     const query_params = getQueryParams(document.location.search);
 
-    const inputDivID = divToCanvasList[0].inputDivID;
-
-    const inputDiv = $("#"+inputDivID);
+    const inputDiv = $("#" + divToCanvasList[0].inputDivID);
 
     inputDiv.append(makeTable());
 
+    const inputTable = inputDiv.children("table").first();
+
     if (query_params.hasOwnProperty("serialised")) {
-        addDataFromURL(query_params.serialised, inputDiv.children("table").first());
+        addDataFromURL(query_params.serialised, inputTable);
     } else {
         // Add a first row to save the user a click
-        addSampleData("inputTable");
+        addSampleData(inputTable);
     }
+
+    const drawingArea = $("#" + divToCanvasList[0].drawingDivID);
+
+    redraw(drawingArea, inputDiv.children("table").first());
 }
 
 
