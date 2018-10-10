@@ -401,7 +401,7 @@ function makeNetwork(graph, drawingArea) {
                                     }
                              //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                          },
-                         edges: {length: 1000, // this doesn"t seem to do anything.  Confirm and report a bug...
+                         edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
                                  font: {size: 15,
                                         face: "Patrick Hand SC, arial"},
                                  arrowStrikethrough: false // note we may want to make the node borders a little thicker
@@ -419,11 +419,11 @@ function makeNetwork(graph, drawingArea) {
 }
 
 
-function addDownloadLink() {
-    "use strict";
+function addDownloadLink(downloadID = "id_download", drawingID = "drawing_div") {
+    //"use strict";
 
     const download_link = document.getElementById("id_download");
-    const network_canvas = document.getElementsByTagName("canvas")[0];
+    const network_canvas = $("#" + drawingID).find("canvas").first()[0];
 
     // make a new canvas so that we can add an opaque background
     const download_canvas = document.createElement("canvas");
@@ -484,7 +484,10 @@ function redraw(drawingArea, tableObj) {
         scale: scale
     });
 
-    network.on("afterDrawing", addDownloadLink);
+        network.on("afterDrawing",
+               function () {
+                   addDownloadLink()
+               });
 }
 
 
