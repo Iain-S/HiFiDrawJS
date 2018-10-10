@@ -56,7 +56,7 @@ class TestNewVisitor(unittest.TestCase):
         # Edith wants to make a super simple diagram to of her iPhone and active monitors.
         # Someone gives her a link to our site
 
-        # She notices the page title and header mention to-do lists
+        # She notices the page title and header
         self.assertIn('HiFiDraw', self.browser.title)
 
         page_header = self.browser.find_element_by_tag_name('h3').text
@@ -64,8 +64,8 @@ class TestNewVisitor(unittest.TestCase):
 
         # She notices a table row, which seems to want some source input
         table_cells = self.browser.find_elements_by_tag_name("input")
-        src_input_box = table_cells[4]
-        dst_input_box = table_cells[5]
+        src_input_box = table_cells[8]
+        dst_input_box = table_cells[9]
 
         self.assertEqual(
             src_input_box.get_attribute('placeholder'),
@@ -75,38 +75,8 @@ class TestNewVisitor(unittest.TestCase):
         # She notices a table row, which seems to want some destination input
         self.assertEqual(
             dst_input_box.get_attribute('placeholder'),
-            'destination'
+            'dest'
         )
-    #
-    #     # She notices that there is a blank area at the bottom of the page with no drawing in it
-    #     rects = self.browser.find_elements_by_tag_name('rect')
-    #     paths = self.browser.find_elements_by_tag_name('path')
-    #     svgs  = self.browser.find_elements_by_tag_name('svg')
-    #
-    #     self.assertEqual(len(rects), 0, "Page should start with no rectangles.")
-    #     self.assertEqual(len(paths), 0, "Page should start with no paths.")
-    #     self.assertEqual(len(svgs), 1, "Page should start with one svg element.")
-    #
-    #     # She enters a source and destination and clicks the button
-    #     src_input_box.send_keys("Edith's iPhone")
-    #     dst_input_box.send_keys("Mackie CR3s")
-    #     button = self.browser.find_element_by_id("btnAdd")
-    #     button.click()
-    #     time.sleep(0.5)
-    #
-    #     # She sees a new row, making a total of four in the table
-    #     # (one header, one for the button, the auto first row and the new one)
-    #     all_rows = self.browser.find_elements_by_tag_name('tr')
-    #     self.assertEqual(len(all_rows), 4, "Expected four rows in table after button click.")
-    #
-    #     # She also sees that her diagram has been drawn with two rects and a path
-    #     rects = self.browser.find_elements_by_tag_name('rect')
-    #     paths = self.browser.find_elements_by_tag_name('path')
-    #
-    #     paths = [p for p in paths if p.get_attribute('id') != 'raphael-marker-block']
-    #
-    #     self.assertEqual(len(rects), 2, "Expected two rectangles after button click.")
-    #     self.assertEqual(len(paths), 1, "Expected one path after button click")
 
     def test_keyboard_shortcuts(self):
         # There should be a total of four in the table;
@@ -136,7 +106,7 @@ class TestNewVisitor(unittest.TestCase):
         self.assertEqual(num_rows_start, 4, "Expected four rows to begin with.")
 
         # Try to delete a row
-        self.browser.find_element_by_xpath("//input[@value='Delete']").click()
+        self.browser.find_element_by_xpath("//input[@value='-']").click()
 
         end_rows = self.browser.find_elements_by_tag_name('tr')
         num_rows_end = len(end_rows)
