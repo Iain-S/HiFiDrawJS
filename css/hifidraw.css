@@ -43,21 +43,20 @@ input {
 
 select {
     font-size: 0.75rem;
-    padding-bottom: 0.15rem;
-    padding-top: 0.15rem;
-    padding-left: 0.0rem;
-    padding-right: 0.0rem;
     width: 4.5rem;
+
+    /* top, right, bottom, left */
+    padding: 0.15rem 0rem 0.15rem 0rem;
 }
 
 table input[type="button"] {
     font-size: 0.75rem;
-    padding: 0.2rem;
+    margin-bottom: 0rem;
+
+    /* top, right, bottom, left */
+    padding: 0.2rem 0.4rem 0.2rem 0.4rem;
 }
 
-table th input[type="button"] {
-    padding: 0.2rem;
-}
 
 div table th tr td {
     /* Make the table cells a little smaller */
@@ -66,8 +65,4 @@ div table th tr td {
 
 .word-wrap {
     word-wrap: break-word;
-}
-
-.no-margin-bottom {
-    margin-bottom: 0rem;
 }
