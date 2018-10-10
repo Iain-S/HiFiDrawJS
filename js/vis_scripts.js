@@ -90,7 +90,7 @@ function makeSourceBox(value, id) {
     }
 
     if (id !== undefined) {
-        element.setAttribute("id", "id_dst_" + id.toString());
+        element.setAttribute("id", "id_src_" + id.toString());
     }
 
     return $(element);
@@ -149,8 +149,8 @@ function makeDeleteButton() {
 }
 
 
-function makeTable() {
-    "use strict";
+function makeTable(tableID='\"inputTable\"') {
+    //"use strict";
 
     return $("<table id='inputTable'>\n" +
         "       <thead>\n" +
@@ -159,7 +159,7 @@ function makeTable() {
         "           <th>Connector</th>\n" +
         "           <th>Destination</th>\n" +
         "           <th>\n" +
-        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"inputTable\");'/>\n" +
+        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(" + tableID + ");'/>\n" +
         "           </th>\n" +
         "         </tr>\n" +
         "       </thead>\n" +
@@ -637,7 +637,6 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     if (query_params.hasOwnProperty("serialised")) {
         addDataFromURL(query_params.serialised, inputTable);
     } else {
-        // Add a first row to save the user a click
         addSampleData(inputTable);
     }
 

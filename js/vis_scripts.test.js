@@ -1,9 +1,9 @@
-/*global $, chai, document */
+/*global $, chai, performance, document */
 /*jslint es6 */
 /* Things to do once the unit_tests page has loaded */
 $(document).ready(function () {
     // Function-level strict mode syntax
-    'use strict';
+    "use strict";
 
     const total_time_start = performance.now();
 
@@ -214,10 +214,10 @@ function test_make_source_box_with_id() {
 
     const assert = chai.assert;
     let source_box = makeSourceBox(null, 0).filter("input");
-    assert.equal("id_dst_0", source_box.attr("id"));
+    assert.equal("id_src_0", source_box.attr("id"));
 
-    source_box = makeDestinationBox(null, 84456).filter("input");
-    assert.equal("id_dst_84456", source_box.attr("id"));
+    source_box = makeSourceBox(null, 84456).filter("input");
+    assert.equal("id_src_84456", source_box.attr("id"));
 }
 
 
@@ -244,15 +244,11 @@ function test_make_delete_button() {
 function test_make_table(){
     "use strict";
     const assert = chai.assert;
-
     const table = makeTable().filter("table").first();
-
     assert.equal(table.length, 1);
 
     const fourth_column = table.children("thead").first().children("tr").first().children("th").eq(3);
-
     const add_button = fourth_column.children("input").first();
-
     assert.equal(add_button.attr("value"), "+");
 }
 
