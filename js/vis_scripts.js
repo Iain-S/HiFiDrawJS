@@ -623,15 +623,16 @@ function addDataFromURL(serialisedData, tableObj) {
 }
 
 
-function setUpSingleDrawingPage(divToCanvasList) {
+function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     "use strict";
+
+    const inputDiv = $("#" + inputDivID);
+
+    const inputTable = makeTable();
+
+    inputDiv.append(inputTable);
+
     const query_params = getQueryParams(document.location.search);
-
-    const inputDiv = $("#" + divToCanvasList[0].inputDivID);
-
-    inputDiv.append(makeTable());
-
-    const inputTable = inputDiv.children("table").first();
 
     if (query_params.hasOwnProperty("serialised")) {
         addDataFromURL(query_params.serialised, inputTable);
@@ -640,27 +641,27 @@ function setUpSingleDrawingPage(divToCanvasList) {
         addSampleData(inputTable);
     }
 
-    const drawingArea = $("#" + divToCanvasList[0].drawingDivID);
+    const drawingArea = $("#" + drawingDivID);
 
-    redraw(drawingArea, inputDiv.children("table").first());
+    redraw(drawingArea, inputTable);
 }
 
 
-function refresh(sourceTableID) {
-    "use strict";
+function refresh(sourceTableID, drawingDivID="drawing_div") {
+    // "use strict";
     if (window.network) {
 
         const tableObj = $("#" + sourceTableID);
-        const drawingArea = $("#drawing_div");
+        const drawingArea = $("#" + drawingDivID);
 
         redraw(drawingArea, tableObj);
     }
 }
 
 
-function copyToClipboard() {
+function copyToClipboard(idExportLink) {
     "use strict";
-    const str = $("#id_export_link").text();
+    const str = $("#" + idExportLink).text();
     const el = document.createElement("textarea");  // Create a <textarea> element
     el.value = str;                                 // Set its value to the string that you want copied
     el.setAttribute("readonly", "");                // Make it readonly to be tamper-proof
