@@ -39,21 +39,7 @@
 </nav>
 <div class="row">
   <div class="xs-12 md-3 col minwid">
-    <div class="paper small-text">
-      <table id="inputTable" class="fixed-width-table">
-        <thead>
-          <tr>
-            <th>Source</th>
-            <th>Connector</th>
-            <th>Destination</th>
-            <th>
-              <input type="button" id="btnAdd" value="Add" class="no-margin-bottom" onclick="addRowRedraw('inputTable');"/>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+    <div class="paper small-text" id="inputDiv">
     </div>
   </div>
   <div class="xs-12 md-6 col">
@@ -85,7 +71,8 @@
   <script src="js/vis_scripts.js"></script>
   <script>
     window.onload = function() {
-        setUpPage('inputTable');
+        // link our data and drawing area together
+        setUpSingleDrawingPage([{inputDivID: 'inputDiv', drawingDivID: 'drawing_div'},]);
     }
   </script>
 </body>

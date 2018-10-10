@@ -31,6 +31,7 @@ body {
 }
 
 .paper.small-text {
+    /* fit more in each paper element */
     font-size: 0.75rem;
 }
 
@@ -59,6 +60,7 @@ table th input[type="button"] {
 }
 
 div table th tr td {
+    /* Make the table cells a little smaller */
     padding: 0.1rem;
 }
 
