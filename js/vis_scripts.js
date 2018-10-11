@@ -23,7 +23,7 @@ function setKeydownListener(inputTableID, drawingDivID) {
             if (window.pressedKeys[16]) {
                 deleteLastDataRowFromID(inputTableID, drawingDivID);
             } else {
-                addRowRedraw(inputTableID);
+                addRowRedraw(inputTableID, drawingDivID);
             }
         }
     });
@@ -121,7 +121,7 @@ function makeDestinationBox(value, id) {
 }
 
 
-function makeDeleteButton() {
+function makeDeleteButton(drawingDivID) {
     "use strict";
 
     //Create an input type dynamically.
@@ -136,7 +136,7 @@ function makeDeleteButton() {
     jqe.click(
         function () {
             const theTable = $(this).closest("table");
-            const drawingArea = $("#drawing_div");
+            const drawingArea = $("#" + drawingDivID);
 
             $(this).closest("tr").remove();
 
@@ -170,7 +170,7 @@ function makeTable(tableID) {
 }
 
 
-function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
+function addRow(tableObj, source_val = null, dest_val = null, conn_val = null, drawingDivID="drawing_div") {
 
     const tableBody = tableObj.children("tbody").first();
 
@@ -219,7 +219,7 @@ function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
     dstBox.appendTo(dstCell);
 
     const deleteCell = newRow.insertCell(3);
-    makeDeleteButton().appendTo(deleteCell);
+    makeDeleteButton(drawingDivID).appendTo(deleteCell);
 
     return tableBody;
 }
@@ -478,14 +478,14 @@ function redraw(drawingArea, tableObj) {
 
 
 /* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID) {
-    "use strict";
+function addRowRedraw(sourceTableID, drawingDivID="drawing_div") {
+    // "use strict";
 
     const tableObj = $("#" + sourceTableID);
 
     addRow(tableObj);
 
-    const drawingArea = $("#drawing_div");
+    const drawingArea = $("#" + drawingDivID);
 
     redraw(drawingArea, tableObj);
 }
@@ -652,8 +652,8 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
 }
 
 
-function refresh(sourceTableID, drawingDivID="drawing_div") {
-    // "use strict";
+function refresh(sourceTableID, drawingDivID) {
+    "use strict";
     if (window.network) {
 
         const tableObj = $("#" + sourceTableID);
