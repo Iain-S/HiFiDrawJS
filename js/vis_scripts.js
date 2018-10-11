@@ -460,7 +460,7 @@ function redraw(drawingArea, tableObj) {
     // We store the network in the window global object
     // There is probably a nicer way to do this
     if (window.hifidrawNetwork) {
-        //getNodePositionsFromNetwork(graph, window.hifidrawNetwork);
+        getNodePositionsFromNetwork(graph, window.hifidrawNetwork);
 
         scale = window.hifidrawNetwork.getScale();
         position = window.hifidrawNetwork.getViewPosition();
