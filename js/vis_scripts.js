@@ -2,7 +2,7 @@
 /*jslint es6 */
 
 
-function setKeydownListener(inputTableID, drawingDivID) {
+function setKeydownListener(inputTableID, drawingArea) {
     "use strict";
 
     if (! window.hasOwnProperty("pressedKeys")) {
@@ -27,7 +27,7 @@ function setKeydownListener(inputTableID, drawingDivID) {
             if (window.pressedKeys[16]) {
                 deleteLastDataRowFromID(inputTableID, drawingDivID);
             } else {
-                addRowRedraw(inputTableID, drawingDivID);
+                addRowRedraw(inputTableID, drawingArea);
             }
         }
     });
@@ -153,7 +153,7 @@ function makeDeleteButton(drawingArea) {
 }
 
 
-function makeTable(tableID, drawingDivID) {
+function makeTable(tableID, drawingArea) {
     "use strict";
 
     const newTable =
@@ -175,7 +175,7 @@ function makeTable(tableID, drawingDivID) {
     const button = newTable.find("input").first();
 
     button.click(function(){
-        addRowRedraw(tableID, drawingDivID);
+        addRowRedraw(tableID, drawingArea);
     });
 
     return newTable;
@@ -495,12 +495,10 @@ function redraw(drawingArea, tableObj) {
 
 
 /* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID, drawingDivID) {
+function addRowRedraw(sourceTableID, drawingArea) {
     "use strict";
 
     const tableObj = $("#" + sourceTableID);
-
-    const drawingArea = $("#" + drawingDivID);
 
     addRow(tableObj, drawingArea);
 
@@ -661,7 +659,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
         addSampleData(inputTable, drawingArea);
     }
 
-    setKeydownListener(inputTable.attr("id"), drawingDivID);
+    setKeydownListener(inputTable.attr("id"), drawingArea);
 
     redraw(drawingArea, inputTable);
 }
