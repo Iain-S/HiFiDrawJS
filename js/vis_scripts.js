@@ -451,7 +451,7 @@ function redraw(drawingArea, tableObj) {
     // We store the network in the window global object
     // There is probably a nicer way to do this
     if (window.network) {
-        getNodePositionsFromNetwork(graph, window.network);
+        //getNodePositionsFromNetwork(graph, window.network);
 
         scale = window.network.getScale();
         position = window.network.getViewPosition();
