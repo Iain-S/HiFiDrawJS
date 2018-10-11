@@ -45,7 +45,6 @@
   <div class="xs-12 md-6 col">
     <div class="paper small-text">
       <div id="drawing_div" class="paper-border"></div>
-      <input type="button" class="btn-small" id="btnRefresh" value="Refresh" onclick="refresh('inputTable');"/>
     </div>
   </div>
   <div class="xs-12 sm-3 col">
@@ -72,7 +71,7 @@
   <script>
     window.onload = function() {
         // link our data and drawing area together
-        setUpSingleDrawingPage([{inputDivID: 'inputDiv', drawingDivID: 'drawing_div'},]);
+        setUpSingleDrawingPage("inputDiv", "drawing_div");
     }
   </script>
 </body>

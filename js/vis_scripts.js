@@ -1,32 +1,5 @@
 /*global window, $, vis, document, event, console */
 /*jslint es6 */
-window.pressedKeys = {};
-
-$(document.body).keydown(function (evt) {
-    "use strict";
-
-    evt = evt || event; // to deal with IE
-
-    window.pressedKeys[evt.keyCode] = evt.type === "keydown";
-
-    // Shift + Enter to delete last row or Enter for new row
-    if (window.pressedKeys[13]) {
-        if (window.pressedKeys[16]) {
-            deleteLastDataRowFromID("inputTable");
-        } else {
-            addRowRedraw("inputTable");
-        }
-    }
-});
-
-
-$(document.body).keyup(function (evt) {
-    "use strict";
-
-    evt = evt || event; // to deal with IE
-
-    window.pressedKeys[evt.keyCode] = evt.type === "keydown";
-});
 
 
 function countBodyRows(tableBody) {
@@ -90,7 +63,7 @@ function makeSourceBox(value, id) {
     }
 
     if (id !== undefined) {
-        element.setAttribute("id", "id_dst_" + id.toString());
+        element.setAttribute("id", "id_src_" + id.toString());
     }
 
     return $(element);
@@ -117,125 +90,6 @@ function makeDestinationBox(value, id) {
     }
 
     return $(element);
-}
-
-
-function makeDeleteButton() {
-    "use strict";
-
-    //Create an input type dynamically.
-    const element = document.createElement("input");
-
-    //Assign different attributes to the element.
-    element.setAttribute("type", "button");
-    element.setAttribute("value", "-");
-
-    let jqe = $(element);
-
-    jqe.click(
-        function () {
-            const theTable = $(this).closest("table");
-            const drawingArea = $("#drawing_div");
-
-            $(this).closest("tr").remove();
-
-            redraw(drawingArea, theTable);
-
-            return false;
-        }
-    );
-
-    return jqe;
-}
-
-
-function makeTable() {
-    "use strict";
-
-    return $("<table id='inputTable'>\n" +
-        "       <thead>\n" +
-        "         <tr>\n" +
-        "           <th>Source</th>\n" +
-        "           <th>Connector</th>\n" +
-        "           <th>Destination</th>\n" +
-        "           <th>\n" +
-        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"inputTable\");'/>\n" +
-        "           </th>\n" +
-        "         </tr>\n" +
-        "       </thead>\n" +
-        "       <tbody>\n" +
-        "       </tbody>\n" +
-        "     </table>");
-}
-
-
-function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
-
-    const tableBody = tableObj.children("tbody").first();
-
-    // if the last row has focus, we will later set the focus to the last source input
-    const childRows = tableBody.children("tr");
-    const lastRowCells = childRows.eq(childRows.length - 1).children("td");
-    let lastRowHasFocus = false;
-
-    const redraw_func = function () {redraw($("#drawing_div"), tableObj);};
-
-    // Note, focus is lost if the user clicks a delete button
-    lastRowCells.each(function () {
-        // assume each cell only has one child element
-        if ($(this).children().first().is($(document.activeElement))) {
-            lastRowHasFocus = true;
-        }
-    });
-
-    // Insert a row at the end of the table
-    const newRow = tableBody[0].insertRow(tableBody[0].rows.length);
-
-    // Insert a cell in the row at index 0
-    let srcCell = newRow.insertCell(0);
-    let srcBox = makeSourceBox(source_val);
-
-    srcBox.focusout(redraw_func);
-
-    srcBox.appendTo(srcCell);
-
-    if (lastRowHasFocus) {
-        srcBox.focus();
-    }
-
-    const connCell = newRow.insertCell(1);
-    const connMenu = makeConnectorMenu(conn_val);
-
-    connMenu.focusout(redraw_func);
-
-    connMenu.appendTo(connCell);
-
-    const dstCell = newRow.insertCell(2);
-    const dstBox = makeDestinationBox(dest_val);
-
-    dstBox.focusout(redraw_func);
-
-    dstBox.appendTo(dstCell);
-
-    const deleteCell = newRow.insertCell(3);
-    makeDeleteButton().appendTo(deleteCell);
-
-    return tableBody;
-}
-
-
-function deleteLastDataRowFromID(tableID) {
-    /* This is a safe delete function, it will always leave the
-    *  headers and the add button. */
-    "use strict";
-
-    const theTable = $("#" + tableID);
-
-    const tableBody = theTable.children("tbody").first();
-
-    if (tableBody.find("tr").length > 1) {
-        deleteRowFromID(tableID, tableBody.children("tr").length - 1);
-    }
 }
 
 
@@ -372,19 +226,6 @@ function getNodePositionsFromNetwork(graph, network) {
 }
 
 
-function updateExportURL(graph, linkObject) {
-    "use strict";
-    const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
-
-    if (link_url.length > 2082) {
-        linkObject.text("The URL would have been over 2,083 characters.  " +
-            "That is the upper limit of some browsers.  Consider shortening the names of some of your components.");
-    } else {
-        linkObject.text(link_url);
-    }
-}
-
-
 function makeNetwork(graph, drawingArea) {
     "use strict";
     const vis_nodes = new vis.DataSet(graph.nodes);
@@ -401,7 +242,7 @@ function makeNetwork(graph, drawingArea) {
                                     }
                              //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                          },
-                         edges: {length: 1000, // this doesn"t seem to do anything.  Confirm and report a bug...
+                         edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
                                  font: {size: 15,
                                         face: "Patrick Hand SC, arial"},
                                  arrowStrikethrough: false // note we may want to make the node borders a little thicker
@@ -419,11 +260,11 @@ function makeNetwork(graph, drawingArea) {
 }
 
 
-function addDownloadLink() {
+function addDownloadLink(downloadID, drawingID) {
     "use strict";
 
-    const download_link = document.getElementById("id_download");
-    const network_canvas = document.getElementsByTagName("canvas")[0];
+    const download_link = document.getElementById(downloadID);
+    const network_canvas = $("#" + drawingID).find("canvas").first()[0];
 
     // make a new canvas so that we can add an opaque background
     const download_canvas = document.createElement("canvas");
@@ -447,7 +288,32 @@ function addDownloadLink() {
 }
 
 
-function redraw(drawingArea, tableObj) {
+function serialiseGraph(graphData) {
+    "use strict";
+    return JSON.stringify(graphData);
+}
+
+
+function deserialiseGraph(serialisedGraph) {
+    "use strict";
+    return JSON.parse(serialisedGraph);
+}
+
+
+function updateExportURL(graph, linkObject) {
+    "use strict";
+    const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
+
+    if (link_url.length > 2082) {
+        linkObject.text("The URL would have been over 2,083 characters.  " +
+            "That is the upper limit of some browsers.  Consider shortening the names of some of your components.");
+    } else {
+        linkObject.text(link_url);
+    }
+}
+
+
+function redraw(tableObj, drawingArea) {
     "use strict";
     // ToDo This function does too much, break it up
     const graph = graphFromTable(tableObj);
@@ -456,11 +322,11 @@ function redraw(drawingArea, tableObj) {
 
     // We store the network in the window global object
     // There is probably a nicer way to do this
-    if (window.network) {
-        getNodePositionsFromNetwork(graph, window.network);
+    if (window.hifidrawNetwork) {
+        getNodePositionsFromNetwork(graph, window.hifidrawNetwork);
 
-        scale = window.network.getScale();
-        position = window.network.getViewPosition();
+        scale = window.hifidrawNetwork.getScale();
+        position = window.hifidrawNetwork.getViewPosition();
     }
 
     updateExportURL(graph, $("#id_export_link"));
@@ -468,7 +334,7 @@ function redraw(drawingArea, tableObj) {
     const network = makeNetwork(graph, drawingArea);
 
     // remember it for next time
-    window.network = network;
+    window.hifidrawNetwork = network;
 
     // keep the old position if there is one else
     if (position === undefined) {
@@ -484,25 +350,143 @@ function redraw(drawingArea, tableObj) {
         scale: scale
     });
 
-    network.on("afterDrawing", addDownloadLink);
+    network.on("afterDrawing",
+           function () {
+               addDownloadLink("id_download", drawingArea.attr("id"));
+           });
+}
+
+
+function makeDeleteButton(drawingArea) {
+    "use strict";
+
+    //Create an input type dynamically.
+    const element = document.createElement("input");
+
+    //Assign different attributes to the element.
+    element.setAttribute("type", "button");
+    element.setAttribute("value", "-");
+
+    let jqe = $(element);
+
+    jqe.click(
+        function () {
+            const theTable = $(this).closest("table");
+
+            $(this).closest("tr").remove();
+
+            redraw(theTable, drawingArea);
+
+            return false;
+        }
+    );
+
+    return jqe;
+}
+
+
+function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
+    "use strict";
+
+    const tableBody = tableObj.children("tbody").first();
+
+    // if the last row has focus, we will later set the focus to the last source input
+    const childRows = tableBody.children("tr");
+    const lastRowCells = childRows.eq(childRows.length - 1).children("td");
+    let lastRowHasFocus = false;
+
+    //const drawingArea = $("#" + drawingDivID);
+
+    const redraw_func = function () {
+                            redraw(tableObj, drawingArea);
+                        };
+
+    // Note, focus is lost if the user clicks a delete button
+    lastRowCells.each(function () {
+        // assume each cell only has one child element
+        if ($(this).children().first().is($(document.activeElement))) {
+            lastRowHasFocus = true;
+        }
+    });
+
+    // Insert a row at the end of the table
+    const newRow = tableBody[0].insertRow(tableBody[0].rows.length);
+
+    // Insert a cell in the row at index 0
+    let srcCell = newRow.insertCell(0);
+    let srcBox = makeSourceBox(source_val);
+
+    srcBox.focusout(redraw_func);
+
+    srcBox.appendTo(srcCell);
+
+    if (lastRowHasFocus) {
+        srcBox.focus();
+    }
+
+    const connCell = newRow.insertCell(1);
+    const connMenu = makeConnectorMenu(conn_val);
+
+    connMenu.focusout(redraw_func);
+
+    connMenu.appendTo(connCell);
+
+    const dstCell = newRow.insertCell(2);
+    const dstBox = makeDestinationBox(dest_val);
+
+    dstBox.focusout(redraw_func);
+
+    dstBox.appendTo(dstCell);
+
+    const deleteCell = newRow.insertCell(3);
+    makeDeleteButton(drawingArea).appendTo(deleteCell);
+
+    return tableBody;
 }
 
 
 /* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID) {
+function addRowRedraw(sourceTableID, drawingArea) {
     "use strict";
 
     const tableObj = $("#" + sourceTableID);
 
-    addRow(tableObj);
+    addRow(tableObj, drawingArea);
 
-    const drawingArea = $("#drawing_div");
-
-    redraw(drawingArea, tableObj);
+    redraw(tableObj, drawingArea);
 }
 
 
-function deleteRowFromID(tableID, idx) {
+function makeTable(tableID, drawingArea) {
+    "use strict";
+
+    const newTable =
+           $("<table id='" + tableID + "'>\n" +
+        "       <thead>\n" +
+        "         <tr>\n" +
+        "           <th>Source</th>\n" +
+        "           <th>Connector</th>\n" +
+        "           <th>Destination</th>\n" +
+        "           <th>\n" +
+        "             <input type='button' value='+'/>\n" +
+        "           </th>\n" +
+        "         </tr>\n" +
+        "       </thead>\n" +
+        "       <tbody>\n" +
+        "       </tbody>\n" +
+        "     </table>");
+
+    const button = newTable.find("input").first();
+
+    button.click(function(){
+        addRowRedraw(tableID, drawingArea);
+    });
+
+    return newTable;
+}
+
+
+function deleteRowFromID(tableID, idx, drawingArea) {
     "use strict";
 
     const theTable = $("#" + tableID);
@@ -529,21 +513,34 @@ function deleteRowFromID(tableID, idx) {
 
     tableBody.children("tr").eq(idx).remove();
 
-    const drawingArea = $("#drawing_div");
-
-    redraw(drawingArea, theTable);
+    redraw(theTable, drawingArea);
 }
 
 
-function addSampleData(tableObj) {
+function deleteLastDataRowFromID(tableID, drawingArea) {
+    /* This is a safe delete function, it will always leave the
+    *  headers and the add button. */
     "use strict";
-    addRow(tableObj, "phone", "amp", "XLR<>XLR");
-    addRow(tableObj, "amp", "speakers");
-    addRow(tableObj);
+
+    const theTable = $("#" + tableID);
+
+    const tableBody = theTable.children("tbody").first();
+
+    if (tableBody.find("tr").length > 1) {
+        deleteRowFromID(tableID, tableBody.children("tr").length - 1, drawingArea);
+    }
 }
 
 
-function removeSampleData(sourceTableID) {
+function addSampleData(tableObj, drawingArea) {
+    "use strict";
+    addRow(tableObj, drawingArea, "phone", "amp", "XLR<>XLR");
+    addRow(tableObj, drawingArea, "amp", "speakers");
+    addRow(tableObj, drawingArea);
+}
+
+
+function removeSampleData(sourceTableID, drawingDivID) {
     "use strict";
 
     const tableObj = $("#" + sourceTableID);
@@ -551,21 +548,8 @@ function removeSampleData(sourceTableID) {
     const tableBody = tableObj.children("tbody").first();
     tableBody.empty();
 
-    const drawingArea = $("#drawing_div");
-    redraw(drawingArea, tableObj);
-}
-
-
-function serialiseGraph(graphData) {
-    "use strict";
-    return JSON.stringify(graphData);
-}
-
-
-function deserialiseGraph(serialisedGraph) {
-    // Function-level strict mode syntax
-    "use strict";
-    return JSON.parse(serialisedGraph);
+    const drawingArea = $("#" + drawingDivID);
+    redraw(tableObj, drawingArea);
 }
 
 
@@ -573,17 +557,17 @@ function deserialiseGraph(serialisedGraph) {
    e.g. www.my-site.com?something=a_thing&what=why
         will return a dict with something and what as keys
    You can call it like this getQueryParams(document.location.search)*/
-function getQueryParams(qs) {
+function getQueryParams(queryString) {
     "use strict";
 
-    qs = qs.split("+").join(" ");
+    queryString = queryString.split("+").join(" ");
 
-    let params = {},
-        tokens,
-        re = /[?&]?([^=]+)=([^&]*)/g;
+    let params = {};
+    let tokens;
+    const re = /[?&]?([^=]+)=([^&]*)/g;
 
     do {
-        tokens = re.exec(qs);
+        tokens = re.exec(queryString);
         if (tokens) {
             params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
         } else {
@@ -595,7 +579,7 @@ function getQueryParams(qs) {
 }
 
 
-function addDataFromURL(serialisedData, tableObj) {
+function addDataFromURL(serialisedData, tableObj, drawingDivID) {
     "use strict";
 
     const unpackedData = deserialiseGraph(serialisedData);
@@ -617,63 +601,105 @@ function addDataFromURL(serialisedData, tableObj) {
         });
 
         if (from_label && to_label) {
-            addRow(tableObj, from_label, to_label, edge.label);
+            addRow(tableObj, $("#"+drawingDivID), from_label, to_label, edge.label);
         }
     });
 }
 
 
-function setUpSingleDrawingPage(divToCanvasList) {
+function refresh(sourceTable, drawingArea) {
     "use strict";
+
+    redraw(sourceTable, drawingArea);
+}
+
+
+function makeRefreshButton(inputTable, drawingArea) {
+    "use strict";
+    const button = $("<input type=\"button\" class=\"btn-small\" value=\"Refresh\"/>");
+
+    button.click(function() {
+                   refresh(inputTable, drawingArea);
+                 });
+
+    return button;
+}
+
+
+function setKeydownListener(inputTableID, drawingArea) {
+    "use strict";
+
+    if (! window.hasOwnProperty("pressedKeys")) {
+        window.pressedKeys = {};
+    }
+
+    $(document.body).keyup(function (evt) {
+
+        evt = evt || event; // to deal with IE
+
+        window.pressedKeys[evt.keyCode] = evt.type === "keydown";
+    });
+
+    $(document.body).keydown(function (evt) {
+
+        evt = evt || event; // to deal with IE
+
+        window.pressedKeys[evt.keyCode] = evt.type === "keydown";
+
+        // Shift + Enter to delete last row or Enter for new row
+        if (window.pressedKeys[13]) {
+            if (window.pressedKeys[16]) {
+                deleteLastDataRowFromID(inputTableID, drawingArea);
+            } else {
+                addRowRedraw(inputTableID, drawingArea);
+            }
+        }
+    });
+}
+
+
+function setUpSingleDrawingPage(inputDivID, drawingDivID) {
+    "use strict";
+
+    const inputDiv = $("#" + inputDivID);
+
+    const drawingArea = $("#" + drawingDivID);
+
+    const inputTable = makeTable("inputTable", drawingArea);
+
+    inputDiv.append(inputTable);
+
+    drawingArea.parent().append(makeRefreshButton(inputTable, drawingArea));
+
     const query_params = getQueryParams(document.location.search);
 
-    const inputDiv = $("#" + divToCanvasList[0].inputDivID);
-
-    inputDiv.append(makeTable());
-
-    const inputTable = inputDiv.children("table").first();
-
     if (query_params.hasOwnProperty("serialised")) {
-        addDataFromURL(query_params.serialised, inputTable);
+        addDataFromURL(query_params.serialised, inputTable, drawingDivID);
     } else {
-        // Add a first row to save the user a click
-        addSampleData(inputTable);
+        addSampleData(inputTable, drawingArea);
     }
 
-    const drawingArea = $("#" + divToCanvasList[0].drawingDivID);
+    setKeydownListener(inputTable.attr("id"), drawingArea);
 
-    redraw(drawingArea, inputDiv.children("table").first());
+    redraw(inputTable, drawingArea);
 }
 
 
-function refresh(sourceTableID) {
+function copyToClipboard(idExportLink) {
     "use strict";
-    if (window.network) {
-
-        const tableObj = $("#" + sourceTableID);
-        const drawingArea = $("#drawing_div");
-
-        redraw(drawingArea, tableObj);
-    }
-}
-
-
-function copyToClipboard() {
-    "use strict";
-    const str = $("#id_export_link").text();
-    const el = document.createElement("textarea");  // Create a <textarea> element
-    el.value = str;                                 // Set its value to the string that you want copied
-    el.setAttribute("readonly", "");                // Make it readonly to be tamper-proof
-    el.style.position = "absolute";
-    el.style.left = "-9999px";                      // Move outside the screen to make it invisible
-    document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
+    const textArea = document.createElement("textarea");  // Create a <textarea> element
+    textArea.value = $("#" + idExportLink).text();        // Set its value to the string that you want copied
+    textArea.setAttribute("readonly", "");                // Make it readonly to be tamper-proof
+    textArea.style.position = "absolute";
+    textArea.style.left = "-9999px";                      // Move outside the screen to make it invisible
+    document.body.appendChild(textArea);                  // Append the <textarea> element to the HTML document
     const selected =
         document.getSelection().rangeCount > 0      // Check if there is any content selected previously
         ? document.getSelection().getRangeAt(0)     // Store selection if found
         : false;                                    // Mark as false to know no selection existed before
-    el.select();                                    // Select the <textarea> content
+    textArea.select();                              // Select the <textarea> content
     document.execCommand("copy");                   // Copy - only works as a result of a user action (e.g. click events)
-    document.body.removeChild(el);                  // Remove the <textarea> element
+    document.body.removeChild(textArea);            // Remove the <textarea> element
     if (selected) {                                 // If a selection existed before copying
         document.getSelection().removeAllRanges();  // Unselect everything on the HTML document
         document.getSelection().addRange(selected); // Restore the original selection
