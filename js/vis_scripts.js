@@ -156,20 +156,29 @@ function makeDeleteButton(drawingArea) {
 function makeTable(tableID, drawingDivID) {
     "use strict";
 
-    return $("<table id='" + tableID + "'>\n" +
+    const newTable =
+           $("<table id='" + tableID + "'>\n" +
         "       <thead>\n" +
         "         <tr>\n" +
         "           <th>Source</th>\n" +
         "           <th>Connector</th>\n" +
         "           <th>Destination</th>\n" +
         "           <th>\n" +
-        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"" + tableID + "\",\"" + drawingDivID + "\");'/>\n" +
+        "             <input type='button' id='btnAdd' value='+'/>\n" +
         "           </th>\n" +
         "         </tr>\n" +
         "       </thead>\n" +
         "       <tbody>\n" +
         "       </tbody>\n" +
         "     </table>");
+
+    const button = newTable.find("input").first();
+
+    button.click(function(){
+        addRowRedraw(tableID, drawingDivID);
+    });
+
+    return newTable;
 }
 
 
@@ -450,11 +459,11 @@ function redraw(drawingArea, tableObj) {
 
     // We store the network in the window global object
     // There is probably a nicer way to do this
-    if (window.network) {
-        //getNodePositionsFromNetwork(graph, window.network);
+    if (window.hifidrawNetwork) {
+        //getNodePositionsFromNetwork(graph, window.hifidrawNetwork);
 
-        scale = window.network.getScale();
-        position = window.network.getViewPosition();
+        scale = window.hifidrawNetwork.getScale();
+        position = window.hifidrawNetwork.getViewPosition();
     }
 
     updateExportURL(graph, $("#id_export_link"));
@@ -462,7 +471,7 @@ function redraw(drawingArea, tableObj) {
     const network = makeNetwork(graph, drawingArea);
 
     // remember it for next time
-    window.network = network;
+    window.hifidrawNetwork = network;
 
     // keep the old position if there is one else
     if (position === undefined) {
