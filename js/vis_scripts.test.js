@@ -23,6 +23,7 @@ $(document).ready(function () {
         test_make_source_box_with_value,
         test_make_delete_button,
         test_make_table,
+        test_make_refresh_button,
         test_delete_last_row_leaves_essentials,
         test_add_and_delete_row,
         test_add_row,
@@ -53,7 +54,7 @@ $(document).ready(function () {
         let append_string = "<p>" + "Running " + test_function.name + "...  ";
 
         // setUp
-        addSampleData($("#inputTable"));
+        addSampleData($("#inputTable"), $("#drawing_div"));
 
         const time_started = performance.now();
         let ms_taken = undefined;
@@ -255,6 +256,14 @@ function test_make_table(){
 }
 
 
+function test_make_refresh_button(){
+    "use strict";
+    const assert = chai.assert;
+    const button = makeRefreshButton($(), $()).filter("input");
+    assert.isTrue(button.is(":button"));
+}
+
+
 function test_add_and_delete_row() {
     "use strict";
 
@@ -332,7 +341,7 @@ function test_delete_last_row_focus() {
 
     // Set focus on the last destination input
     lastDestinationInput.focus();
-    deleteLastDataRowFromID("inputTable", "drawing_div");
+    deleteLastDataRowFromID("inputTable", $("#drawing_div"));
 
     // Assert that focus is on last destination input
     tableObj = $("#inputTable");

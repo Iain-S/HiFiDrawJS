@@ -2,38 +2,6 @@
 /*jslint es6 */
 
 
-function setKeydownListener(inputTableID, drawingArea) {
-    "use strict";
-
-    if (! window.hasOwnProperty("pressedKeys")) {
-        window.pressedKeys = {};
-    }
-
-    $(document.body).keyup(function (evt) {
-
-        evt = evt || event; // to deal with IE
-
-        window.pressedKeys[evt.keyCode] = evt.type === "keydown";
-    });
-
-    $(document.body).keydown(function (evt) {
-
-        evt = evt || event; // to deal with IE
-
-        window.pressedKeys[evt.keyCode] = evt.type === "keydown";
-
-        // Shift + Enter to delete last row or Enter for new row
-        if (window.pressedKeys[13]) {
-            if (window.pressedKeys[16]) {
-                deleteLastDataRowFromID(inputTableID, drawingDivID);
-            } else {
-                addRowRedraw(inputTableID, drawingArea);
-            }
-        }
-    });
-}
-
-
 function countBodyRows(tableBody) {
     "use strict";
 
@@ -122,123 +90,6 @@ function makeDestinationBox(value, id) {
     }
 
     return $(element);
-}
-
-
-function makeDeleteButton(drawingArea) {
-    "use strict";
-
-    //Create an input type dynamically.
-    const element = document.createElement("input");
-
-    //Assign different attributes to the element.
-    element.setAttribute("type", "button");
-    element.setAttribute("value", "-");
-
-    let jqe = $(element);
-
-    jqe.click(
-        function () {
-            const theTable = $(this).closest("table");
-
-            $(this).closest("tr").remove();
-
-            redraw(drawingArea, theTable);
-
-            return false;
-        }
-    );
-
-    return jqe;
-}
-
-
-function makeTable(tableID, drawingArea) {
-    "use strict";
-
-    const newTable =
-           $("<table id='" + tableID + "'>\n" +
-        "       <thead>\n" +
-        "         <tr>\n" +
-        "           <th>Source</th>\n" +
-        "           <th>Connector</th>\n" +
-        "           <th>Destination</th>\n" +
-        "           <th>\n" +
-        "             <input type='button' id='btnAdd' value='+'/>\n" +
-        "           </th>\n" +
-        "         </tr>\n" +
-        "       </thead>\n" +
-        "       <tbody>\n" +
-        "       </tbody>\n" +
-        "     </table>");
-
-    const button = newTable.find("input").first();
-
-    button.click(function(){
-        addRowRedraw(tableID, drawingArea);
-    });
-
-    return newTable;
-}
-
-
-function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
-    "use strict";
-
-    const tableBody = tableObj.children("tbody").first();
-
-    // if the last row has focus, we will later set the focus to the last source input
-    const childRows = tableBody.children("tr");
-    const lastRowCells = childRows.eq(childRows.length - 1).children("td");
-    let lastRowHasFocus = false;
-
-    //const drawingArea = $("#" + drawingDivID);
-
-    const redraw_func = function () {
-                            redraw(drawingArea, tableObj);
-                        };
-
-    // Note, focus is lost if the user clicks a delete button
-    lastRowCells.each(function () {
-        // assume each cell only has one child element
-        if ($(this).children().first().is($(document.activeElement))) {
-            lastRowHasFocus = true;
-        }
-    });
-
-    // Insert a row at the end of the table
-    const newRow = tableBody[0].insertRow(tableBody[0].rows.length);
-
-    // Insert a cell in the row at index 0
-    let srcCell = newRow.insertCell(0);
-    let srcBox = makeSourceBox(source_val);
-
-    srcBox.focusout(redraw_func);
-
-    srcBox.appendTo(srcCell);
-
-    if (lastRowHasFocus) {
-        srcBox.focus();
-    }
-
-    const connCell = newRow.insertCell(1);
-    const connMenu = makeConnectorMenu(conn_val);
-
-    connMenu.focusout(redraw_func);
-
-    connMenu.appendTo(connCell);
-
-    const dstCell = newRow.insertCell(2);
-    const dstBox = makeDestinationBox(dest_val);
-
-    dstBox.focusout(redraw_func);
-
-    dstBox.appendTo(dstCell);
-
-    const deleteCell = newRow.insertCell(3);
-    makeDeleteButton(drawingArea).appendTo(deleteCell);
-
-    return tableBody;
 }
 
 
@@ -375,19 +226,6 @@ function getNodePositionsFromNetwork(graph, network) {
 }
 
 
-function updateExportURL(graph, linkObject) {
-    "use strict";
-    const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
-
-    if (link_url.length > 2082) {
-        linkObject.text("The URL would have been over 2,083 characters.  " +
-            "That is the upper limit of some browsers.  Consider shortening the names of some of your components.");
-    } else {
-        linkObject.text(link_url);
-    }
-}
-
-
 function makeNetwork(graph, drawingArea) {
     "use strict";
     const vis_nodes = new vis.DataSet(graph.nodes);
@@ -450,7 +288,32 @@ function addDownloadLink(downloadID, drawingID) {
 }
 
 
-function redraw(drawingArea, tableObj) {
+function serialiseGraph(graphData) {
+    "use strict";
+    return JSON.stringify(graphData);
+}
+
+
+function deserialiseGraph(serialisedGraph) {
+    "use strict";
+    return JSON.parse(serialisedGraph);
+}
+
+
+function updateExportURL(graph, linkObject) {
+    "use strict";
+    const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
+
+    if (link_url.length > 2082) {
+        linkObject.text("The URL would have been over 2,083 characters.  " +
+            "That is the upper limit of some browsers.  Consider shortening the names of some of your components.");
+    } else {
+        linkObject.text(link_url);
+    }
+}
+
+
+function redraw(tableObj, drawingArea) {
     "use strict";
     // ToDo This function does too much, break it up
     const graph = graphFromTable(tableObj);
@@ -487,10 +350,98 @@ function redraw(drawingArea, tableObj) {
         scale: scale
     });
 
-        network.on("afterDrawing",
-               function () {
-                   addDownloadLink("id_download", drawingArea.attr("id"));
-               });
+    network.on("afterDrawing",
+           function () {
+               addDownloadLink("id_download", drawingArea.attr("id"));
+           });
+}
+
+
+function makeDeleteButton(drawingArea) {
+    "use strict";
+
+    //Create an input type dynamically.
+    const element = document.createElement("input");
+
+    //Assign different attributes to the element.
+    element.setAttribute("type", "button");
+    element.setAttribute("value", "-");
+
+    let jqe = $(element);
+
+    jqe.click(
+        function () {
+            const theTable = $(this).closest("table");
+
+            $(this).closest("tr").remove();
+
+            redraw(theTable, drawingArea);
+
+            return false;
+        }
+    );
+
+    return jqe;
+}
+
+
+function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
+    "use strict";
+
+    const tableBody = tableObj.children("tbody").first();
+
+    // if the last row has focus, we will later set the focus to the last source input
+    const childRows = tableBody.children("tr");
+    const lastRowCells = childRows.eq(childRows.length - 1).children("td");
+    let lastRowHasFocus = false;
+
+    //const drawingArea = $("#" + drawingDivID);
+
+    const redraw_func = function () {
+                            redraw(tableObj, drawingArea);
+                        };
+
+    // Note, focus is lost if the user clicks a delete button
+    lastRowCells.each(function () {
+        // assume each cell only has one child element
+        if ($(this).children().first().is($(document.activeElement))) {
+            lastRowHasFocus = true;
+        }
+    });
+
+    // Insert a row at the end of the table
+    const newRow = tableBody[0].insertRow(tableBody[0].rows.length);
+
+    // Insert a cell in the row at index 0
+    let srcCell = newRow.insertCell(0);
+    let srcBox = makeSourceBox(source_val);
+
+    srcBox.focusout(redraw_func);
+
+    srcBox.appendTo(srcCell);
+
+    if (lastRowHasFocus) {
+        srcBox.focus();
+    }
+
+    const connCell = newRow.insertCell(1);
+    const connMenu = makeConnectorMenu(conn_val);
+
+    connMenu.focusout(redraw_func);
+
+    connMenu.appendTo(connCell);
+
+    const dstCell = newRow.insertCell(2);
+    const dstBox = makeDestinationBox(dest_val);
+
+    dstBox.focusout(redraw_func);
+
+    dstBox.appendTo(dstCell);
+
+    const deleteCell = newRow.insertCell(3);
+    makeDeleteButton(drawingArea).appendTo(deleteCell);
+
+    return tableBody;
 }
 
 
@@ -502,11 +453,40 @@ function addRowRedraw(sourceTableID, drawingArea) {
 
     addRow(tableObj, drawingArea);
 
-    redraw(drawingArea, tableObj);
+    redraw(tableObj, drawingArea);
 }
 
 
-function deleteRowFromID(tableID, idx, drawingDivID) {
+function makeTable(tableID, drawingArea) {
+    "use strict";
+
+    const newTable =
+           $("<table id='" + tableID + "'>\n" +
+        "       <thead>\n" +
+        "         <tr>\n" +
+        "           <th>Source</th>\n" +
+        "           <th>Connector</th>\n" +
+        "           <th>Destination</th>\n" +
+        "           <th>\n" +
+        "             <input type='button' value='+'/>\n" +
+        "           </th>\n" +
+        "         </tr>\n" +
+        "       </thead>\n" +
+        "       <tbody>\n" +
+        "       </tbody>\n" +
+        "     </table>");
+
+    const button = newTable.find("input").first();
+
+    button.click(function(){
+        addRowRedraw(tableID, drawingArea);
+    });
+
+    return newTable;
+}
+
+
+function deleteRowFromID(tableID, idx, drawingArea) {
     "use strict";
 
     const theTable = $("#" + tableID);
@@ -533,13 +513,11 @@ function deleteRowFromID(tableID, idx, drawingDivID) {
 
     tableBody.children("tr").eq(idx).remove();
 
-    const drawingArea = $("#" + drawingDivID);
-
-    redraw(drawingArea, theTable);
+    redraw(theTable, drawingArea);
 }
 
 
-function deleteLastDataRowFromID(tableID, drawingDivID) {
+function deleteLastDataRowFromID(tableID, drawingArea) {
     /* This is a safe delete function, it will always leave the
     *  headers and the add button. */
     "use strict";
@@ -549,7 +527,7 @@ function deleteLastDataRowFromID(tableID, drawingDivID) {
     const tableBody = theTable.children("tbody").first();
 
     if (tableBody.find("tr").length > 1) {
-        deleteRowFromID(tableID, tableBody.children("tr").length - 1, drawingDivID);
+        deleteRowFromID(tableID, tableBody.children("tr").length - 1, drawingArea);
     }
 }
 
@@ -571,19 +549,7 @@ function removeSampleData(sourceTableID, drawingDivID) {
     tableBody.empty();
 
     const drawingArea = $("#" + drawingDivID);
-    redraw(drawingArea, tableObj);
-}
-
-
-function serialiseGraph(graphData) {
-    "use strict";
-    return JSON.stringify(graphData);
-}
-
-
-function deserialiseGraph(serialisedGraph) {
-    "use strict";
-    return JSON.parse(serialisedGraph);
+    redraw(tableObj, drawingArea);
 }
 
 
@@ -641,17 +607,71 @@ function addDataFromURL(serialisedData, tableObj, drawingDivID) {
 }
 
 
+function refresh(sourceTable, drawingArea) {
+    "use strict";
+
+    redraw(sourceTable, drawingArea);
+}
+
+
+function makeRefreshButton(inputTable, drawingArea) {
+    "use strict";
+    const button = $("<input type=\"button\" class=\"btn-small\" value=\"Refresh\"/>");
+
+    button.click(function() {
+                   refresh(inputTable, drawingArea);
+                 });
+
+    return button;
+}
+
+
+function setKeydownListener(inputTableID, drawingArea) {
+    "use strict";
+
+    if (! window.hasOwnProperty("pressedKeys")) {
+        window.pressedKeys = {};
+    }
+
+    $(document.body).keyup(function (evt) {
+
+        evt = evt || event; // to deal with IE
+
+        window.pressedKeys[evt.keyCode] = evt.type === "keydown";
+    });
+
+    $(document.body).keydown(function (evt) {
+
+        evt = evt || event; // to deal with IE
+
+        window.pressedKeys[evt.keyCode] = evt.type === "keydown";
+
+        // Shift + Enter to delete last row or Enter for new row
+        if (window.pressedKeys[13]) {
+            if (window.pressedKeys[16]) {
+                deleteLastDataRowFromID(inputTableID, drawingArea);
+            } else {
+                addRowRedraw(inputTableID, drawingArea);
+            }
+        }
+    });
+}
+
+
 function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     "use strict";
 
     const inputDiv = $("#" + inputDivID);
 
-    const inputTable = makeTable("inputTable", drawingDivID);
+    const drawingArea = $("#" + drawingDivID);
+
+    const inputTable = makeTable("inputTable", drawingArea);
 
     inputDiv.append(inputTable);
 
+    drawingArea.parent().append(makeRefreshButton(inputTable, drawingArea));
+
     const query_params = getQueryParams(document.location.search);
-    const drawingArea = $("#" + drawingDivID);
 
     if (query_params.hasOwnProperty("serialised")) {
         addDataFromURL(query_params.serialised, inputTable, drawingDivID);
@@ -661,14 +681,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
 
     setKeydownListener(inputTable.attr("id"), drawingArea);
 
-    redraw(drawingArea, inputTable);
-}
-
-
-function refresh(sourceTableID, drawingDivID) {
-    "use strict";
-
-    redraw($("#" + drawingDivID), $("#" + sourceTableID));
+    redraw(inputTable, drawingArea);
 }
 
 
