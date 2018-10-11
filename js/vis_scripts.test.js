@@ -76,7 +76,7 @@ $(document).ready(function () {
         }
 
         // tearDown
-        removeSampleData("inputTable");
+        removeSampleData("inputTable", "drawing_div");
 
         test_result_area.append(append_string);
     });
@@ -236,7 +236,7 @@ function test_make_delete_button() {
     "use strict";
 
     const assert = chai.assert;
-    const delete_button = makeDeleteButton().filter("input").first();
+    const delete_button = makeDeleteButton("drawing_div").filter("input").first();
     assert.equal(delete_button.attr("type"), "button");
     assert.equal(delete_button.attr("value"), "-");
 }
@@ -245,8 +245,9 @@ function test_make_delete_button() {
 function test_make_table(){
     "use strict";
     const assert = chai.assert;
-    const table = makeTable("jasdl;fjsdf;lj").filter("table").first();
+    const table = makeTable("this_is_a_test_id").filter("table").first();
     assert.equal(table.length, 1);
+    assert.equal(table.attr("id"), "this_is_a_test_id");
 
     const fourth_column = table.children("thead").first().children("tr").first().children("th").eq(3);
     const add_button = fourth_column.children("input").first();

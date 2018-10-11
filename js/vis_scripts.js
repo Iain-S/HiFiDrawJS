@@ -179,7 +179,7 @@ function addRow(tableObj, source_val = null, dest_val = null, conn_val = null, d
     const lastRowCells = childRows.eq(childRows.length - 1).children("td");
     let lastRowHasFocus = false;
 
-    const redraw_func = function () {redraw($("#drawing_div"), tableObj);};
+    const redraw_func = function () {redraw($("#" + drawingDivID), tableObj);};
 
     // Note, focus is lost if the user clicks a delete button
     lastRowCells.each(function () {
@@ -547,7 +547,7 @@ function addSampleData(tableObj) {
 }
 
 
-function removeSampleData(sourceTableID) {
+function removeSampleData(sourceTableID, drawingDivID) {
     "use strict";
 
     const tableObj = $("#" + sourceTableID);
@@ -555,7 +555,7 @@ function removeSampleData(sourceTableID) {
     const tableBody = tableObj.children("tbody").first();
     tableBody.empty();
 
-    const drawingArea = $("#drawing_div");
+    const drawingArea = $("#" + drawingDivID);
     redraw(drawingArea, tableObj);
 }
 
@@ -567,7 +567,6 @@ function serialiseGraph(graphData) {
 
 
 function deserialiseGraph(serialisedGraph) {
-    // Function-level strict mode syntax
     "use strict";
     return JSON.parse(serialisedGraph);
 }
@@ -577,17 +576,17 @@ function deserialiseGraph(serialisedGraph) {
    e.g. www.my-site.com?something=a_thing&what=why
         will return a dict with something and what as keys
    You can call it like this getQueryParams(document.location.search)*/
-function getQueryParams(qs) {
+function getQueryParams(queryString) {
     "use strict";
 
-    qs = qs.split("+").join(" ");
+    queryString = queryString.split("+").join(" ");
 
-    let params = {},
-        tokens,
-        re = /[?&]?([^=]+)=([^&]*)/g;
+    let params = {};
+    let tokens;
+    const re = /[?&]?([^=]+)=([^&]*)/g;
 
     do {
-        tokens = re.exec(qs);
+        tokens = re.exec(queryString);
         if (tokens) {
             params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
         } else {
@@ -654,32 +653,26 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
 
 function refresh(sourceTableID, drawingDivID) {
     "use strict";
-    if (window.network) {
 
-        const tableObj = $("#" + sourceTableID);
-        const drawingArea = $("#" + drawingDivID);
-
-        redraw(drawingArea, tableObj);
-    }
+    redraw($("#" + drawingDivID), $("#" + sourceTableID));
 }
 
 
 function copyToClipboard(idExportLink) {
     "use strict";
-    const str = $("#" + idExportLink).text();
-    const el = document.createElement("textarea");  // Create a <textarea> element
-    el.value = str;                                 // Set its value to the string that you want copied
-    el.setAttribute("readonly", "");                // Make it readonly to be tamper-proof
-    el.style.position = "absolute";
-    el.style.left = "-9999px";                      // Move outside the screen to make it invisible
-    document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
+    const textArea = document.createElement("textarea");  // Create a <textarea> element
+    textArea.value = $("#" + idExportLink).text();        // Set its value to the string that you want copied
+    textArea.setAttribute("readonly", "");                // Make it readonly to be tamper-proof
+    textArea.style.position = "absolute";
+    textArea.style.left = "-9999px";                      // Move outside the screen to make it invisible
+    document.body.appendChild(textArea);                  // Append the <textarea> element to the HTML document
     const selected =
         document.getSelection().rangeCount > 0      // Check if there is any content selected previously
         ? document.getSelection().getRangeAt(0)     // Store selection if found
         : false;                                    // Mark as false to know no selection existed before
-    el.select();                                    // Select the <textarea> content
+    textArea.select();                              // Select the <textarea> content
     document.execCommand("copy");                   // Copy - only works as a result of a user action (e.g. click events)
-    document.body.removeChild(el);                  // Remove the <textarea> element
+    document.body.removeChild(textArea);            // Remove the <textarea> element
     if (selected) {                                 // If a selection existed before copying
         document.getSelection().removeAllRanges();  // Unselect everything on the HTML document
         document.getSelection().addRange(selected); // Restore the original selection
