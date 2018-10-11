@@ -3,33 +3,31 @@
 window.pressedKeys = {};
 
 
-// function setKeydownListener(inputTableID, drawingDivID) {
-$(document.body).keydown(function (evt) {
+function setKeydownListener(inputTableID, drawingDivID) {
     "use strict";
+    $(document.body).keyup(function (evt) {
 
-    evt = evt || event; // to deal with IE
+        evt = evt || event; // to deal with IE
 
-    window.pressedKeys[evt.keyCode] = evt.type === "keydown";
+        window.pressedKeys[evt.keyCode] = evt.type === "keydown";
+    });
 
-    // Shift + Enter to delete last row or Enter for new row
-    if (window.pressedKeys[13]) {
-        if (window.pressedKeys[16]) {
-            deleteLastDataRowFromID("inputTable", "drawing_div");
-        } else {
-            addRowRedraw("inputTable");
+    $(document.body).keydown(function (evt) {
+
+        evt = evt || event; // to deal with IE
+
+        window.pressedKeys[evt.keyCode] = evt.type === "keydown";
+
+        // Shift + Enter to delete last row or Enter for new row
+        if (window.pressedKeys[13]) {
+            if (window.pressedKeys[16]) {
+                deleteLastDataRowFromID(inputTableID, drawingDivID);
+            } else {
+                addRowRedraw(inputTableID);
+            }
         }
-    }
-});
-// }
-
-
-$(document.body).keyup(function (evt) {
-    "use strict";
-
-    evt = evt || event; // to deal with IE
-
-    window.pressedKeys[evt.keyCode] = evt.type === "keydown";
-});
+    });
+}
 
 
 function countBodyRows(tableBody) {
@@ -152,17 +150,17 @@ function makeDeleteButton() {
 }
 
 
-function makeTable(tableID='\"inputTable\"') {
-    //"use strict";
+function makeTable(tableID) {
+    "use strict";
 
-    return $("<table id='inputTable'>\n" +
+    return $("<table id='" + tableID + "'>\n" +
         "       <thead>\n" +
         "         <tr>\n" +
         "           <th>Source</th>\n" +
         "           <th>Connector</th>\n" +
         "           <th>Destination</th>\n" +
         "           <th>\n" +
-        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(" + tableID + ");'/>\n" +
+        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"" + tableID + "\");'/>\n" +
         "           </th>\n" +
         "         </tr>\n" +
         "       </thead>\n" +
@@ -634,7 +632,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
 
     const inputDiv = $("#" + inputDivID);
 
-    const inputTable = makeTable();
+    const inputTable = makeTable("inputTable");
 
     inputDiv.append(inputTable);
 
@@ -647,6 +645,8 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     }
 
     const drawingArea = $("#" + drawingDivID);
+
+    setKeydownListener(inputTable.attr("id"), drawingDivID);
 
     redraw(drawingArea, inputTable);
 }

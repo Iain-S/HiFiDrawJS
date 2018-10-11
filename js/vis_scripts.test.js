@@ -245,7 +245,7 @@ function test_make_delete_button() {
 function test_make_table(){
     "use strict";
     const assert = chai.assert;
-    const table = makeTable().filter("table").first();
+    const table = makeTable("jasdl;fjsdf;lj").filter("table").first();
     assert.equal(table.length, 1);
 
     const fourth_column = table.children("thead").first().children("tr").first().children("th").eq(3);
