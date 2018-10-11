@@ -413,10 +413,10 @@ function test_add_row() {
     const assert = chai.assert;
     const tableObj = $("<table><tbody></tbody></table>");
 
-    addRow(tableObj);
+    addRow(tableObj, $("#drawing_div"));
     assert.equal(tableObj.children("tbody").first().children("tr").length, 1);
 
-    addRow(tableObj);
+    addRow(tableObj, $("#drawing_div"));
     assert.equal(tableObj.children("tbody").first().children("tr").length, 2);
 }
 
@@ -442,7 +442,7 @@ function test_add_row_focus() {
     firstSourceInput.focus();
 
     // Call addRow
-    addRow(tableObj);
+    addRow(tableObj, $("#drawing_div"));
 
     // Assert that focus is not on last source input
     tableObj = $("#inputTable");
@@ -473,7 +473,7 @@ function test_add_row_focus_two() {
     assert.isTrue(lastSourceInput.is($(document.activeElement)));
 
     // Call addRow
-    addRow(tableObj);
+    addRow(tableObj, $("#drawing_div"));
 
     // Assert that focus is on last source input
     tableObj = $("#inputTable");

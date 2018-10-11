@@ -125,7 +125,7 @@ function makeDestinationBox(value, id) {
 }
 
 
-function makeDeleteButton(drawingDivID) {
+function makeDeleteButton(drawingArea) {
     "use strict";
 
     //Create an input type dynamically.
@@ -140,7 +140,6 @@ function makeDeleteButton(drawingDivID) {
     jqe.click(
         function () {
             const theTable = $(this).closest("table");
-            const drawingArea = $("#" + drawingDivID);
 
             $(this).closest("tr").remove();
 
@@ -174,7 +173,8 @@ function makeTable(tableID, drawingDivID) {
 }
 
 
-function addRow(tableObj, drawingDivID, source_val = null, dest_val = null, conn_val = null) {
+function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
+    "use strict";
 
     const tableBody = tableObj.children("tbody").first();
 
@@ -183,7 +183,11 @@ function addRow(tableObj, drawingDivID, source_val = null, dest_val = null, conn
     const lastRowCells = childRows.eq(childRows.length - 1).children("td");
     let lastRowHasFocus = false;
 
-    const redraw_func = function () {redraw($("#" + drawingDivID), tableObj);};
+    //const drawingArea = $("#" + drawingDivID);
+
+    const redraw_func = function () {
+                            redraw(drawingArea, tableObj);
+                        };
 
     // Note, focus is lost if the user clicks a delete button
     lastRowCells.each(function () {
@@ -223,7 +227,7 @@ function addRow(tableObj, drawingDivID, source_val = null, dest_val = null, conn
     dstBox.appendTo(dstCell);
 
     const deleteCell = newRow.insertCell(3);
-    makeDeleteButton(drawingDivID).appendTo(deleteCell);
+    makeDeleteButton(drawingArea).appendTo(deleteCell);
 
     return tableBody;
 }
@@ -487,9 +491,9 @@ function addRowRedraw(sourceTableID, drawingDivID) {
 
     const tableObj = $("#" + sourceTableID);
 
-    addRow(tableObj, drawingDivID);
-
     const drawingArea = $("#" + drawingDivID);
+
+    addRow(tableObj, drawingArea);
 
     redraw(drawingArea, tableObj);
 }
@@ -543,11 +547,11 @@ function deleteLastDataRowFromID(tableID, drawingDivID) {
 }
 
 
-function addSampleData(tableObj, drawingDivID) {
+function addSampleData(tableObj, drawingArea) {
     "use strict";
-    addRow(tableObj, drawingDivID, "phone", "amp", "XLR<>XLR");
-    addRow(tableObj, drawingDivID, "amp", "speakers");
-    addRow(tableObj, drawingDivID);
+    addRow(tableObj, drawingArea, "phone", "amp", "XLR<>XLR");
+    addRow(tableObj, drawingArea, "amp", "speakers");
+    addRow(tableObj, drawingArea);
 }
 
 
@@ -624,7 +628,7 @@ function addDataFromURL(serialisedData, tableObj, drawingDivID) {
         });
 
         if (from_label && to_label) {
-            addRow(tableObj, drawingDivID, from_label, to_label, edge.label);
+            addRow(tableObj, $("#"+drawingDivID), from_label, to_label, edge.label);
         }
     });
 }
@@ -640,14 +644,13 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     inputDiv.append(inputTable);
 
     const query_params = getQueryParams(document.location.search);
+    const drawingArea = $("#" + drawingDivID);
 
     if (query_params.hasOwnProperty("serialised")) {
         addDataFromURL(query_params.serialised, inputTable, drawingDivID);
     } else {
-        addSampleData(inputTable, drawingDivID);
+        addSampleData(inputTable, drawingArea);
     }
-
-    const drawingArea = $("#" + drawingDivID);
 
     setKeydownListener(inputTable.attr("id"), drawingDivID);
 
