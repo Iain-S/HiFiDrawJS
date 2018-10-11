@@ -1,5 +1,6 @@
 /*global $, chai, performance, document */
 /*jslint es6 */
+
 /* Things to do once the unit_tests page has loaded */
 $(document).ready(function () {
     // Function-level strict mode syntax
@@ -330,7 +331,7 @@ function test_delete_last_row_focus() {
 
     // Set focus on the last destination input
     lastDestinationInput.focus();
-    deleteLastDataRowFromID("inputTable");
+    deleteLastDataRowFromID("inputTable", "drawing_div");
 
     // Assert that focus is on last destination input
     tableObj = $("#inputTable");

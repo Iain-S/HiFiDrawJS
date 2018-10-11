@@ -2,6 +2,8 @@
 /*jslint es6 */
 window.pressedKeys = {};
 
+
+// function setKeydownListener(inputTableID, drawingDivID) {
 $(document.body).keydown(function (evt) {
     "use strict";
 
@@ -12,12 +14,13 @@ $(document.body).keydown(function (evt) {
     // Shift + Enter to delete last row or Enter for new row
     if (window.pressedKeys[13]) {
         if (window.pressedKeys[16]) {
-            deleteLastDataRowFromID("inputTable");
+            deleteLastDataRowFromID("inputTable", "drawing_div");
         } else {
             addRowRedraw("inputTable");
         }
     }
 });
+// }
 
 
 $(document.body).keyup(function (evt) {
@@ -221,21 +224,6 @@ function addRow(tableObj, source_val = null, dest_val = null, conn_val = null) {
     makeDeleteButton().appendTo(deleteCell);
 
     return tableBody;
-}
-
-
-function deleteLastDataRowFromID(tableID) {
-    /* This is a safe delete function, it will always leave the
-    *  headers and the add button. */
-    "use strict";
-
-    const theTable = $("#" + tableID);
-
-    const tableBody = theTable.children("tbody").first();
-
-    if (tableBody.find("tr").length > 1) {
-        deleteRowFromID(tableID, tableBody.children("tr").length - 1);
-    }
 }
 
 
@@ -502,7 +490,7 @@ function addRowRedraw(sourceTableID) {
 }
 
 
-function deleteRowFromID(tableID, idx) {
+function deleteRowFromID(tableID, idx, drawingDivID) {
     "use strict";
 
     const theTable = $("#" + tableID);
@@ -529,9 +517,24 @@ function deleteRowFromID(tableID, idx) {
 
     tableBody.children("tr").eq(idx).remove();
 
-    const drawingArea = $("#drawing_div");
+    const drawingArea = $("#" + drawingDivID);
 
     redraw(drawingArea, theTable);
+}
+
+
+function deleteLastDataRowFromID(tableID, drawingDivID) {
+    /* This is a safe delete function, it will always leave the
+    *  headers and the add button. */
+    "use strict";
+
+    const theTable = $("#" + tableID);
+
+    const tableBody = theTable.children("tbody").first();
+
+    if (tableBody.find("tr").length > 1) {
+        deleteRowFromID(tableID, tableBody.children("tr").length - 1, drawingDivID);
+    }
 }
 
 
