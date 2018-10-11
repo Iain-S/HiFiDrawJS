@@ -1,10 +1,14 @@
 /*global window, $, vis, document, event, console */
 /*jslint es6 */
-window.pressedKeys = {};
 
 
 function setKeydownListener(inputTableID, drawingDivID) {
     "use strict";
+
+    if (! window.hasOwnProperty("pressedKeys")) {
+        window.pressedKeys = {};
+    }
+
     $(document.body).keyup(function (evt) {
 
         evt = evt || event; // to deal with IE
@@ -150,7 +154,7 @@ function makeDeleteButton(drawingDivID) {
 }
 
 
-function makeTable(tableID) {
+function makeTable(tableID, drawingDivID) {
     "use strict";
 
     return $("<table id='" + tableID + "'>\n" +
@@ -160,7 +164,7 @@ function makeTable(tableID) {
         "           <th>Connector</th>\n" +
         "           <th>Destination</th>\n" +
         "           <th>\n" +
-        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"" + tableID + "\");'/>\n" +
+        "             <input type='button' id='btnAdd' value='+' onclick='addRowRedraw(\"" + tableID + "\",\"" + drawingDivID + "\");'/>\n" +
         "           </th>\n" +
         "         </tr>\n" +
         "       </thead>\n" +
@@ -170,7 +174,7 @@ function makeTable(tableID) {
 }
 
 
-function addRow(tableObj, source_val = null, dest_val = null, conn_val = null, drawingDivID="drawing_div") {
+function addRow(tableObj, drawingDivID, source_val = null, dest_val = null, conn_val = null) {
 
     const tableBody = tableObj.children("tbody").first();
 
@@ -405,10 +409,10 @@ function makeNetwork(graph, drawingArea) {
 }
 
 
-function addDownloadLink(downloadID = "id_download", drawingID = "drawing_div") {
-    //"use strict";
+function addDownloadLink(downloadID, drawingID) {
+    "use strict";
 
-    const download_link = document.getElementById("id_download");
+    const download_link = document.getElementById(downloadID);
     const network_canvas = $("#" + drawingID).find("canvas").first()[0];
 
     // make a new canvas so that we can add an opaque background
@@ -472,18 +476,18 @@ function redraw(drawingArea, tableObj) {
 
         network.on("afterDrawing",
                function () {
-                   addDownloadLink()
+                   addDownloadLink("id_download", drawingArea.attr("id"));
                });
 }
 
 
 /* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID, drawingDivID="drawing_div") {
-    // "use strict";
+function addRowRedraw(sourceTableID, drawingDivID) {
+    "use strict";
 
     const tableObj = $("#" + sourceTableID);
 
-    addRow(tableObj);
+    addRow(tableObj, drawingDivID);
 
     const drawingArea = $("#" + drawingDivID);
 
@@ -539,11 +543,11 @@ function deleteLastDataRowFromID(tableID, drawingDivID) {
 }
 
 
-function addSampleData(tableObj) {
+function addSampleData(tableObj, drawingDivID) {
     "use strict";
-    addRow(tableObj, "phone", "amp", "XLR<>XLR");
-    addRow(tableObj, "amp", "speakers");
-    addRow(tableObj);
+    addRow(tableObj, drawingDivID, "phone", "amp", "XLR<>XLR");
+    addRow(tableObj, drawingDivID, "amp", "speakers");
+    addRow(tableObj, drawingDivID);
 }
 
 
@@ -598,7 +602,7 @@ function getQueryParams(queryString) {
 }
 
 
-function addDataFromURL(serialisedData, tableObj) {
+function addDataFromURL(serialisedData, tableObj, drawingDivID) {
     "use strict";
 
     const unpackedData = deserialiseGraph(serialisedData);
@@ -620,7 +624,7 @@ function addDataFromURL(serialisedData, tableObj) {
         });
 
         if (from_label && to_label) {
-            addRow(tableObj, from_label, to_label, edge.label);
+            addRow(tableObj, drawingDivID, from_label, to_label, edge.label);
         }
     });
 }
@@ -631,16 +635,16 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
 
     const inputDiv = $("#" + inputDivID);
 
-    const inputTable = makeTable("inputTable");
+    const inputTable = makeTable("inputTable", drawingDivID);
 
     inputDiv.append(inputTable);
 
     const query_params = getQueryParams(document.location.search);
 
     if (query_params.hasOwnProperty("serialised")) {
-        addDataFromURL(query_params.serialised, inputTable);
+        addDataFromURL(query_params.serialised, inputTable, drawingDivID);
     } else {
-        addSampleData(inputTable);
+        addSampleData(inputTable, drawingDivID);
     }
 
     const drawingArea = $("#" + drawingDivID);
