@@ -143,7 +143,7 @@ function addNodeFromCell(tdObject, nodeArray) {
     // do we have a node for this already?
     nodeArray.some(function (element) {
         if (element.label === input.val()) {
-            id = element.id;
+            id = element.label;
             return true;
         }
     });
@@ -157,7 +157,7 @@ function addNodeFromCell(tdObject, nodeArray) {
             }
         });
 
-        id = max_idx + 1;
+        id = input.val();
         nodeArray.push({id: id,
                         label: input.val(),
                         shape: "box"});
@@ -332,6 +332,8 @@ function redraw(tableObj, drawingArea) {
     updateExportURL(graph, $("#id_export_link"));
 
     const network = makeNetwork(graph, drawingArea);
+
+    console.log(network.getPositions());
 
     // remember it for next time
     window.hifidrawNetwork = network;
