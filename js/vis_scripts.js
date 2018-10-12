@@ -317,8 +317,8 @@ function redraw(tableObj, drawingArea) {
     "use strict";
     // ToDo This function does too much, break it up
     const graph = graphFromTable(tableObj);
-    let scale = undefined;
-    let position = undefined;
+    let scale;
+    let position;
 
     // We store the network in the window global object
     // There is probably a nicer way to do this
@@ -387,7 +387,7 @@ function makeDeleteButton(drawingArea) {
 }
 
 
-function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
+function addRow(tableObj, drawingArea, redrawFunc, source_val, dest_val, conn_val) {
     "use strict";
 
     const tableBody = tableObj.children("tbody").first();
@@ -396,12 +396,6 @@ function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
     const childRows = tableBody.children("tr");
     const lastRowCells = childRows.eq(childRows.length - 1).children("td");
     let lastRowHasFocus = false;
-
-    //const drawingArea = $("#" + drawingDivID);
-
-    const redraw_func = function () {
-                            redraw(tableObj, drawingArea);
-                        };
 
     // Note, focus is lost if the user clicks a delete button
     lastRowCells.each(function () {
@@ -418,7 +412,7 @@ function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
     let srcCell = newRow.insertCell(0);
     let srcBox = makeSourceBox(source_val);
 
-    srcBox.focusout(redraw_func);
+    srcBox.focusout(redrawFunc);
 
     srcBox.appendTo(srcCell);
 
@@ -429,14 +423,14 @@ function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
     const connCell = newRow.insertCell(1);
     const connMenu = makeConnectorMenu(conn_val);
 
-    connMenu.focusout(redraw_func);
+    connMenu.focusout(redrawFunc);
 
     connMenu.appendTo(connCell);
 
     const dstCell = newRow.insertCell(2);
     const dstBox = makeDestinationBox(dest_val);
 
-    dstBox.focusout(redraw_func);
+    dstBox.focusout(redrawFunc);
 
     dstBox.appendTo(dstCell);
 
@@ -448,14 +442,14 @@ function addRow(tableObj, drawingArea, source_val, dest_val, conn_val) {
 
 
 /* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID, drawingArea) {
+function addRowRedraw(sourceTableID, drawingArea, redrawFunc) {
     "use strict";
 
     const tableObj = $("#" + sourceTableID);
 
-    addRow(tableObj, drawingArea);
+    addRow(tableObj, drawingArea, redrawFunc);
 
-    redraw(tableObj, drawingArea);
+    redrawFunc();
 }
 
 
@@ -480,8 +474,12 @@ function makeTable(tableID, drawingArea) {
 
     const button = newTable.find("input").first();
 
+    const redrawFunc = function () {
+        redraw(newTable, drawingArea);
+    };
+
     button.click(function(){
-        addRowRedraw(tableID, drawingArea);
+        addRowRedraw(tableID, drawingArea, redrawFunc);
     });
 
     return newTable;
@@ -534,11 +532,11 @@ function deleteLastDataRowFromID(tableID, drawingArea) {
 }
 
 
-function addSampleData(tableObj, drawingArea) {
+function addSampleData(tableObj, drawingArea, redrawFunc) {
     "use strict";
-    addRow(tableObj, drawingArea, "phone", "amp", "XLR<>XLR");
-    addRow(tableObj, drawingArea, "amp", "speakers");
-    addRow(tableObj, drawingArea);
+    addRow(tableObj, drawingArea, redrawFunc, "phone", "amp", "XLR<>XLR");
+    addRow(tableObj, drawingArea, redrawFunc, "amp", "speakers");
+    addRow(tableObj, drawingArea, redrawFunc);
 }
 
 
@@ -581,7 +579,7 @@ function getQueryParams(queryString) {
 }
 
 
-function addDataFromURL(serialisedData, tableObj, drawingDivID) {
+function addDataFromURL(serialisedData, tableObj, drawingDivID, redrawFunc) {
     "use strict";
 
     const unpackedData = deserialiseGraph(serialisedData);
@@ -603,7 +601,7 @@ function addDataFromURL(serialisedData, tableObj, drawingDivID) {
         });
 
         if (from_label && to_label) {
-            addRow(tableObj, $("#"+drawingDivID), from_label, to_label, edge.label);
+            addRow(tableObj, $("#"+drawingDivID), redrawFunc, from_label, to_label, edge.label);
         }
     });
 }
@@ -628,7 +626,7 @@ function makeRefreshButton(inputTable, drawingArea) {
 }
 
 
-function setKeydownListener(inputTableID, drawingArea) {
+function setKeydownListener(inputTableID, drawingArea, redrawFunc) {
     "use strict";
 
     if (! window.hasOwnProperty("pressedKeys")) {
@@ -638,14 +636,12 @@ function setKeydownListener(inputTableID, drawingArea) {
     $(document.body).keyup(function (evt) {
 
         evt = evt || event; // to deal with IE
-
         window.pressedKeys[evt.keyCode] = evt.type === "keydown";
     });
 
     $(document.body).keydown(function (evt) {
 
         evt = evt || event; // to deal with IE
-
         window.pressedKeys[evt.keyCode] = evt.type === "keydown";
 
         // Shift + Enter to delete last row or Enter for new row
@@ -653,7 +649,7 @@ function setKeydownListener(inputTableID, drawingArea) {
             if (window.pressedKeys[16]) {
                 deleteLastDataRowFromID(inputTableID, drawingArea);
             } else {
-                addRowRedraw(inputTableID, drawingArea);
+                addRowRedraw(inputTableID, drawingArea, redrawFunc);
             }
         }
     });
@@ -664,9 +660,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     "use strict";
 
     const inputDiv = $("#" + inputDivID);
-
     const drawingArea = $("#" + drawingDivID);
-
     const inputTable = makeTable("inputTable", drawingArea);
 
     inputDiv.append(inputTable);
@@ -675,15 +669,19 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
 
     const query_params = getQueryParams(document.location.search);
 
+    const redrawFunc = function () {
+        redraw(inputTable, drawingArea);
+    };
+
     if (query_params.hasOwnProperty("serialised")) {
-        addDataFromURL(query_params.serialised, inputTable, drawingDivID);
+        addDataFromURL(query_params.serialised, inputTable, drawingDivID, redrawFunc);
     } else {
-        addSampleData(inputTable, drawingArea);
+        addSampleData(inputTable, drawingArea, redrawFunc);
     }
 
-    setKeydownListener(inputTable.attr("id"), drawingArea);
+    setKeydownListener(inputTable.attr("id"), drawingArea, redrawFunc);
 
-    redraw(inputTable, drawingArea);
+    redrawFunc();
 }
 
 
