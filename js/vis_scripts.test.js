@@ -2,18 +2,23 @@
 /*jslint es6 */
 
 const hifidrawTesting = (function() {
+    /* Put all of the test functions in this pseudo-namespace so that we can auto-discover them without discovering
+    *  all functions in the global namespace. */
     "use strict";
 
     return {
         get_all_tests: function () {
+            /* Get all of our test_ functions. */
             let myFunctions = [];
             const self = this;
-            Object.keys(this).forEach(function (l) {
-                if (self.hasOwnProperty(l) &&
-                    Object.prototype.toString.call(self[l]) === "[object Function]"
-                    && (/^test_/i).test(l)
+            Object.keys(this).forEach(function (property) {
+                if (self.hasOwnProperty(property) &&                                        // I think this rules out inherited properties
+                    Object.prototype.toString.call(self[property]) === "[object Function]"  // Has to be a function
+                    && (/^test_/i).test(property)                                           // Only names beginning with test_
                 ) {
-                    myFunctions.push(self[l]);
+                    myFunctions.push(function() {
+                        self[property]();
+                    });
                 }
             });
             return myFunctions;
@@ -635,7 +640,7 @@ const hifidrawTesting = (function() {
     
             assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_2)), test_data_2);
     
-            const test_data_3 = self.generate_random_valid_graph();
+            const test_data_3 = this.generate_random_valid_graph();
     
             assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_3)), test_data_3);
         },
