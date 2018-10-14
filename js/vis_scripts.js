@@ -2,6 +2,59 @@
 /*jslint es6 */
 
 
+function HiFiDrawNetwork (parentElement) {
+    "use strict";
+    const nodes = new vis.DataSet();
+
+    // create an array with edges
+    const edges = new vis.DataSet();
+
+    // provide the data in the vis format
+    const data = {
+        nodes: nodes,
+        edges: edges
+    };
+    const options = {};
+
+    // initialize your network!
+    this.network = new vis.Network(parentElement[0], data, options);
+}
+
+
+function HiFiDrawGraph (hifidrawNetwork) {
+    "use strict";
+
+    this.nodes = {};
+    this.edges = {};
+    this.hifidrawNetwork = hifidrawNetwork;
+}
+
+
+HiFiDrawGraph.prototype.setNodesAndEdges = function (nodes, edges) {
+    "use strict";
+
+    this.nodes = nodes;
+    this.edges = edges;
+  // ToDo update network
+};
+
+
+function HiFiDrawTable (hifidrawGraph) {
+    /* Will create a table bound to the graph */
+    "use strict";
+
+    this.table = makeSimpleTable();
+}
+
+
+HiFiDrawTable.prototype.appendTo = function (parentElement) {
+    /* Append this table to the jQuery element passed in as parentElement */
+    "use strict";
+
+    this.table.appendTo(parentElement);
+};
+
+
 function countBodyRows(tableBody) {
     "use strict";
 
@@ -333,7 +386,7 @@ function redraw(tableObj, drawingArea) {
 
     const network = makeNetwork(graph, drawingArea);
 
-    console.log(network.getPositions());
+    //console.log(network.getPositions());
 
     // remember it for next time
     window.hifidrawNetwork = network;
@@ -453,11 +506,9 @@ function addRowRedraw(sourceTableID, drawingArea, redrawFunc) {
 }
 
 
-function makeTable(tableID, drawingArea) {
+function makeSimpleTable () {
     "use strict";
-
-    const newTable =
-           $("<table id='" + tableID + "'>\n" +
+    return $("<table>\n" +
         "       <thead>\n" +
         "         <tr>\n" +
         "           <th>Source</th>\n" +
@@ -471,6 +522,13 @@ function makeTable(tableID, drawingArea) {
         "       <tbody>\n" +
         "       </tbody>\n" +
         "     </table>");
+}
+
+
+function makeTable(drawingArea) {
+    "use strict";
+
+    const newTable = makeSimpleTable();
 
     const button = newTable.find("input").first();
 
@@ -658,6 +716,14 @@ function setKeydownListener(inputTableID, drawingArea, redrawFunc) {
 
 function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     "use strict";
+
+    const myNetwork = new HiFiDrawNetwork();
+
+    /* Bind our network to a graph so that a change in the former updates the latter */
+    const myGraph = new HiFiDrawGraph(myNetwork);
+
+    /* Bind our graph to a table so that a change in the former updates the latter */
+    const myTable = new HiFiDrawTable(myGraph);
 
     const inputDiv = $("#" + inputDivID);
     const drawingArea = $("#" + drawingDivID);
