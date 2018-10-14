@@ -180,7 +180,7 @@ const hifidrawTesting = (function() {
             assert.equal(3, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
             try {
-                addRowRedraw("inputTable");
+                addRowRedraw(tableRef);
             } catch (ignore) {
             }
 
@@ -208,7 +208,7 @@ const hifidrawTesting = (function() {
             assert.equal(3, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
             try {
-                addRowRedraw("inputTable");
+                addRowRedraw(tableRef);
             } catch (ignore) {
             }
 
@@ -299,7 +299,7 @@ const hifidrawTesting = (function() {
             assert.equal(3, tableRows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
             try {
-                addRowRedraw("inputTable");
+                addRowRedraw(tableRef);
             } catch (ignore) {
             }
 

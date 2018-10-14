@@ -495,10 +495,8 @@ function addRow(tableObj, drawingArea, redrawFunc, source_val, dest_val, conn_va
 
 
 /* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID, drawingArea, redrawFunc) {
+function addRowRedraw(tableObj, drawingArea, redrawFunc) {
     "use strict";
-
-    const tableObj = $("#" + sourceTableID);
 
     addRow(tableObj, drawingArea, redrawFunc);
 
@@ -525,20 +523,24 @@ function makeSimpleTable () {
 }
 
 
+function setFirstInputCallback(tableObj, drawingArea) {
+    const button = tableObj.find("input").first();
+
+    const redrawFunc = function () {
+        redraw(tableObj, drawingArea);
+    };
+
+    button.click(function(){
+        addRowRedraw(tableObj, drawingArea, redrawFunc);
+    });
+}
+
 function makeTable(drawingArea) {
     "use strict";
 
     const newTable = makeSimpleTable();
 
-    const button = newTable.find("input").first();
-
-    const redrawFunc = function () {
-        redraw(newTable, drawingArea);
-    };
-
-    button.click(function(){
-        addRowRedraw(tableID, drawingArea, redrawFunc);
-    });
+    setFirstInputCallback(newTable, drawingArea);
 
     return newTable;
 }
@@ -707,7 +709,7 @@ function setKeydownListener(inputTableID, drawingArea, redrawFunc) {
             if (window.pressedKeys[16]) {
                 deleteLastDataRowFromID(inputTableID, drawingArea);
             } else {
-                addRowRedraw(inputTableID, drawingArea, redrawFunc);
+                addRowRedraw($("#" + inputTableID), drawingArea, redrawFunc);
             }
         }
     });
