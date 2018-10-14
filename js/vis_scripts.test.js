@@ -16,9 +16,13 @@ const hifidrawTesting = (function() {
                     Object.prototype.toString.call(self[property]) === "[object Function]"  // Has to be a function
                     && (/^test_/i).test(property)                                           // Only names beginning with test_
                 ) {
-                    myFunctions.push(function() {
-                        self[property]();
-                    });
+                    myFunctions.push(
+                        Object.defineProperty(function() {
+                            self[property]();
+                            },
+                            "name",
+                            {value: property})
+                    );
                 }
             });
             return myFunctions;
