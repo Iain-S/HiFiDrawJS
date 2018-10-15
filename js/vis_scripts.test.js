@@ -154,7 +154,7 @@ const hifidrawTesting = (function() {
 
         test_make_simple_table: function() {
 
-            const table = makeSimpleTable().filter("table").first();
+            const table = makeTableWithAddButton().filter("table").first();
             assert.equal(table.length, 1);
             //assert.equal(table.attr("id"), "this_is_a_test_id");
 
@@ -180,7 +180,7 @@ const hifidrawTesting = (function() {
             assert.equal(3, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
             try {
-                addRowRedraw(tableRef);
+                addRowRedraw(tableRef, () => null);
             } catch (ignore) {
             }
 
@@ -190,13 +190,13 @@ const hifidrawTesting = (function() {
 
             // Delete the last row
             try {
-                deleteRowFromID("inputTable", table_rows.length - 1);
+                deleteRowFrom(tableRef, table_rows.length - 1);
             } catch (ignore) {
             }
 
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(3, table_rows.length, "Expected fewer rows after calling deleteRowFromID.");
+            assert.equal(3, table_rows.length, "Expected fewer rows after calling deleteRowFrom.");
         },
 
 
@@ -208,7 +208,7 @@ const hifidrawTesting = (function() {
             assert.equal(3, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
             try {
-                addRowRedraw(tableRef);
+                addRowRedraw(tableRef, () => null);
             } catch (ignore) {
             }
 
@@ -218,13 +218,13 @@ const hifidrawTesting = (function() {
 
             // Delete the last row
             try {
-                deleteLastDataRowFromID("inputTable");
+                deleteLastDataRowFrom(tableRef);
             } catch (ignore) {
             }
 
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(3, table_rows.length, "Expected fewer rows after calling deleteLastDataRowFromID.");
+            assert.equal(3, table_rows.length, "Expected fewer rows after calling deleteLastDataRowFrom.");
         },
 
 
@@ -244,7 +244,7 @@ const hifidrawTesting = (function() {
 
             // Set focus on the last destination input
             lastDestinationInput.focus();
-            deleteLastDataRowFromID("inputTable", $("#drawing_div"));
+            deleteLastDataRowFrom(tableObj, $("#drawing_div"));
 
             // Assert that focus is on last destination input
             tableObj = $("#inputTable");
@@ -282,7 +282,7 @@ const hifidrawTesting = (function() {
 
             // Check that our function will always leave them there
             try {
-                deleteLastDataRowFromID("9029384093284023");
+                deleteLastDataRowFrom("9029384093284023");
             } catch (ignore) {
             }
 
@@ -310,7 +310,7 @@ const hifidrawTesting = (function() {
             assert.equal(new_row.length, 4, "New row has wrong number of columns.");
 
             try {
-                deleteRowFromID("inputTable", 3);
+                deleteRowFrom("inputTable", 3);
             }
             catch (ignore) {
             }
@@ -684,7 +684,7 @@ const hifidrawTesting = (function() {
 
 
         test_table_append: function() {
-            const myTable = new HiFiDrawTable();
+            const myTable = new HiFiDrawTableGraphBinding();
             const element = $("<div></div>");
             myTable.appendTo(element);
 
@@ -692,19 +692,12 @@ const hifidrawTesting = (function() {
         },
 
 
-        test_network_create: function() {
-            const element = $("<div></div>");
-            const myNetwork = new HiFiDrawNetwork(element);
-            assert.equal(element.find("canvas").length, 1)
-        },
-
-
         test_empty_graph: function() {
-            const myGraph = new HiFiDrawGraph();
+            const myGraph = new HiFiDrawGraphNetworkBinding();
         },
 
 
-        _test_template: function() {
+        zest_template: function() {
             assert.equal(1, 2, "This is an error message.");
         }
     };
@@ -718,20 +711,21 @@ $(document).ready(function () {
 
     const total_time_start = performance.now();
 
-    // THE BIG LIST OF TEST FUNCTIONS
-    // noinspection JSLint
     const test_functions = hifidrawTesting.get_all_tests();
 
     const test_result_area = $("#test_results");
     const number_of_tests = test_functions.length;
     let passed_tests = 0;
 
+    const inputTable = $("#inputTable");
+    const drawingArea = $("#drawing_div");
+
     test_functions.forEach(function (test_function) {
-        //let test_result_area = $("#test_results");
+
         let append_string = "<p>" + "Running " + test_function.name + "...  ";
 
         // setUp
-        addSampleData($("#inputTable"), $("#drawing_div"));
+        addSampleData(inputTable, drawingArea);
 
         const time_started = performance.now();
         let ms_taken = undefined;
@@ -754,13 +748,13 @@ $(document).ready(function () {
         }
 
         // tearDown
-        removeSampleData("inputTable", "drawing_div");
+        removeSampleData(inputTable, drawingArea);
 
         test_result_area.append(append_string);
     });
 
     // not essential but nice to have some data when looking at the page
-    addSampleData($("#inputTable"));
+    addSampleData(inputTable, drawingArea);
 
     const total_ms_taken = performance.now() - total_time_start;
 

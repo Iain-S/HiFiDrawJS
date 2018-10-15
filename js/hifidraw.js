@@ -2,14 +2,15 @@
 /*jslint es6 */
 
 
-function HiFiDrawGraphNetworkBinding (parentElement) {
+function HiFiDrawGraphNetworkBinding (parentElement, visData) {
     // Note that the visNetwork already contains a graph.  We will only get it when we need it.
     "use strict";
 
-    this.vis_nodes = new vis.DataSet();
-    this.vis_edges = new vis.DataSet();
+    this.visData = visData;
 
-    const vis_options = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
+    this.parentElement = parentElement;
+
+    this.visOptions = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
                                          // we could give the user some warning to set one connector to simple
                          width: "100%",
                          height: "500px",
@@ -30,11 +31,8 @@ function HiFiDrawGraphNetworkBinding (parentElement) {
                              randomSeed: 10161
                          }};
 
-    const vis_data = {nodes: this.vis_nodes,
-                      edges: this.vis_edges};
-
     // draw the thing
-    this.visNetwork = new vis.Network(parentElement[0], vis_data, vis_options);
+    this.visNetwork = new vis.Network(parentElement[0], this.visData, this.visOptions);
 }
 
 
@@ -44,12 +42,33 @@ HiFiDrawGraphNetworkBinding.prototype.setNodesAndEdges = function (nodes, edges)
 };
 
 
-function HiFiDrawTableGraphBinding (hifidrawGraphNetworkBinding) {
+HiFiDrawGraphNetworkBinding.prototype.getGraphEdges = function () {
+    "use strict";
+    return this.visData.edges;
+};
+
+
+HiFiDrawGraphNetworkBinding.prototype.placeRefreshButton = function (putButtonHere) {
+    "use strict";
+
+    const button = $("<input type=\"button\" class=\"btn-small\" value=\"Refresh\"/>");
+    const self = this;
+    button.click(function() {
+                     // ToDo Some work to do before this works as nicely as the other one
+                     self.visNetwork.storePositions();
+                     self.visNetwork = new vis.Network(self.parentElement[0], self.visData, self.visOptions);
+                     // console.log("redrawing");
+                 });
+
+    putButtonHere.append(button);
+};
+
+
+function HiFiDrawTableGraphBinding (hifidrawGraphNetworkBinding, tableDiv) {
     // Will create a table bound to the graph
     "use strict";
 
     this.hifidrawGraphNetworkBinding = hifidrawGraphNetworkBinding;
-
 
     // Create a new table with an "+" button"
     this.table = makeTableWithAddButton();
@@ -62,6 +81,12 @@ function HiFiDrawTableGraphBinding (hifidrawGraphNetworkBinding) {
     button.click(function () {
         self.addRowToTable();
     });
+
+    this.table.appendTo(tableDiv);
+
+    // If our GraphNetworkBinding already has data, reflect that in the table
+    this.addRowsFromGraph();
+
 }
 
 
@@ -73,7 +98,7 @@ HiFiDrawTableGraphBinding.prototype.notifyGraph = function () {
 
 
 HiFiDrawTableGraphBinding.prototype.addRowToTable = function (src_val, conn_val, dest_val) {
-    // Add a row to the table and optionally fill with data
+    // Add a row to the table and, optionally, fill with data
     "use strict";
 
     const self = this;
@@ -127,6 +152,50 @@ HiFiDrawTableGraphBinding.prototype.addRowToTable = function (src_val, conn_val,
 
     const deleteCell = newRow.insertCell(3);
     makeDeleteButton(redrawFunc).appendTo(deleteCell);
+};
+
+
+HiFiDrawTableGraphBinding.prototype.deleteLastRowFromTable = function () {
+    // This is a safe delete function, it will always leave the
+    // headers and the add button.
+    "use strict";
+
+    const tableBody = this.table.children("tbody").first();
+
+    if (tableBody.find("tr").length > 1) {
+
+        // if the last row has focus, set the focus to the last but one destination input
+        const childRows = tableBody.children("tr");
+        const lastRowCells = childRows.eq(childRows.length - 1).children("td");
+        const lastButOneRow = childRows.eq(childRows.length - 2);
+        let lastRowHasFocus = false;
+
+        // Note, focus is lost if the user clicks a delete button
+        lastRowCells.each(function () {
+            // assume each cell only has one child element
+            if ($(this).children().first().is($(document.activeElement))) {
+                lastRowHasFocus = true;
+            }
+        });
+
+        if (lastRowHasFocus) {
+            lastButOneRow.children("td").eq(2).children("input").first().focus();
+        }
+
+        tableBody.children("tr").eq(tableBody.children("tr").length - 1).remove();
+
+        this.notifyGraph();
+    }
+};
+
+
+HiFiDrawTableGraphBinding.prototype.addRowsFromGraph = function () {
+    // Notify the graph-network binding that values may have changed
+    "use strict";
+    const self = this;
+    this.hifidrawGraphNetworkBinding.getGraphEdges().forEach(function (edge) {
+        self.addRowToTable(edge.from, edge.label, edge.to);
+    });
 };
 
 
@@ -765,7 +834,7 @@ function makeRefreshButton(inputTable, drawingArea) {
 }
 
 
-function setKeydownListener(inputTable, drawingArea, redrawFunc) {
+function setGlobalKeydownListener(tableBinding) {
     "use strict";
 
     if (! window.hasOwnProperty("pressedKeys")) {
@@ -786,48 +855,77 @@ function setKeydownListener(inputTable, drawingArea, redrawFunc) {
         // Shift + Enter to delete last row or Enter for new row
         if (window.pressedKeys[13]) {
             if (window.pressedKeys[16]) {
-                deleteLastDataRowFrom(inputTable, drawingArea);
+                tableBinding.deleteLastRowFromTable();
             } else {
-                addRowRedraw(inputTable, drawingArea, redrawFunc);
+                tableBinding.addRowToTable();
             }
         }
     });
 }
 
 
-function setUpSingleDrawingPage(inputDivID, drawingDivID) {
+function addDataFromPageURL () {
     "use strict";
+    return false;
+}
+
+
+function makeSampleData () {
+    const visNodes = new vis.DataSet([{id: "phone", label:"phone"},
+                                      {id: "amp", label: "amp"},
+                                      {id: "active speakers", label: "active speakers"}]);
+    const visEdges = new vis.DataSet([{from: "phone", to: "amp", label: "TRS<>TRS"},
+                                      {from: "amp", to: "active speakers", label: "RCA<>RCA"}]);
+
+    return {nodes: visNodes,
+            edges: visEdges};
+}
+
+function setUpPage(inputDivID, drawingDivID, exportLinkID, downloadButtonID) {
+    "use strict";
+
+    const visData = addDataFromPageURL() || makeSampleData();
+
+    // const visNodes = new vis.DataSet([{id: "phone", label:"phone"},
+    //                                   {id: "amp", label: "amp"}]);
+    // const visEdges = new vis.DataSet([{from: "phone", to: "amp", label: "TRS<>TRS"}]);
+    //
+    // const visData = {nodes: visNodes,
+    //                  edges: visEdges};
+    const drawingArea = $("#" + drawingDivID);
 
     // This will create a graph and a network and then bind them together
     // so that a change in the former updates the latter
-    const myGraphNetworkBinding = new HiFiDrawGraphNetworkBinding($("<div></div>"));
+    const myGraphNetworkBinding = new HiFiDrawGraphNetworkBinding(drawingArea, visData);
 
     // Bind our graph to a table so that a change in the former updates the latter
-    const myTable = new HiFiDrawTableGraphBinding(myGraphNetworkBinding);
+    const myTableGraphBinding = new HiFiDrawTableGraphBinding(myGraphNetworkBinding, $("#" + inputDivID));
 
-    const inputDiv = $("#" + inputDivID);
-    const drawingArea = $("#" + drawingDivID);
-    const inputTable = makeTable(drawingArea);
+    // ToDo This is still global at the moment and I don't know what would happen with multiple tables
+    setGlobalKeydownListener(myTableGraphBinding);
 
-    inputDiv.append(inputTable);
+    // Add a refresh button
+    myGraphNetworkBinding.placeRefreshButton(drawingArea.parent());
 
-    drawingArea.parent().append(makeRefreshButton(inputTable, drawingArea));
+    // inputDiv.append(inputTable);
+    //
+    // drawingArea.parent().append(makeRefreshButton(inputTable, drawingArea));
+    //
+    // const query_params = getQueryParams(document.location.search);
+    //
+    // const redrawFunc = function () {
+    //     redraw(inputTable, drawingArea);
+    // };
+    //
+    // if (query_params.hasOwnProperty("serialised")) {
+    //     addDataFromURL(query_params.serialised, inputTable, drawingDivID, redrawFunc);
+    // } else {
+    //     addSampleData(inputTable, redrawFunc);
+    // }
+    //
 
-    const query_params = getQueryParams(document.location.search);
-
-    const redrawFunc = function () {
-        redraw(inputTable, drawingArea);
-    };
-
-    if (query_params.hasOwnProperty("serialised")) {
-        addDataFromURL(query_params.serialised, inputTable, drawingDivID, redrawFunc);
-    } else {
-        addSampleData(inputTable, redrawFunc);
-    }
-
-    setKeydownListener(inputTable, drawingArea, redrawFunc);
-
-    redrawFunc();
+    //
+    // redrawFunc();
 }
 
 
