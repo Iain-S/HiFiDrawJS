@@ -97,7 +97,7 @@ class TestNewVisitor(unittest.TestCase):
         # There should be a total of five in the table;
         # one header, two rows of pre-populated data and the new one
         all_rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertEqual(len(all_rows), 5, "Expected four rows after ENTER keystroke.")
+        self.assertEqual(len(all_rows), 5, "Expected five rows after ENTER keystroke.")
 
     def test_can_delete_rows(self):
         # We begin with some rows
