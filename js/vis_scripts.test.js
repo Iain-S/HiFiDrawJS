@@ -6,6 +6,8 @@ const hifidrawTesting = (function() {
     *  all functions in the global namespace. */
     "use strict";
 
+    const assert = chai.assert;
+    
     return {
         get_all_tests: function () {
             /* Get all of our test_ functions. */
@@ -29,7 +31,7 @@ const hifidrawTesting = (function() {
         },
 
         test_add_text_box: function () {
-            const assert = chai.assert;
+            
             const testing_div = $("#div_for_testing");
             const existing_text_box = testing_div.find("input[type='text']");
 
@@ -45,9 +47,6 @@ const hifidrawTesting = (function() {
 
 
         test_count_tbody_rows: function () {
-
-
-            const assert = chai.assert;
 
             const tableRef = $("#inputTable");
             const tableBody = tableRef.children("tbody").first();
@@ -66,8 +65,6 @@ const hifidrawTesting = (function() {
 
         test_make_connector_menu: function () {
 
-
-            const assert = chai.assert;
             // There should be one <select> element returned
             const connector_menu = makeConnectorMenu().filter("select");
             assert.equal(1, connector_menu.length);
@@ -76,8 +73,6 @@ const hifidrawTesting = (function() {
 
         test_make_connector_menu_with_id: function () {
 
-
-            const assert = chai.assert;
             let connector_menu = makeConnectorMenu(null, 0).filter("select");
             assert.equal("id_conn_0", connector_menu.attr("id"));
 
@@ -87,9 +82,7 @@ const hifidrawTesting = (function() {
         
 
         test_make_connector_menu_with_selection: function() {
-    
-    
-            const assert = chai.assert;
+
             const connector_menu = makeConnectorMenu('').filter("select");
             // ToDo finish this off
             // assert.equal("something", connector_menu.attr("id"));
@@ -100,9 +93,7 @@ const hifidrawTesting = (function() {
     
     
         test_make_destination_box: function() {
-    
-    
-            const assert = chai.assert;
+
             const destination_box = makeDestinationBox().filter("input");
             assert.equal(1, destination_box.length);
             assert.equal("none", destination_box.attr("autocapitalize"));
@@ -110,9 +101,7 @@ const hifidrawTesting = (function() {
     
     
         test_make_destination_box_with_id: function() {
-    
-    
-            const assert = chai.assert;
+
             let destination_box = makeDestinationBox(null, 0).filter("input");
             assert.equal("id_dst_0", destination_box.attr("id"));
     
@@ -123,8 +112,6 @@ const hifidrawTesting = (function() {
     
         test_make_destination_box_with_value: function() {
     
-    
-            const assert = chai.assert;
             const source_box = makeDestinationBox("my value").filter("input");
             assert.equal(1, source_box.length);
             assert.equal("my value", source_box.val());
@@ -133,8 +120,6 @@ const hifidrawTesting = (function() {
     
         test_make_source_box: function() {
     
-    
-            const assert = chai.assert;
             const source_box = makeSourceBox().filter("input");
             assert.equal(1, source_box.length);
             assert.equal("none", source_box.attr("autocapitalize"));
@@ -143,8 +128,6 @@ const hifidrawTesting = (function() {
     
         test_make_source_box_with_id: function() {
     
-    
-            const assert = chai.assert;
             let source_box = makeSourceBox(null, 0).filter("input");
             assert.equal("id_src_0", source_box.attr("id"));
     
@@ -155,8 +138,6 @@ const hifidrawTesting = (function() {
     
         test_make_source_box_with_value: function() {
     
-    
-            const assert = chai.assert;
             const source_box = makeSourceBox("my value").filter("input");
             assert.equal(1, source_box.length);
             assert.equal("my value", source_box.val());
@@ -165,8 +146,6 @@ const hifidrawTesting = (function() {
     
         test_make_delete_button: function() {
     
-    
-            const assert = chai.assert;
             const delete_button = makeDeleteButton("drawing_div").filter("input").first();
             assert.equal(delete_button.attr("type"), "button");
             assert.equal(delete_button.attr("value"), "-");
@@ -175,7 +154,6 @@ const hifidrawTesting = (function() {
     
         test_make_table: function() {
     
-            const assert = chai.assert;
             const table = makeTable("this_is_a_test_id").filter("table").first();
             assert.equal(table.length, 1);
             assert.equal(table.attr("id"), "this_is_a_test_id");
@@ -187,8 +165,7 @@ const hifidrawTesting = (function() {
     
     
         test_make_refresh_button: function() {
-    
-            const assert = chai.assert;
+
             const button = makeRefreshButton($(), $()).filter("input");
             assert.isTrue(button.is(":button"));
         },
@@ -196,10 +173,7 @@ const hifidrawTesting = (function() {
     
         test_add_and_delete_row: function() {
     
-    
-            // Unfortunately, add and delete are intertwined so we shall have to test them together
-    
-            const assert = chai.assert;
+            // Add and delete are intertwined so we shall have to test them together
             const tableRef = $("#inputTable");
             let tableBody = tableRef.children("tbody").first();
             let table_rows = tableBody.children("tr");
@@ -228,8 +202,6 @@ const hifidrawTesting = (function() {
     
         test_delete_last_row: function() {
     
-    
-            const assert = chai.assert;
             const tableRef = $("#inputTable");
             let tableBody = tableRef.children("tbody").first();
             let table_rows = tableBody.children("tr");
@@ -257,9 +229,6 @@ const hifidrawTesting = (function() {
     
     
         test_delete_last_row_focus: function() {
-    
-    
-            const assert = chai.assert;
     
             // focus on the last destination input
             let tableObj = $("#inputTable");
@@ -289,10 +258,7 @@ const hifidrawTesting = (function() {
     
         test_delete_last_row_leaves_essentials: function() {
             // Check that we always leave at least one row in the table (because having none doesn't make sense)
-    
-    
-            const assert = chai.assert;
-    
+
             // Add a table with two rows
             $(document.body).append("<table class='table' id='9029384093284023'>\n" +
                 "      <thead>\n" +
@@ -326,9 +292,7 @@ const hifidrawTesting = (function() {
     
     
         test_new_row_has_right_num_of_cols: function() {
-    
-    
-            const assert = chai.assert;
+
             const tableRef = $("#inputTable");
             let tableBody = tableRef.children("tbody").first();
             let tableRows = tableBody.children("tr");
@@ -355,8 +319,6 @@ const hifidrawTesting = (function() {
     
         test_add_row: function() {
     
-    
-            const assert = chai.assert;
             const tableObj = $("<table><tbody></tbody></table>");
     
             addRow(tableObj, $("#drawing_div"));
@@ -368,9 +330,6 @@ const hifidrawTesting = (function() {
     
     
         test_add_row_focus: function() {
-    
-    
-            const assert = chai.assert;
     
             // focus on the first source box
             let tableObj = $("#inputTable");
@@ -403,9 +362,6 @@ const hifidrawTesting = (function() {
     
         test_add_row_focus_two: function() {
     
-    
-            const assert = chai.assert;
-    
             // focus on the last-but-one source box
             let tableObj = $("#inputTable");
             let tableBody = tableObj.children("tbody").first();
@@ -432,9 +388,7 @@ const hifidrawTesting = (function() {
     
     
         test_count_valid_rows: function() {
-    
-    
-            const assert = chai.assert;
+
             let test_data = $("");
     
             assert.equal(countValidRows(test_data), 0);
@@ -473,10 +427,6 @@ const hifidrawTesting = (function() {
     
         test_graph_from_table: function() {
     
-    
-            const assert = chai.assert;
-
-
             const test_data = makeTable("some_id", $("<div>temp drawing area</div>"));
 
             addRow(test_data, ()=>null, "part1", "part2", "XLR<>XLR");
@@ -488,9 +438,7 @@ const hifidrawTesting = (function() {
     
             // create an array with edges
             const edges = [
-
                 {from: "part1", to: "part2", arrows: "to", label: "XLR<>XLR"}
-
             ];
     
             const data = graphFromTable(test_data);
@@ -501,9 +449,6 @@ const hifidrawTesting = (function() {
     
     
         test_row_is_valid: function() {
-    
-    
-            const assert = chai.assert;
     
             const test_data = $("<tr>\n" +
                 "<td><input value='comp1' type='text'></td>\n" +
@@ -531,9 +476,6 @@ const hifidrawTesting = (function() {
     
         test_add_node_from_cell: function() {
     
-    
-            const assert = chai.assert;
-    
             // Check that we can add a new node
             let cell = $("<td><input value=\"comp1\" type=\"text\"></td>");
             let node_array = [];
@@ -556,7 +498,6 @@ const hifidrawTesting = (function() {
     
         test_add_sample_data: function() {
     
-            const assert = chai.assert;
             const tableRef = $("#inputTable");
             let tableBody = tableRef.children("tbody").first();
             let table_rows = tableBody.children("tr");
@@ -575,8 +516,7 @@ const hifidrawTesting = (function() {
     
     
         test_serialise_graph: function() {
-    
-            const assert = chai.assert;
+
             const data = {
                 nodes: {},
                 edges: {}
@@ -590,7 +530,6 @@ const hifidrawTesting = (function() {
     
         test_deserialise_graph: function() {
     
-            const assert = chai.assert;
             const deserialised_graph = deserialiseGraph("{}");
     
             assert.equal(typeof(deserialised_graph), "object");
@@ -611,7 +550,6 @@ const hifidrawTesting = (function() {
 
         test_serialise_deserialise: function() {
     
-            const assert = chai.assert;
             const test_data_1 = {};
 
             assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_1)), test_data_1);
@@ -630,8 +568,6 @@ const hifidrawTesting = (function() {
     
     
         test_add_data_from_url: function() {
-    
-            const assert = chai.assert;
     
             // Create a test table and add it to our page
             const table = $("<table class='table' id='id_data_from_url'>\n" +
@@ -672,7 +608,6 @@ const hifidrawTesting = (function() {
     
         test_update_export_url: function() {
     
-            const assert = chai.assert;
             const para = $("<p></p>");
             const pass_fail = [];
     
@@ -697,8 +632,7 @@ const hifidrawTesting = (function() {
     
     
         test_long_export_url_error_message: function() {
-    
-            const assert = chai.assert;
+
             const para = $("<p></p>");
             const thousand_chars = "nkrNE2fiFbcJPfNF8LhTpoSHwyz0jDb7PPk5cB4ZAag6j6PEGEmcDeani3rMwtSm48PozXSnKuhbXGDRfzj4Hrtz" +
                 "c4IJ4vBKEgYxPECwkg2gyoqyQBVZfZpkfREzkh9vY2CvuiGlAXsGCRdhnsJQ6DMUPUDEy19d30xxlAXL9klsaVcWcVLBXX2WX9DGm2WxvN0" +
@@ -726,8 +660,6 @@ const hifidrawTesting = (function() {
     
     
         _test_template: function() {
-    
-            const assert = chai.assert;
     
             assert.equal(1, 2, "This is an error message.");
         }
