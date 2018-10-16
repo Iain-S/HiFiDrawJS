@@ -2,6 +2,20 @@
 /*jslint es6 */
 
 
+// curry :: ((a, b, ...) -> c) -> a -> b -> ... -> c
+const curry = (fn) => {
+  const arity = fn.length;
+
+  return function $curry(...args) {
+    if (args.length < arity) {
+      return $curry.bind(null, ...args);
+    }
+
+    return fn.call(null, ...args);
+  };
+};
+
+
 function countBodyRows(tableBody) {
     "use strict";
 
@@ -149,14 +163,6 @@ function addNodeFromCell(tdObject, nodeArray) {
     });
 
     if (!id) {
-        let max_idx = 0;
-
-        nodeArray.forEach(function (element) {
-            if (element.id > max_idx) {
-                max_idx = element.id;
-            }
-        });
-
         id = input.val();
         nodeArray.push({id: id,
                         label: input.val(),
@@ -359,7 +365,7 @@ function redraw(tableObj, drawingArea) {
 }
 
 
-function makeDeleteButton(drawingArea) {
+function makeDeleteButton(redrawFunc) {
     "use strict";
 
     //Create an input type dynamically.
@@ -377,7 +383,7 @@ function makeDeleteButton(drawingArea) {
 
             $(this).closest("tr").remove();
 
-            redraw(theTable, drawingArea);
+            redrawFunc();
 
             return false;
         }
@@ -387,7 +393,8 @@ function makeDeleteButton(drawingArea) {
 }
 
 
-function addRow(tableObj, drawingArea, redrawFunc, source_val, dest_val, conn_val) {
+function addRow(tableObj, redraw_func, source_val, dest_val, conn_val) {
+
     "use strict";
 
     const tableBody = tableObj.children("tbody").first();
@@ -435,7 +442,7 @@ function addRow(tableObj, drawingArea, redrawFunc, source_val, dest_val, conn_va
     dstBox.appendTo(dstCell);
 
     const deleteCell = newRow.insertCell(3);
-    makeDeleteButton(drawingArea).appendTo(deleteCell);
+    makeDeleteButton(redraw_func).appendTo(deleteCell);
 
     return tableBody;
 }
@@ -447,9 +454,14 @@ function addRowRedraw(sourceTableID, drawingArea, redrawFunc) {
 
     const tableObj = $("#" + sourceTableID);
 
-    addRow(tableObj, drawingArea, redrawFunc);
 
-    redrawFunc();
+    const redraw_func = function () {
+                        redraw(tableObj, drawingArea);
+                    };
+
+    addRow(tableObj, redraw_func);
+
+    redraw_func();
 }
 
 
@@ -534,9 +546,15 @@ function deleteLastDataRowFromID(tableID, drawingArea) {
 
 function addSampleData(tableObj, drawingArea, redrawFunc) {
     "use strict";
-    addRow(tableObj, drawingArea, redrawFunc, "phone", "amp", "XLR<>XLR");
-    addRow(tableObj, drawingArea, redrawFunc, "amp", "speakers");
-    addRow(tableObj, drawingArea, redrawFunc);
+
+    const redraw_func = function () {
+                    redraw(tableObj, drawingArea);
+                };
+
+    addRow(tableObj, redraw_func, "phone", "amp", "XLR<>XLR");
+    addRow(tableObj, redraw_func, "amp", "speakers");
+    addRow(tableObj, redraw_func);
+
 }
 
 
@@ -600,8 +618,12 @@ function addDataFromURL(serialisedData, tableObj, drawingDivID, redrawFunc) {
             }
         });
 
+        const redraw_func = function () {
+                redraw(tableObj, $("#" + drawingDivID));
+            };
+
         if (from_label && to_label) {
-            addRow(tableObj, $("#"+drawingDivID), redrawFunc, from_label, to_label, edge.label);
+            addRow(tableObj, redraw_func, from_label, to_label, edge.label);
         }
     });
 }

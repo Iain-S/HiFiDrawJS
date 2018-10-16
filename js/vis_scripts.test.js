@@ -475,35 +475,12 @@ const hifidrawTesting = (function() {
     
     
             const assert = chai.assert;
-    
-            // Create a table with one valid row
-            const test_data = $("<table class='table' id='9029384093284023'>\n" +
-                "    <thead>\n" +
-                "      <tr>\n" +
-                "        <th>Source</th>\n" +
-                "        <th>Connector</th>\n" +
-                "        <th>Destination</th>\n" +
-                "      </tr>\n" +
-                "    </thead>\n" +
-                "    <tbody>\n" +
-                "      <tr>\n" +
-                "        <td id='sourceBox'>\n" +
-                "          <input type='button' id='btnAdd' value='Add' onclick='addRowRedraw(\"inputTable\");' />\n" +
-                "        </td>\n" +
-                "        <td></td>\n" +
-                "        <td></td>\n" +
-                "      </tr>\n" +
-                "      <tr>\n" +
-                "        <td><input value='part1' type='text'></td>\n" +
-                "        <td><select>" +
-                "<option value='conn1' selected='selected'></option>" +
-                "<option value='conn2'></option>" +
-                "</select></td>\n" +
-                "        <td><input value='part2' type='text'></td>\n" +
-                "      </tr>\n" +
-                "    </tbody>\n" +
-                "  </table>");
-    
+
+
+            const test_data = makeTable("some_id", $("<div>temp drawing area</div>"));
+
+            addRow(test_data, ()=>null, "part1", "part2", "XLR<>XLR");
+            e
             const nodes = [
                 {id: "part1", label: "part1", shape: "box"},
                 {id: "part2", label: "part2", shape: "box"}
@@ -511,7 +488,9 @@ const hifidrawTesting = (function() {
     
             // create an array with edges
             const edges = [
-                {from: "part1", to: "part2", arrows: "to", label: "conn1"}
+
+                {from: "part1", to: "part2", arrows: "to", label: "XLR<>XLR"}
+
             ];
     
             const data = graphFromTable(test_data);
