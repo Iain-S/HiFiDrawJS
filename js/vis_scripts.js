@@ -157,21 +157,13 @@ function addNodeFromCell(tdObject, nodeArray) {
     // do we have a node for this already?
     nodeArray.some(function (element) {
         if (element.label === input.val()) {
-            id = element.id;
+            id = element.label;
             return true;
         }
     });
 
     if (!id) {
-        let max_idx = 0;
-
-        nodeArray.forEach(function (element) {
-            if (element.id > max_idx) {
-                max_idx = element.id;
-            }
-        });
-
-        id = max_idx + 1;
+        id = input.val();
         nodeArray.push({id: id,
                         label: input.val(),
                         shape: "box"});
