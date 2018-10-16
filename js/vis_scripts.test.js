@@ -16,9 +16,13 @@ const hifidrawTesting = (function() {
                     Object.prototype.toString.call(self[property]) === "[object Function]"  // Has to be a function
                     && (/^test_/i).test(property)                                           // Only names beginning with test_
                 ) {
-                    myFunctions.push(function() {
-                        self[property]();
-                    });
+                    myFunctions.push(
+                        Object.defineProperty(function() {
+                            self[property]();
+                            },
+                            "name",
+                            {value: property})
+                    );
                 }
             });
             return myFunctions;
@@ -760,43 +764,7 @@ $(document).ready(function () {
     const total_time_start = performance.now();
 
     // THE BIG LIST OF TEST FUNCTIONS
-    // noinspection JSLint
     const test_functions = hifidrawTesting.get_all_tests();
-    //[
-      //  hifidrawTesting.test_add_text_box
-        // hifidrawTesting.test_count_tbody_rows,
-        // hifidrawTesting.test_make_connector_menu,
-        // hifidrawTesting.test_make_connector_menu_with_id,
-        // hifidrawTesting.test_make_connector_menu_with_selection,
-        // hifidrawTesting.test_make_destination_box,
-        // hifidrawTesting.test_make_destination_box_with_id,
-        // hifidrawTesting.test_make_destination_box_with_value,
-        // hifidrawTesting.test_make_source_box,
-        // hifidrawTesting.test_make_source_box_with_id,
-        // hifidrawTesting.test_make_source_box_with_value,
-        // hifidrawTesting.test_make_delete_button,
-        // hifidrawTesting.test_make_table,
-        // hifidrawTesting.test_make_refresh_button,
-        // hifidrawTesting.test_delete_last_row_leaves_essentials,
-        // hifidrawTesting.test_add_and_delete_row,
-        // hifidrawTesting.test_add_row,
-        // hifidrawTesting.test_add_row_focus,
-        // hifidrawTesting.test_add_row_focus_two,
-        // hifidrawTesting.test_new_row_has_right_num_of_cols,
-        // hifidrawTesting.test_delete_last_row,
-        // hifidrawTesting.test_delete_last_row_focus,
-        // hifidrawTesting.test_count_valid_rows,
-        // hifidrawTesting.test_graph_from_table,
-        // hifidrawTesting.test_add_node_from_cell,
-        // hifidrawTesting.test_row_is_valid,
-        // hifidrawTesting.test_add_sample_data,
-        // hifidrawTesting.test_add_data_from_url,
-        // hifidrawTesting.test_serialise_graph,
-        // hifidrawTesting.test_deserialise_graph,
-        // hifidrawTesting.test_serialise_deserialise,
-        // hifidrawTesting.test_update_export_url,
-        // hifidrawTesting.test_long_export_url_error_message
-    //];
 
     const test_result_area = $("#test_results");
     const number_of_tests = test_functions.length;
