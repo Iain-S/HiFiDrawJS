@@ -660,7 +660,7 @@ const hifidrawTesting = (function() {
     
     
         _test_template: function() {
-    
+
             assert.equal(1, 2, "This is an error message.");
         }
     };

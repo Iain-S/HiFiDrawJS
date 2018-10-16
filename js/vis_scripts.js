@@ -339,7 +339,7 @@ function redraw(tableObj, drawingArea) {
 
     const network = makeNetwork(graph, drawingArea);
 
-    console.log(network.getPositions());
+    //console.log(network.getPositions());
 
     // remember it for next time
     window.hifidrawNetwork = network;
@@ -544,16 +544,13 @@ function deleteLastDataRowFromID(tableID, drawingArea) {
 }
 
 
-function addSampleData(tableObj, drawingArea, redrawFunc) {
+function addSampleData(tableObj, redrawFunc) {
     "use strict";
 
-    const redraw_func = function () {
-                    redraw(tableObj, drawingArea);
-                };
-
-    addRow(tableObj, redraw_func, "phone", "amp", "XLR<>XLR");
-    addRow(tableObj, redraw_func, "amp", "speakers");
-    addRow(tableObj, redraw_func);
+    addRow(tableObj, redrawFunc, "turntable", "stereo amp", "RCA<>RCA");
+    addRow(tableObj, redrawFunc, "phone", "stereo amp", "TRS<>RCA");
+    addRow(tableObj, redrawFunc, "stereo amp", "speakers", "speaker cable");
+    addRow(tableObj, redrawFunc);
 
 }
 
@@ -698,7 +695,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     if (query_params.hasOwnProperty("serialised")) {
         addDataFromURL(query_params.serialised, inputTable, drawingDivID, redrawFunc);
     } else {
-        addSampleData(inputTable, drawingArea, redrawFunc);
+        addSampleData(inputTable, redrawFunc);
     }
 
     setKeydownListener(inputTable.attr("id"), drawingArea, redrawFunc);

@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 # NOTE: You may need to download geckodriver, if you are using linux and haven't already downloaded it
 
 
-def wait_ten_seconds_for_one(some_function):
+def wait_ten_seconds_for(some_function):
     def decorated_function(the_self, arg_one):
         max_wait = 10
         start_time = time.time()
@@ -43,7 +43,7 @@ class TestNewVisitor(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
-    @wait_ten_seconds_for_one
+    @wait_ten_seconds_for
     def check_for_href_and_download_in_element(self, element_id):
         download_button = self.browser.find_element_by_id(element_id)
         download_link = download_button.get_attribute('href')
@@ -51,6 +51,10 @@ class TestNewVisitor(unittest.TestCase):
 
         download_filename = download_button.get_attribute('download')
         self.assertEqual(download_filename, 'HiFiDraw.png')
+
+    @wait_ten_seconds_for
+    def check_for_page_title(self, expected_title):
+        self.assertEqual(self.browser.title, expected_title)
 
     def test_can_make_super_simple_diagram(self):
         # Edith wants to make a super simple diagram to of her iPhone and active monitors.
@@ -120,6 +124,27 @@ class TestNewVisitor(unittest.TestCase):
         export_link = self.browser.find_element_by_id('id_export_link')
         current_url = self.browser.current_url
         self.assertTrue(current_url in export_link.text)
+
+    def test_can_follow_examples_link(self):
+        example_link_element = self.browser.find_element_by_id('id_examples_link')
+
+        # User .get_attribute instead of .text because the element may be hidden in the nav bar collapsible
+        example_link_text = example_link_element.get_attribute('textContent')
+        self.assertEqual(example_link_text, 'Examples')
+
+        example_link = example_link_element.get_attribute('href')
+        self.browser.get(example_link)
+        self.check_for_page_title('HiFiDraw Examples')
+
+    def test_is_a_github_link(self):
+        github_link_element = self.browser.find_element_by_id('id_github_link')
+
+        # User .get_attribute instead of .text because the element may be hidden in the nav bar collapsible
+        github_link_text = github_link_element.get_attribute('textContent')
+        self.assertEqual(github_link_text, 'GitHub')
+
+        github_link = github_link_element.get_attribute('href')
+        self.assertTrue('github' in github_link)
 
 
 if __name__ == '__main__':
