@@ -393,7 +393,7 @@ function makeDeleteButton(redrawFunc) {
 }
 
 
-function addRow(tableObj, redraw_func, source_val, dest_val, conn_val) {
+function addRow(tableObj, redrawFunc, source_val, dest_val, conn_val) {
 
     "use strict";
 
@@ -442,7 +442,7 @@ function addRow(tableObj, redraw_func, source_val, dest_val, conn_val) {
     dstBox.appendTo(dstCell);
 
     const deleteCell = newRow.insertCell(3);
-    makeDeleteButton(redraw_func).appendTo(deleteCell);
+    makeDeleteButton(redrawFunc).appendTo(deleteCell);
 
     return tableBody;
 }

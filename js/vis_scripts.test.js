@@ -480,7 +480,7 @@ const hifidrawTesting = (function() {
             const test_data = makeTable("some_id", $("<div>temp drawing area</div>"));
 
             addRow(test_data, ()=>null, "part1", "part2", "XLR<>XLR");
-            e
+
             const nodes = [
                 {id: "part1", label: "part1", shape: "box"},
                 {id: "part2", label: "part2", shape: "box"}
