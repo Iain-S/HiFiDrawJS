@@ -1,7 +1,7 @@
 /*global $, chai, performance, document */
 /*jslint es6 */
 
-/* Things to do once the unit_tests page has loaded */
+// Things to do once the unit_tests page has loaded
 $(document).ready(function () {
     // Function-level strict mode syntax
     "use strict";
@@ -723,7 +723,7 @@ function test_add_data_from_url() {
                     "  </thead>\n" +
                     "<tbody>\n" +
                     "</tbody>\n" +
-                    "</table>"); //.appendTo(document.body);
+                    "</table>");
 
     const graph = {"nodes":[{"id":1, "label":"a", "shape":"box"},
                             {"id":2, "label":"b", "shape":"box"},
