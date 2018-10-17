@@ -318,51 +318,49 @@ function updateExportURL(graph, linkObject) {
     }
 }
 
+function makeRedrawFunc () {
+    let visNetwork;
 
-function redraw(tableObj, drawingArea) {
-    "use strict";
-    // ToDo This function does too much, break it up
-    const graph = graphFromTable(tableObj);
-    let scale;
-    let position;
+    return function redraw(tableObj, drawingArea) {
+        "use strict";
+        // ToDo This function does too much, break it up
+        const graph = graphFromTable(tableObj);
+        let scale;
+        let position;
 
-    // We store the network in the window global object
-    // There is probably a nicer way to do this
-    if (window.hifidrawNetwork) {
-        getNodePositionsFromNetwork(graph, window.hifidrawNetwork);
+        // We store the network in the window global object
+        // There is probably a nicer way to do this
+        if (visNetwork) {
+            getNodePositionsFromNetwork(graph, visNetwork);
 
-        scale = window.hifidrawNetwork.getScale();
-        position = window.hifidrawNetwork.getViewPosition();
-    }
+            scale = visNetwork.getScale();
+            position = visNetwork.getViewPosition();
+        }
 
-    updateExportURL(graph, $("#id_export_link"));
+        updateExportURL(graph, $("#id_export_link"));
 
-    const network = makeNetwork(graph, drawingArea);
+        visNetwork = makeNetwork(graph, drawingArea);
 
-    //console.log(network.getPositions());
+        // keep the old position if there is one else
+        if (position === undefined) {
+            position = visNetwork.getViewPosition();
+        }
 
-    // remember it for next time
-    window.hifidrawNetwork = network;
+        if (scale === undefined) {
+            scale = 1.2;
+        }
 
-    // keep the old position if there is one else
-    if (position === undefined) {
-        position = network.getViewPosition();
-    }
+        visNetwork.moveTo({
+            position: position,
+            scale: scale
+        });
 
-    if (scale === undefined) {
-        scale = 1.2;
-    }
-
-    network.moveTo({
-        position: position,
-        scale: scale
-    });
-
-    network.on("afterDrawing",
-           function () {
-               addDownloadLink("id_download", drawingArea.attr("id"));
-           });
-}
+        visNetwork.on("afterDrawing",
+            function () {
+                addDownloadLink("id_download", drawingArea.attr("id"));
+            });
+    };
+};
 
 
 function makeDeleteButton(redrawFunc) {
@@ -448,7 +446,7 @@ function addRow(tableObj, redrawFunc, sourceVal, destVal, connVal) {
 }
 
 
-function makeTable(tableID, drawingArea) {
+function makeTable(tableID, redrawWithTable) {
     "use strict";
 
     const newTable =
@@ -470,7 +468,7 @@ function makeTable(tableID, drawingArea) {
     const button = newTable.find("input").first();
 
     const redrawFunc = function () {
-        redraw(newTable, drawingArea);
+        redrawWithTable(newTable);
     };
 
     button.click(function(){
@@ -540,7 +538,7 @@ function removeSampleData(tableObj, drawingArea) {
     const tableBody = tableObj.children("tbody").first();
     tableBody.empty();
 
-    redraw(tableObj, drawingArea);
+    //redraw(tableObj, drawingArea);
 }
 
 
@@ -605,13 +603,11 @@ function refresh(sourceTable, drawingArea) {
 }
 
 
-function makeRefreshButton(inputTable, drawingArea) {
+function makeRefreshButton(refreshFunc) {
     "use strict";
     const button = $("<input type=\"button\" class=\"btn-small\" value=\"Refresh\"/>");
 
-    button.click(function() {
-                   refresh(inputTable, drawingArea);
-                 });
+    button.click(refreshFunc);
 
     return button;
 }
@@ -641,6 +637,7 @@ function setKeydownListener(tableObj, redrawFunc) {
                 deleteLastDataRowFrom(tableObj, redrawFunc);
             } else {
                 addRow(tableObj, redrawFunc);
+                redrawFunc();
             }
         }
     });
@@ -652,17 +649,25 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
 
     const inputDiv = $("#" + inputDivID);
     const drawingArea = $("#" + drawingDivID);
-    const inputTable = makeTable("inputTable", drawingArea);
+
+    // ToDo Explain what is happening here
+    const redrawMe = makeRedrawFunc();
+
+    const redrawWithTable = function (tableObj) {
+        redrawMe(tableObj, drawingArea);
+    };
+
+    const inputTable = makeTable("inputTable", redrawWithTable);
 
     inputDiv.append(inputTable);
 
-    drawingArea.parent().append(makeRefreshButton(inputTable, drawingArea));
+    const redrawFunc = function () {
+        redrawMe(inputTable, drawingArea);
+    };
+
+    drawingArea.parent().append(makeRefreshButton(redrawFunc));
 
     const queryParams = getQueryParams(document.location.search);
-
-    const redrawFunc = function () {
-        redraw(inputTable, drawingArea);
-    };
 
     if (queryParams.hasOwnProperty("serialised")) {
         addDataFromURL(queryParams.serialised, inputTable, redrawFunc);
