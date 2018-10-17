@@ -481,7 +481,7 @@ function makeTable(tableID, drawingArea) {
 }
 
 
-function deleteRowFromID(tableObj, idx, redrawFunc) {
+function deleteRowFrom(tableObj, idx, redrawFunc) {
     "use strict";
 
     const tableBody = tableObj.children("tbody").first();
@@ -510,7 +510,7 @@ function deleteRowFromID(tableObj, idx, redrawFunc) {
 }
 
 
-function deleteLastDataRowFromID(tableObj, redrawFunc) {
+function deleteLastDataRowFrom(tableObj, redrawFunc) {
     // This is a safe delete function, it will always leave the
     //  headers and the add button.
     "use strict";
@@ -518,7 +518,7 @@ function deleteLastDataRowFromID(tableObj, redrawFunc) {
     const tableBody = tableObj.children("tbody").first();
 
     if (tableBody.find("tr").length > 1) {
-        deleteRowFromID(tableObj, tableBody.children("tr").length - 1, redrawFunc);
+        deleteRowFrom(tableObj, tableBody.children("tr").length - 1, redrawFunc);
     }
 }
 
@@ -641,7 +641,7 @@ function setKeydownListener(tableObj, redrawFunc) {
         // Shift + Enter to delete last row or Enter for new row
         if (window.pressedKeys[13]) {
             if (window.pressedKeys[16]) {
-                deleteLastDataRowFromID(tableObj, redrawFunc);
+                deleteLastDataRowFrom(tableObj, redrawFunc);
             } else {
                 addRow(tableObj, redrawFunc);
             }

@@ -190,13 +190,13 @@ const hifidrawTesting = (function() {
 
             // Delete the last row
             try {
-                deleteRowFromID(tableRef, table_rows.length - 1);
+                deleteRowFrom(tableRef, table_rows.length - 1);
             } catch (ignore) {
             }
     
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteRowFromID.");
+            assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteRowFrom.");
         },
 
 
@@ -234,13 +234,13 @@ const hifidrawTesting = (function() {
     
             // Delete the last row
             try {
-                deleteLastDataRowFromID(tableRef);
+                deleteLastDataRowFrom(tableRef);
             } catch (ignore) {
             }
     
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteLastDataRowFromID.");
+            assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteLastDataRowFrom.");
         },
     
     
@@ -260,7 +260,7 @@ const hifidrawTesting = (function() {
     
             // Set focus on the last destination input
             lastDestinationInput.focus();
-            deleteLastDataRowFromID(tableObj, ()=>null);
+            deleteLastDataRowFrom(tableObj, ()=>null);
     
             // Assert that focus is on last destination input
             tableObj = $("#inputTable");
@@ -298,7 +298,7 @@ const hifidrawTesting = (function() {
     
             // Check that our function will always leave them there
             try {
-                deleteLastDataRowFromID("9029384093284023");
+                deleteLastDataRowFrom("9029384093284023");
             } catch (ignore) {
             }
     
