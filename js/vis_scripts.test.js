@@ -180,13 +180,13 @@ const hifidrawTesting = (function() {
             assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
 
             try {
-                addRowRedraw(tableRef, () => null);
+                addRow(tableRef, () => null);
             } catch (ignore) {
             }
 
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(5, table_rows.length, "Expected more rows after calling addRowRedraw.");
+            assert.equal(5, table_rows.length, "Expected more rows after calling addRow.");
 
             // Delete the last row
             try {
@@ -209,7 +209,7 @@ const hifidrawTesting = (function() {
             };
 
             try {
-                addRowRedraw($("<table></table>"), redraw_func);
+                addRow($("<table></table>"), redraw_func);
             } catch (ignore) {
                         }
             //assert.isTrue(function_called, "redraw function has not been called");
@@ -224,13 +224,13 @@ const hifidrawTesting = (function() {
             assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
     
             try {
-                addRowRedraw(tableRef);
+                addRow(tableRef);
             } catch (ignore) {
             }
     
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(5, table_rows.length, "Expected more rows after calling addRowRedraw.");
+            assert.equal(5, table_rows.length, "Expected more rows after calling addRow.");
     
             // Delete the last row
             try {
@@ -287,7 +287,7 @@ const hifidrawTesting = (function() {
                 "      <tbody>\n" +
                 "        <tr>\n" +
                 "\t        <td id='sourceBox'>\n" +
-                "\t\t        <input type='button' id='btnAdd' value='Add' onclick='addRowRedraw(\"inputTable\");' />\n" +
+                "\t\t        <input type='button' id='btnAdd' value='Add' onclick='addRow(\"inputTable\");' />\n" +
                 "          </td>\n" +
                 "\t        <td></td>\n" +
                 "\t        <td></td>\n" +
@@ -315,7 +315,7 @@ const hifidrawTesting = (function() {
             assert.equal(4, tableRows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
     
             try {
-                addRowRedraw(tableRef);
+                addRow(tableRef);
             } catch (ignore) {
             }
     
@@ -415,7 +415,7 @@ const hifidrawTesting = (function() {
                 "      <tbody>\n" +
                 "        <tr>\n" +
                 "\t        <td id='sourceBox'>\n" +
-                "\t\t        <input type='button' id='btnAdd' value='Add' onclick='addRowRedraw(\"inputTable\");' />\n" +
+                "\t\t        <input type='button' id='btnAdd' value='Add'/>\n" +
                 "          </td>\n" +
                 "\t        <td></td>\n" +
                 "\t        <td></td>\n" +

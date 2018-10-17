@@ -448,18 +448,6 @@ function addRow(tableObj, redrawFunc, source_val, dest_val, conn_val) {
 }
 
 
-/* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(tableObj, redrawFunc) {
-    "use strict";
-
-    //const tableObj = $("#" + sourceTableID);
-
-    addRow(tableObj, redrawFunc);
-
-    //redrawFunc();
-}
-
-
 function makeTable(tableID, drawingArea) {
     "use strict";
 
@@ -486,7 +474,7 @@ function makeTable(tableID, drawingArea) {
     };
 
     button.click(function(){
-        addRowRedraw(newTable, redrawFunc);
+        addRow(newTable, redrawFunc);
     });
 
     return newTable;
@@ -585,33 +573,29 @@ function getQueryParams(queryString) {
 }
 
 
-function addDataFromURL(serialisedData, tableObj, drawingDivID, redrawFunc) {
+function addDataFromURL(serialisedData, tableObj, redrawFunc) {
     "use strict";
 
     const unpackedData = deserialiseGraph(serialisedData);
 
     // ToDo Re-write this using array.some()
     unpackedData.edges.forEach(function (edge) {
-        let from_label = null;
-        let to_label = null;
+        let fromLabel = null;
+        let toLabel = null;
 
         // get the labels for the nodes connected by this edge
         unpackedData.nodes.forEach(function (node) {
             if (node.id === edge.from) {
-                from_label = node.label;
+                fromLabel = node.label;
             }
 
             if (node.id === edge.to) {
-                to_label = node.label;
+                toLabel = node.label;
             }
         });
 
-        const redraw_func = function () {
-                redraw(tableObj, $("#" + drawingDivID));
-            };
-
-        if (from_label && to_label) {
-            addRow(tableObj, redraw_func, from_label, to_label, edge.label);
+        if (fromLabel && toLabel) {
+            addRow(tableObj, redrawFunc, fromLabel, toLabel, edge.label);
         }
     });
 }
@@ -659,7 +643,7 @@ function setKeydownListener(tableObj, redrawFunc) {
             if (window.pressedKeys[16]) {
                 deleteLastDataRowFromID(tableObj, redrawFunc);
             } else {
-                addRowRedraw(tableObj, redrawFunc);
+                addRow(tableObj, redrawFunc);
             }
         }
     });
@@ -684,7 +668,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
     };
 
     if (query_params.hasOwnProperty("serialised")) {
-        addDataFromURL(query_params.serialised, inputTable, drawingDivID, redrawFunc);
+        addDataFromURL(query_params.serialised, inputTable, redrawFunc);
     } else {
         addSampleData(inputTable, redrawFunc);
     }
