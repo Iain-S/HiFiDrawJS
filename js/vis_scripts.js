@@ -449,14 +449,14 @@ function addRow(tableObj, redrawFunc, source_val, dest_val, conn_val) {
 
 
 /* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID, redrawFunc) {
+function addRowRedraw(tableObj, redrawFunc) {
     "use strict";
 
-    const tableObj = $("#" + sourceTableID);
+    //const tableObj = $("#" + sourceTableID);
 
     addRow(tableObj, redrawFunc);
 
-    redrawFunc();
+    //redrawFunc();
 }
 
 
@@ -486,19 +486,17 @@ function makeTable(tableID, drawingArea) {
     };
 
     button.click(function(){
-        addRowRedraw(tableID, drawingArea, redrawFunc);
+        addRowRedraw(newTable, redrawFunc);
     });
 
     return newTable;
 }
 
 
-function deleteRowFromID(tableID, idx, drawingArea) {
+function deleteRowFromID(tableObj, idx, redrawFunc) {
     "use strict";
 
-    const theTable = $("#" + tableID);
-
-    const tableBody = theTable.children("tbody").first();
+    const tableBody = tableObj.children("tbody").first();
 
     // if the last row has focus, set the focus to the last but one destination input
     const childRows = tableBody.children("tr");
@@ -520,21 +518,19 @@ function deleteRowFromID(tableID, idx, drawingArea) {
 
     tableBody.children("tr").eq(idx).remove();
 
-    redraw(theTable, drawingArea);
+    redrawFunc();
 }
 
 
-function deleteLastDataRowFromID(tableID, drawingArea) {
-    /* This is a safe delete function, it will always leave the
-    *  headers and the add button. */
+function deleteLastDataRowFromID(tableObj, redrawFunc) {
+    // This is a safe delete function, it will always leave the
+    //  headers and the add button.
     "use strict";
 
-    const theTable = $("#" + tableID);
-
-    const tableBody = theTable.children("tbody").first();
+    const tableBody = tableObj.children("tbody").first();
 
     if (tableBody.find("tr").length > 1) {
-        deleteRowFromID(tableID, tableBody.children("tr").length - 1, drawingArea);
+        deleteRowFromID(tableObj, tableBody.children("tr").length - 1, redrawFunc);
     }
 }
 
@@ -640,7 +636,7 @@ function makeRefreshButton(inputTable, drawingArea) {
 }
 
 
-function setKeydownListener(inputTableID, drawingArea, redrawFunc) {
+function setKeydownListener(tableObj, redrawFunc) {
     "use strict";
 
     if (! window.hasOwnProperty("pressedKeys")) {
@@ -661,9 +657,9 @@ function setKeydownListener(inputTableID, drawingArea, redrawFunc) {
         // Shift + Enter to delete last row or Enter for new row
         if (window.pressedKeys[13]) {
             if (window.pressedKeys[16]) {
-                deleteLastDataRowFromID(inputTableID, drawingArea);
+                deleteLastDataRowFromID(tableObj, redrawFunc);
             } else {
-                addRowRedraw(inputTableID, drawingArea, redrawFunc);
+                addRowRedraw(tableObj, redrawFunc);
             }
         }
     });
@@ -693,7 +689,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
         addSampleData(inputTable, redrawFunc);
     }
 
-    setKeydownListener(inputTable.attr("id"), drawingArea, redrawFunc);
+    setKeydownListener(inputTable, redrawFunc);
 
     redrawFunc();
 }
