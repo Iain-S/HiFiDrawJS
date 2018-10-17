@@ -286,13 +286,11 @@ function addDownloadLink(downloadID, drawingID) {
     //draw the original canvas onto the destination canvas
     downloadContext.drawImage(networkCanvas, 0, 0);
 
-
     //add an attribution to hifidraw
     downloadContext.font = "30px Patrick Hand SC";
     downloadContext.textAlign = "right";
     downloadContext.fillStyle = "#000000";
     downloadContext.fillText("Made by HiFiDraw", downloadCanvas.width-10, downloadCanvas.height-10);
-
 
     downloadLink.setAttribute("download", "HiFiDraw.png");
     downloadLink.setAttribute("href", downloadCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
