@@ -51,7 +51,7 @@ const hifidrawTesting = (function() {
             const tableRef = $("#inputTable");
             const tableBody = tableRef.children("tbody").first();
             let currentRows = countBodyRows(tableBody);
-            assert.equal(currentRows, 3);
+            assert.equal(currentRows, 4);
 
             const newTableBody = $("<tbody><tr></tr></tbody>");
             currentRows = countBodyRows(newTableBody);
@@ -177,7 +177,7 @@ const hifidrawTesting = (function() {
             const tableRef = $("#inputTable");
             let tableBody = tableRef.children("tbody").first();
             let table_rows = tableBody.children("tr");
-            assert.equal(3, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+            assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
     
             try {
                 addRowRedraw("inputTable");
@@ -186,7 +186,7 @@ const hifidrawTesting = (function() {
     
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(4, table_rows.length, "Expected more rows after calling addRowRedraw.");
+            assert.equal(5, table_rows.length, "Expected more rows after calling addRowRedraw.");
     
             // Delete the last row
             try {
@@ -196,7 +196,7 @@ const hifidrawTesting = (function() {
     
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(3, table_rows.length, "Expected fewer rows after calling deleteRowFromID.");
+            assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteRowFromID.");
         },
     
     
@@ -205,7 +205,7 @@ const hifidrawTesting = (function() {
             const tableRef = $("#inputTable");
             let tableBody = tableRef.children("tbody").first();
             let table_rows = tableBody.children("tr");
-            assert.equal(3, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+            assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
     
             try {
                 addRowRedraw("inputTable");
@@ -214,7 +214,7 @@ const hifidrawTesting = (function() {
     
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(4, table_rows.length, "Expected more rows after calling addRowRedraw.");
+            assert.equal(5, table_rows.length, "Expected more rows after calling addRowRedraw.");
     
             // Delete the last row
             try {
@@ -224,7 +224,7 @@ const hifidrawTesting = (function() {
     
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(3, table_rows.length, "Expected fewer rows after calling deleteLastDataRowFromID.");
+            assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteLastDataRowFromID.");
         },
     
     
@@ -296,7 +296,7 @@ const hifidrawTesting = (function() {
             const tableRef = $("#inputTable");
             let tableBody = tableRef.children("tbody").first();
             let tableRows = tableBody.children("tr");
-            assert.equal(3, tableRows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+            assert.equal(4, tableRows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
     
             try {
                 addRowRedraw("inputTable");
@@ -308,12 +308,6 @@ const hifidrawTesting = (function() {
             tableRows = tableBody.children("tr");
             const new_row = tableRows.eq(3).children("td");
             assert.equal(new_row.length, 4, "New row has wrong number of columns.");
-    
-            try {
-                deleteRowFromID("inputTable", 3);
-            }
-            catch (ignore) {
-            }
         },
     
     
@@ -502,7 +496,7 @@ const hifidrawTesting = (function() {
             let tableBody = tableRef.children("tbody").first();
             let table_rows = tableBody.children("tr");
     
-            assert.equal(3, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
+            assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
     
             try {
                 addSampleData(tableRef);
@@ -511,7 +505,7 @@ const hifidrawTesting = (function() {
     
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
-            assert.equal(6, table_rows.length, "Expected a different number of rows after calling addSampleData.");
+            assert.equal(8, table_rows.length, "Expected a different number of rows after calling addSampleData.");
         },
     
     
