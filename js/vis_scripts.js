@@ -318,7 +318,7 @@ function updateExportURL(graph, linkObject) {
     }
 }
 
-function makeRedrawFunc () {
+function makeRedrawFunc (setExportURL, setDownloadLink) {
     let visNetwork;
 
     return function redraw(tableObj, drawingArea) {
@@ -337,7 +337,7 @@ function makeRedrawFunc () {
             position = visNetwork.getViewPosition();
         }
 
-        updateExportURL(graph, $("#id_export_link"));
+        setExportURL(graph);
 
         visNetwork = makeNetwork(graph, drawingArea);
 
@@ -356,9 +356,10 @@ function makeRedrawFunc () {
         });
 
         visNetwork.on("afterDrawing",
-            function () {
-                addDownloadLink("id_download", drawingArea.attr("id"));
-            });
+            // function () {
+            //     addDownloadLink("id_download", drawingArea.attr("id"));}
+            setDownloadLink
+        );
     };
 };
 
@@ -644,14 +645,21 @@ function setKeydownListener(tableObj, redrawFunc) {
 }
 
 
-function setUpSingleDrawingPage(inputDivID, drawingDivID) {
+function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadID) {
     "use strict";
 
     const inputDiv = $("#" + inputDivID);
     const drawingArea = $("#" + drawingDivID);
 
-    // ToDo Explain what is happening here
-    const redrawMe = makeRedrawFunc();
+    const setExportURL = function (graph) {
+        updateExportURL(graph, $("#" + exportURLID))
+    };
+
+    const setDownloadLink = function () {
+                addDownloadLink(downloadID, drawingDivID);
+    };
+
+    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink);
 
     const redrawWithTable = function (tableObj) {
         redrawMe(tableObj, drawingArea);
