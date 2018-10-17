@@ -2,8 +2,8 @@
 /*jslint es6 */
 
 const hifidrawTesting = (function() {
-    /* Put all of the test functions in this pseudo-namespace so that we can auto-discover them without discovering
-    *  all functions in the global namespace. */
+    // Put all of the test functions in this pseudo-namespace so that we can auto-discover them without discovering
+    // all functions in the global namespace.
     "use strict";
 
     const assert = chai.assert;
@@ -719,7 +719,7 @@ $(document).ready(function () {
         }
 
         // tearDown
-        removeSampleData("inputTable", "drawing_div");
+        removeSampleData($("#inputTable"), $("#drawing_div"));
 
         test_result_area.append(append_string);
     });

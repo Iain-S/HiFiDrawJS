@@ -186,26 +186,26 @@ function graphFromTable(tableObj) {
         const tableRow = $(value);
         if (rowIsValid(tableRow)) {
             // get source
-            const src_td = tableRow.children("td").eq(0);
+            const srcTD = tableRow.children("td").eq(0);
 
             // if source is not in nodes already, add it
-            const src_id = addNodeFromCell(src_td, nodes);
+            const srcID = addNodeFromCell(srcTD, nodes);
 
             // get dest
-            const dst_td = tableRow.children("td").eq(2);
+            const dstTD = tableRow.children("td").eq(2);
 
             // if dest is not in nodes already, add it
-            const dst_id = addNodeFromCell(dst_td, nodes);
+            const dstID = addNodeFromCell(dstTD, nodes);
 
             // find label from drop-down
-            const conn_td = tableRow.children("td").eq(1);
-            const conn_label = conn_td.children("select").first().val();
+            const connTD = tableRow.children("td").eq(1);
+            const connLabel = connTD.children("select").first().val();
 
             // add edge
-            edges.push({from: src_id,
-                        to: dst_id,
+            edges.push({from: srcID,
+                        to: dstID,
                         arrows: "to",
-                        label: conn_label});
+                        label: connLabel});
         }
     });
 
@@ -219,12 +219,12 @@ function graphFromTable(tableObj) {
 function getNodePositionsFromNetwork(graph, network) {
     "use strict";
     network.storePositions();
-    network.body.data.nodes.forEach(function (old_node, ignore) {
-       graph.nodes.forEach(function (new_node, ignore) {
+    network.body.data.nodes.forEach(function (oldNode, ignore) {
+       graph.nodes.forEach(function (newNode, ignore) {
            // copy the Xs and Ys of the existing graph
-           if (new_node.label === old_node.label) {
-               new_node.x = old_node.x;
-               new_node.y = old_node.y;
+           if (newNode.label === oldNode.label) {
+               newNode.x = oldNode.x;
+               newNode.y = oldNode.y;
            }
        });
     });
@@ -234,10 +234,10 @@ function getNodePositionsFromNetwork(graph, network) {
 
 function makeNetwork(graph, drawingArea) {
     "use strict";
-    const vis_nodes = new vis.DataSet(graph.nodes);
-    const vis_edges = new vis.DataSet(graph.edges);
-    const vis_container = drawingArea[0];
-    const vis_options = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
+    const visNodes = new vis.DataSet(graph.nodes);
+    const visEdges = new vis.DataSet(graph.edges);
+    const visContainer = drawingArea[0];
+    const visOptions = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
                                          // we could give the user some warning to set one connector to simple
                          width: "100%",
                          height: "500px",
@@ -258,36 +258,36 @@ function makeNetwork(graph, drawingArea) {
                              randomSeed: 10161
                          }};
 
-    const vis_data = {nodes: vis_nodes,
-                      edges: vis_edges};
+    const visData = {nodes: visNodes,
+                      edges: visEdges};
 
     // draw the thing
-    return new vis.Network(vis_container, vis_data, vis_options);
+    return new vis.Network(visContainer, visData, visOptions);
 }
 
 
 function addDownloadLink(downloadID, drawingID) {
     "use strict";
 
-    const download_link = document.getElementById(downloadID);
-    const network_canvas = $("#" + drawingID).find("canvas").first()[0];
+    const downloadLink = document.getElementById(downloadID);
+    const networkCanvas = $("#" + drawingID).find("canvas").first()[0];
 
     // make a new canvas so that we can add an opaque background
-    const download_canvas = document.createElement("canvas");
+    const downloadCanvas = document.createElement("canvas");
 
-    download_canvas.width = network_canvas.width;
-    download_canvas.height = network_canvas.height;
-    const download_context = download_canvas.getContext("2d");
+    downloadCanvas.width = networkCanvas.width;
+    downloadCanvas.height = networkCanvas.height;
+    const downloadContext = downloadCanvas.getContext("2d");
 
     //create a rectangle with the desired color
-    download_context.fillStyle = "#FFFFFF";
-    download_context.fillRect(0, 0, network_canvas.width, network_canvas.height);
+    downloadContext.fillStyle = "#FFFFFF";
+    downloadContext.fillRect(0, 0, networkCanvas.width, networkCanvas.height);
 
     //draw the original canvas onto the destination canvas
-    download_context.drawImage(network_canvas, 0, 0);
+    downloadContext.drawImage(networkCanvas, 0, 0);
 
-    download_link.setAttribute("download", "HiFiDraw.png");
-    download_link.setAttribute("href", download_canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+    downloadLink.setAttribute("download", "HiFiDraw.png");
+    downloadLink.setAttribute("href", downloadCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
 
     // In case you want to choose a different random seed
     // console.log("random seed: " + network.getSeed());
@@ -308,13 +308,13 @@ function deserialiseGraph(serialisedGraph) {
 
 function updateExportURL(graph, linkObject) {
     "use strict";
-    const link_url = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
+    const linkURL = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
 
-    if (link_url.length > 2082) {
+    if (linkURL.length > 2082) {
         linkObject.text("The URL would have been over 2,083 characters.  " +
             "That is the upper limit of some browsers.  Consider shortening the names of some of your components.");
     } else {
-        linkObject.text(link_url);
+        linkObject.text(linkURL);
     }
 }
 
@@ -393,7 +393,7 @@ function makeDeleteButton(redrawFunc) {
 }
 
 
-function addRow(tableObj, redrawFunc, source_val, dest_val, conn_val) {
+function addRow(tableObj, redrawFunc, sourceVal, destVal, connVal) {
 
     "use strict";
 
@@ -417,7 +417,7 @@ function addRow(tableObj, redrawFunc, source_val, dest_val, conn_val) {
 
     // Insert a cell in the row at index 0
     let srcCell = newRow.insertCell(0);
-    let srcBox = makeSourceBox(source_val);
+    let srcBox = makeSourceBox(sourceVal);
 
     srcBox.focusout(redrawFunc);
 
@@ -428,14 +428,14 @@ function addRow(tableObj, redrawFunc, source_val, dest_val, conn_val) {
     }
 
     const connCell = newRow.insertCell(1);
-    const connMenu = makeConnectorMenu(conn_val);
+    const connMenu = makeConnectorMenu(connVal);
 
     connMenu.focusout(redrawFunc);
 
     connMenu.appendTo(connCell);
 
     const dstCell = newRow.insertCell(2);
-    const dstBox = makeDestinationBox(dest_val);
+    const dstBox = makeDestinationBox(destVal);
 
     dstBox.focusout(redrawFunc);
 
@@ -534,15 +534,12 @@ function addSampleData(tableObj, redrawFunc) {
 }
 
 
-function removeSampleData(sourceTableID, drawingDivID) {
+function removeSampleData(tableObj, drawingArea) {
     "use strict";
-
-    const tableObj = $("#" + sourceTableID);
 
     const tableBody = tableObj.children("tbody").first();
     tableBody.empty();
 
-    const drawingArea = $("#" + drawingDivID);
     redraw(tableObj, drawingArea);
 }
 
@@ -661,14 +658,14 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID) {
 
     drawingArea.parent().append(makeRefreshButton(inputTable, drawingArea));
 
-    const query_params = getQueryParams(document.location.search);
+    const queryParams = getQueryParams(document.location.search);
 
     const redrawFunc = function () {
         redraw(inputTable, drawingArea);
     };
 
-    if (query_params.hasOwnProperty("serialised")) {
-        addDataFromURL(query_params.serialised, inputTable, redrawFunc);
+    if (queryParams.hasOwnProperty("serialised")) {
+        addDataFromURL(queryParams.serialised, inputTable, redrawFunc);
     } else {
         addSampleData(inputTable, redrawFunc);
     }
