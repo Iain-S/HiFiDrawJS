@@ -178,16 +178,16 @@ const hifidrawTesting = (function() {
             let tableBody = tableRef.children("tbody").first();
             let table_rows = tableBody.children("tr");
             assert.equal(4, table_rows.length, "Wrong number of rows.  Have you changed the table in unit_tests.html?");
-    
+
             try {
-                addRowRedraw("inputTable");
+                addRowRedraw("inputTable", () => null);
             } catch (ignore) {
             }
-    
+
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
             assert.equal(5, table_rows.length, "Expected more rows after calling addRowRedraw.");
-    
+
             // Delete the last row
             try {
                 deleteRowFromID("inputTable", table_rows.length - 1);
@@ -198,6 +198,23 @@ const hifidrawTesting = (function() {
             table_rows = tableBody.children("tr");
             assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteRowFromID.");
         },
+
+
+        test_add_row_redraw_calls_func: function() {
+
+            let function_called = false;
+
+            const redraw_func = function(){
+                function_called = true;
+            };
+
+            try {
+                addRowRedraw("inputTable", redraw_func);
+            } catch (ignore) {
+                        }
+            assert.isTrue(function_called, "redraw function has not been called");
+        },
+
     
     
         test_delete_last_row: function() {

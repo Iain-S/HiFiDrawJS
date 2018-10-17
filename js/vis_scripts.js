@@ -449,19 +449,14 @@ function addRow(tableObj, redrawFunc, source_val, dest_val, conn_val) {
 
 
 /* Add a source-connector-destination row at the end of the table */
-function addRowRedraw(sourceTableID, drawingArea, redrawFunc) {
+function addRowRedraw(sourceTableID, redrawFunc) {
     "use strict";
 
     const tableObj = $("#" + sourceTableID);
 
+    addRow(tableObj, redrawFunc);
 
-    const redraw_func = function () {
-                        redraw(tableObj, drawingArea);
-                    };
-
-    addRow(tableObj, redraw_func);
-
-    redraw_func();
+    redrawFunc();
 }
 
 
