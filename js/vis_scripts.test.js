@@ -719,7 +719,7 @@ $(document).ready(function () {
         }
 
         // tearDown
-        removeSampleData($("#inputTable"), $("#drawing_div"));
+        removeSampleData($("#inputTable"));
 
         test_result_area.append(append_string);
     });

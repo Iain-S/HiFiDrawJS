@@ -2,20 +2,6 @@
 /*jslint es6 */
 
 
-// curry :: ((a, b, ...) -> c) -> a -> b -> ... -> c
-const curry = (fn) => {
-  const arity = fn.length;
-
-  return function $curry(...args) {
-    if (args.length < arity) {
-      return $curry.bind(null, ...args);
-    }
-
-    return fn.call(null, ...args);
-  };
-};
-
-
 function countBodyRows(tableBody) {
     "use strict";
 
@@ -325,10 +311,10 @@ function updateExportURL(graph, linkObject) {
 }
 
 function makeRedrawFunc (setExportURL, setDownloadLink) {
+    "use strict";
     let visNetwork;
 
     return function redraw(tableObj, drawingArea) {
-        "use strict";
         // ToDo This function does too much, break it up
         const graph = graphFromTable(tableObj);
         let scale;
@@ -347,7 +333,7 @@ function makeRedrawFunc (setExportURL, setDownloadLink) {
 
         visNetwork = makeNetwork(graph, drawingArea);
 
-        // keep the old position if there is one else
+        // Keep the old position, if there is one
         if (position === undefined) {
             position = visNetwork.getViewPosition();
         }
@@ -362,21 +348,19 @@ function makeRedrawFunc (setExportURL, setDownloadLink) {
         });
 
         visNetwork.on("afterDrawing",
-            // function () {
-            //     addDownloadLink("id_download", drawingArea.attr("id"));}
             setDownloadLink
         );
     };
-};
+}
 
 
 function makeDeleteButton(redrawFunc) {
     "use strict";
 
-    //Create an input type dynamically.
+    // Create an input type dynamically.
     const element = document.createElement("input");
 
-    //Assign different attributes to the element.
+    // Assign attributes to the element.
     element.setAttribute("type", "button");
     element.setAttribute("value", "-");
 
@@ -384,8 +368,6 @@ function makeDeleteButton(redrawFunc) {
 
     jqe.click(
         function () {
-            const theTable = $(this).closest("table");
-
             $(this).closest("tr").remove();
 
             redrawFunc();
@@ -539,13 +521,11 @@ function addSampleData(tableObj, redrawFunc) {
 }
 
 
-function removeSampleData(tableObj, drawingArea) {
+function removeSampleData(tableObj) {
     "use strict";
 
     const tableBody = tableObj.children("tbody").first();
     tableBody.empty();
-
-    //redraw(tableObj, drawingArea);
 }
 
 
@@ -600,13 +580,6 @@ function addDataFromURL(serialisedData, tableObj, redrawFunc) {
             addRow(tableObj, redrawFunc, fromLabel, toLabel, edge.label);
         }
     });
-}
-
-
-function refresh(sourceTable, drawingArea) {
-    "use strict";
-
-    redraw(sourceTable, drawingArea);
 }
 
 
