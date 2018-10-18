@@ -86,7 +86,7 @@ class TestNewVisitor(unittest.TestCase):
         # There should be a total of four in the table;
         # one header, two rows of pre-populated data and an empty row
         all_rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertEqual(len(all_rows), 4, "Expected four rows to begin with.")
+        self.assertEqual(len(all_rows), 5, "Expected five rows to begin with.")
 
         # She notices a table row, which seems to want some source input
         table_cells = self.browser.find_elements_by_tag_name("input")
@@ -101,13 +101,13 @@ class TestNewVisitor(unittest.TestCase):
         # There should be a total of five in the table;
         # one header, two rows of pre-populated data and the new one
         all_rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertEqual(len(all_rows), 5, "Expected four rows after ENTER keystroke.")
+        self.assertEqual(len(all_rows), 6, "Expected six rows after ENTER keystroke.")
 
     def test_can_delete_rows(self):
         # We begin with some rows
         start_rows = self.browser.find_elements_by_tag_name('tr')
         num_rows_start = len(start_rows)
-        self.assertEqual(num_rows_start, 4, "Expected four rows to begin with.")
+        self.assertEqual(num_rows_start, 5, "Expected five rows to begin with.")
 
         # Try to delete a row
         self.browser.find_element_by_xpath("//input[@value='-']").click()
