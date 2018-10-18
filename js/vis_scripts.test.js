@@ -608,7 +608,14 @@ const hifidrawTesting = (function() {
     
             const serialised_data = serialiseGraph(graph);
     
-            addDataFromURL(serialised_data, table);
+            addDataFromURL(serialised_data,
+                           table,
+                           ()=>null,
+                           {setData: function(visData) {
+                               if (!visData.hasOwnProperty("nodes") || !visData.hasOwnProperty("edges")) {
+                                   assert(false, "visNetwork should have data set");
+                               }
+                           }});
     
             const body_rows = table.children("tbody").first().children("tr").length;
     

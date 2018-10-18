@@ -256,9 +256,6 @@ function setNetworkData(graph, network) {
                      edges: visEdges};
 
     network.setData(visData);
-
-    // draw the thing
-    //return network;
 }
 
 
@@ -320,11 +317,10 @@ function updateExportURL(graph, linkObject) {
     }
 }
 
-function makeRedrawFunc (setExportURL, setDownloadLink) {
+function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
     "use strict";
-    let visNetwork;
 
-    return function redraw(tableObj, drawingArea) {
+    return function redraw(tableObj) {
         // ToDo This function does too much, break it up
         const graph = graphFromTable(tableObj);
         let scale;
@@ -338,8 +334,6 @@ function makeRedrawFunc (setExportURL, setDownloadLink) {
         }
 
         setExportURL(graph);
-
-        visNetwork = makeEmptyNetwork(drawingArea);
 
         setNetworkData(graph, visNetwork);
 
@@ -360,6 +354,8 @@ function makeRedrawFunc (setExportURL, setDownloadLink) {
         visNetwork.on("afterDrawing",
                       setDownloadLink
         );
+
+        // ToDo Should we use .on() to set the export URL as well as the download link?
     };
 }
 
@@ -565,12 +561,13 @@ function getQueryParams(queryString) {
 }
 
 
-function addDataFromURL(serialisedData, tableObj, redrawFunc) {
+function addDataFromURL(serialisedData, tableObj, redrawFunc, visNetwork) {
     "use strict";
 
     const unpackedData = deserialiseGraph(serialisedData);
 
     // ToDo Re-write this using array.some()
+    // We will manually add the graph data to the table
     unpackedData.edges.forEach(function (edge) {
         let fromLabel = null;
         let toLabel = null;
@@ -590,6 +587,11 @@ function addDataFromURL(serialisedData, tableObj, redrawFunc) {
             addRow(tableObj, redrawFunc, fromLabel, toLabel, edge.label);
         }
     });
+
+    // We will also set the visNetwork data directly this one time.
+    // This is necessary because we can't store the node x and y coordinates in the table
+    // and hope for them to be displayed later
+    setNetworkData(unpackedData, visNetwork);
 }
 
 
@@ -648,18 +650,16 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
                 addDownloadLink(downloadID, drawingDivID);
     };
 
-    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink);
+    const visNetwork = makeEmptyNetwork(drawingArea);
 
-    const redrawWithTable = function (tableObj) {
-        redrawMe(tableObj, drawingArea);
-    };
+    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink   , visNetwork);
 
-    const inputTable = makeTable("inputTable", redrawWithTable);
+    const inputTable = makeTable("inputTable", redrawMe);
 
     inputDiv.append(inputTable);
 
     const redrawFunc = function () {
-        redrawMe(inputTable, drawingArea);
+        redrawMe(inputTable);
     };
 
     drawingArea.parent().append(makeRefreshButton(redrawFunc));
@@ -667,14 +667,15 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
     const queryParams = getQueryParams(document.location.search);
 
     if (queryParams.hasOwnProperty("serialised")) {
-        addDataFromURL(queryParams.serialised, inputTable, redrawFunc);
+        addDataFromURL(queryParams["serialised"], inputTable, redrawFunc, visNetwork);
+        redrawFunc();
     } else {
         addSampleData(inputTable, redrawFunc);
+        redrawFunc();
     }
 
     setKeydownListener(inputTable, redrawFunc);
 
-    redrawFunc();
 }
 
 
