@@ -218,10 +218,8 @@ function getNodePositionsFromNetwork(graph, network) {
 }
 
 
-function makeNetwork(graph, drawingArea) {
+function makeEmptyNetwork(drawingArea) {
     "use strict";
-    const visNodes = new vis.DataSet(graph.nodes);
-    const visEdges = new vis.DataSet(graph.edges);
     const visContainer = drawingArea[0];
     const visOptions = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
                                          // we could give the user some warning to set one connector to simple
@@ -244,11 +242,23 @@ function makeNetwork(graph, drawingArea) {
                              randomSeed: 10161
                          }};
 
+    return new vis.Network(visContainer, {}, visOptions);
+}
+
+
+function setNetworkData(graph, network) {
+    "use strict";
+
+    const visNodes = new vis.DataSet(graph.nodes);
+    const visEdges = new vis.DataSet(graph.edges);
+
     const visData = {nodes: visNodes,
-                      edges: visEdges};
+                     edges: visEdges};
+
+    network.setData(visData);
 
     // draw the thing
-    return new vis.Network(visContainer, visData, visOptions);
+    //return network;
 }
 
 
@@ -320,8 +330,6 @@ function makeRedrawFunc (setExportURL, setDownloadLink) {
         let scale;
         let position;
 
-        // We store the network in the window global object
-        // There is probably a nicer way to do this
         if (visNetwork) {
             getNodePositionsFromNetwork(graph, visNetwork);
 
@@ -331,9 +339,11 @@ function makeRedrawFunc (setExportURL, setDownloadLink) {
 
         setExportURL(graph);
 
-        visNetwork = makeNetwork(graph, drawingArea);
+        visNetwork = makeEmptyNetwork(drawingArea);
 
-        // Keep the old position, if there is one
+        setNetworkData(graph, visNetwork);
+
+        // Keep the old position, if there are any
         if (position === undefined) {
             position = visNetwork.getViewPosition();
         }
@@ -348,7 +358,7 @@ function makeRedrawFunc (setExportURL, setDownloadLink) {
         });
 
         visNetwork.on("afterDrawing",
-            setDownloadLink
+                      setDownloadLink
         );
     };
 }
@@ -631,7 +641,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
     const drawingArea = $("#" + drawingDivID);
 
     const setExportURL = function (graph) {
-        updateExportURL(graph, $("#" + exportURLID))
+        updateExportURL(graph, $("#" + exportURLID));
     };
 
     const setDownloadLink = function () {

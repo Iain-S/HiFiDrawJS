@@ -546,7 +546,7 @@ const hifidrawTesting = (function() {
         },
     
     
-        generate_random_valid_graph: function() {
+        generate_a_valid_graph: function() {
             // ToDo Finish this
             return {
                 "nodes": [{"id": 1, "label": "phone", "shape": "box"},
@@ -571,7 +571,7 @@ const hifidrawTesting = (function() {
     
             assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_2)), test_data_2);
     
-            const test_data_3 = this.generate_random_valid_graph();
+            const test_data_3 = this.generate_a_valid_graph();
     
             assert.deepEqual(deserialiseGraph(serialiseGraph(test_data_3)), test_data_3);
         },
@@ -579,7 +579,7 @@ const hifidrawTesting = (function() {
     
         test_add_data_from_url: function() {
     
-            // Create a test table and add it to our page
+            // Create a test table
             const table = $("<table class='table' id='id_data_from_url'>\n" +
                 "  <thead>\n" +
                 "    <tr>\n" +
@@ -591,7 +591,7 @@ const hifidrawTesting = (function() {
                 "  </thead>\n" +
                 "<tbody>\n" +
                 "</tbody>\n" +
-                "</table>"); //.appendTo(document.body);
+                "</table>");
     
             const graph = {
                 "nodes": [{"id": 1, "label": "a", "shape": "box"},
@@ -600,10 +600,10 @@ const hifidrawTesting = (function() {
                     {"id": 4, "label": "d", "shape": "box"},
                     {"id": 5, "label": "e", "shape": "box"}],
                 "edges": [{"from": 1, "to": 1, "arrows": "to", "label": ""},
-                    {"from": 1, "to": 2, "arrows": "to", "label": ""},
-                    {"from": 1, "to": 3, "arrows": "to", "label": ""},
-                    {"from": 1, "to": 4, "arrows": "to", "label": ""},
-                    {"from": 1, "to": 5, "arrows": "to", "label": ""}]
+                    {"from": 1, "to": 2, "arrows": "to", "label": "tttt"},
+                    {"from": 1, "to": 3, "arrows": "to", "label": "dddd"},
+                    {"from": 1, "to": 4, "arrows": "to", "label": "ssss"},
+                    {"from": 1, "to": 5, "arrows": "to", "label": ";;;;"}]
             };
     
             const serialised_data = serialiseGraph(graph);
@@ -621,7 +621,7 @@ const hifidrawTesting = (function() {
             const para = $("<p></p>");
             const pass_fail = [];
     
-            updateExportURL(this.generate_random_valid_graph(), para);
+            updateExportURL(this.generate_a_valid_graph(), para);
     
             const export_url = para.text();
     
