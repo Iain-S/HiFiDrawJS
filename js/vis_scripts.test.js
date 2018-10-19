@@ -659,7 +659,28 @@ const hifidrawTesting = (function() {
                 "That is the upper limit of some browsers.  Consider shortening the names of some of your components.");
         },
     
-    
+
+        test_delete_edge_ids: function() {
+
+            const graph1 = {nodes: [],
+                            edges: [{id: 11, other_property: "some value"},
+                                    {id: "xx-yy", "something": "something else"}]};
+
+            // Copy graph1
+            const graph2 = JSON.parse(JSON.stringify(graph1));
+
+            const graph3 = {nodes: [],
+                            edges: [{other_property: "some value"},
+                                    {"something": "something else"}]};
+
+            // Make sure that the IDs have been removed
+            assert.deepEqual(deleteEdgeIDs(graph1), graph3, "Expected graphs to match.");
+
+            // Make sure our delete function hasn't had any side effects on graph1
+            assert.deepEqual(graph1, graph2);
+        },
+
+
         _test_template: function() {
 
             assert.equal(1, 2, "This is an error message.");
@@ -714,9 +735,6 @@ $(document).ready(function () {
 
         test_result_area.append(append_string);
     });
-
-    // not essential but nice to have some data when looking at the page
-    addSampleData($("#inputTable"));
 
     const total_ms_taken = performance.now() - total_time_start;
 
