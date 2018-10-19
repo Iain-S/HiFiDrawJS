@@ -684,7 +684,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
     const queryParams = getQueryParams(document.location.search);
 
     if (queryParams.hasOwnProperty("serialised")) {
-        addDataFromURL(queryParams["serialised"], inputTable, redrawFunc, visNetwork);
+        addDataFromURL(queryParams.serialised, inputTable, redrawFunc, visNetwork);
         redrawFunc();
     } else {
         addSampleData(inputTable, redrawFunc);

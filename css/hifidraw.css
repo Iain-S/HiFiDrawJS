@@ -68,14 +68,6 @@ div table th tr td {
 }
 
 #id_download {
-    /* Manually fudge this so that the button doesn't try to wrap over two lines */
-    /* top right bottom left */
-    /*padding: 0.45rem 0.4rem 0.45rem 0.4rem;*/
+    /* So that the button doesn't try to wrap over two lines */
     white-space: nowrap
 }
-
-/*#id_copy_link {*/
-    /*!* As above *!*/
-    /*!* top right bottom left *!*/
-    /*padding: 0.4rem 0.3rem 0.4rem 0.3rem;*/
-/*}*/
