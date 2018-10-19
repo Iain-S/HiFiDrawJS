@@ -81,15 +81,15 @@ const hifidrawTesting = (function() {
         },
         
 
-        test_make_connector_menu_with_selection: function() {
-
-            const connector_menu = makeConnectorMenu('').filter("select");
-            // ToDo finish this off
-            // assert.equal("something", connector_menu.attr("id"));
-            //
-            // connector_menu = makeConnectorMenu('').filter("select");
-            // assert.equal("----", connector_menu.attr("id"));
-        },
+        // test_make_connector_menu_with_selection: function() {
+        //
+        //     const connector_menu = makeConnectorMenu("").filter("select");
+        //     // ToDo finish this off
+        //     // assert.equal("something", connector_menu.attr("id"));
+        //     //
+        //     // connector_menu = makeConnectorMenu('').filter("select");
+        //     // assert.equal("----", connector_menu.attr("id"));
+        // },
     
     
         test_make_destination_box: function() {
@@ -197,22 +197,6 @@ const hifidrawTesting = (function() {
             tableBody = tableRef.children("tbody").first();
             table_rows = tableBody.children("tr");
             assert.equal(4, table_rows.length, "Expected fewer rows after calling deleteRowFrom.");
-        },
-
-
-        test_add_row_redraw_calls_func: function() {
-
-            let function_called = false;
-
-            const redraw_func = function(){
-                function_called = true;
-            };
-
-            try {
-                addRow($("<table></table>"), redraw_func);
-            } catch (ignore) {
-                        }
-            //assert.isTrue(function_called, "redraw function has not been called");
         },
 
 

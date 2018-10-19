@@ -57,8 +57,15 @@ function makeSourceBox(value, id) {
     element.setAttribute("type", "text");
     element.setAttribute("placeholder", "source");
     element.setAttribute("autocapitalize", "none");
-    element.setAttribute("list", "components");
 
+    // no harm in hard-coding this as long as we are explicit about it
+    const datalist = $("#components").filter("datalist");
+
+    if (datalist.length === 0) {
+        console.log("INFO: Could not find a datalist with id=components.");
+    } else {
+        element.setAttribute("list", "components");
+    }
 
     if (value) {
         element.setAttribute("value", value);
