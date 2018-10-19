@@ -202,19 +202,33 @@ function graphFromTable(tableObj) {
 }
 
 
+// function getNodePositionsFromNetwork(graph, network) {
+//     "use strict";
+//     network.storePositions();
+//     network.body.data.nodes.forEach(function (oldNode, ignore) {
+//        graph.nodes.forEach(function (newNode, ignore) {
+//            // copy the Xs and Ys of the existing graph
+//            if (newNode.label === oldNode.label) {
+//                newNode.x = oldNode.x;
+//                newNode.y = oldNode.y;
+//            }
+//        });
+//     });
+//
+// }
+
+
 function getNodePositionsFromNetwork(graph, network) {
     "use strict";
-    network.storePositions();
-    network.body.data.nodes.forEach(function (oldNode, ignore) {
-       graph.nodes.forEach(function (newNode, ignore) {
-           // copy the Xs and Ys of the existing graph
-           if (newNode.label === oldNode.label) {
-               newNode.x = oldNode.x;
-               newNode.y = oldNode.y;
-           }
-       });
-    });
+    const nodePositions = network.getPositions();
 
+    graph.nodes.forEach(function (newNode, ignore) {
+        if (nodePositions.hasOwnProperty(newNode.id)){
+            // copy the Xs and Ys of the existing graph
+            newNode.x = nodePositions[newNode.id].x;
+            newNode.y = nodePositions[newNode.id].y;
+        }
+   });
 }
 
 
@@ -228,9 +242,8 @@ function makeEmptyNetwork(drawingArea) {
                          nodes: {
                              font: {size: 20,
                                     face: "Patrick Hand SC, arial"
-                                    //vadjust: -2,
                                     }
-                             //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
+                                    //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                          },
                          edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
                                  font: {size: 15,
@@ -259,31 +272,31 @@ function setNetworkData(graph, network) {
 }
 
 
-function addDownloadLink(downloadID, drawingID) {
+function addDownloadLink(downloadID, drawingArea) {
     "use strict";
 
     const downloadLink = document.getElementById(downloadID);
-    const networkCanvas = $("#" + drawingID).find("canvas").first()[0];
+    const networkCanvas = drawingArea.find("canvas").first()[0];
 
-    // make a new canvas so that we can add an opaque background
+    // Make a new canvas so that we can add an opaque background
     const downloadCanvas = document.createElement("canvas");
 
     downloadCanvas.width = networkCanvas.width;
     downloadCanvas.height = networkCanvas.height;
     const downloadContext = downloadCanvas.getContext("2d");
 
-    //create a rectangle with the desired color
+    // Create a rectangle with the desired color
     downloadContext.fillStyle = "#FFFFFF";
     downloadContext.fillRect(0, 0, networkCanvas.width, networkCanvas.height);
 
-    //draw the original canvas onto the destination canvas
+    // Draw the original canvas onto the destination canvas
     downloadContext.drawImage(networkCanvas, 0, 0);
 
-    //add an attribution to hifidraw
-    downloadContext.font = "30px Patrick Hand SC";
+    // Add an attribution to hifidraw
+    downloadContext.font = "20px Patrick Hand SC, arial";
     downloadContext.textAlign = "right";
     downloadContext.fillStyle = "#000000";
-    downloadContext.fillText("Made by HiFiDraw", downloadCanvas.width-10, downloadCanvas.height-10);
+    downloadContext.fillText("Made with HiFiDraw", downloadCanvas.width-10, downloadCanvas.height-10);
 
     downloadLink.setAttribute("download", "HiFiDraw.png");
     downloadLink.setAttribute("href", downloadCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
@@ -326,16 +339,14 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
         let scale;
         let position;
 
-        if (visNetwork) {
-            getNodePositionsFromNetwork(graph, visNetwork);
+        getNodePositionsFromNetwork(graph, visNetwork);
 
-            scale = visNetwork.getScale();
-            position = visNetwork.getViewPosition();
-        }
-
-        setExportURL(graph);
+        scale = visNetwork.getScale();
+        position = visNetwork.getViewPosition();
 
         setNetworkData(graph, visNetwork);
+
+        setExportURL(graph);
 
         // Keep the old position, if there are any
         if (position === undefined) {
@@ -355,7 +366,13 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
                       setDownloadLink
         );
 
-        // ToDo Should we use .on() to set the export URL as well as the download link?
+        // When the user repositions a node, we need to update the export link
+        visNetwork.on("release",
+                      function(){
+                          getNodePositionsFromNetwork(graph, visNetwork);
+                          setExportURL(graph);
+                      }
+        );
     };
 }
 
@@ -647,7 +664,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
     };
 
     const setDownloadLink = function () {
-                addDownloadLink(downloadID, drawingDivID);
+        addDownloadLink(downloadID, drawingArea);
     };
 
     const visNetwork = makeEmptyNetwork(drawingArea);
