@@ -328,9 +328,27 @@ function deserialiseGraph(serialisedGraph) {
 }
 
 
+function deleteEdgeIDs(graph) {
+    "use strict";
+
+    // Seems to be a common way to deep copy
+    const newGraph = JSON.parse(JSON.stringify(graph));
+
+    newGraph.edges.forEach(function (edge) {
+        delete edge.id;
+    });
+
+    return newGraph;
+}
+
+
 function updateExportURL(graph, linkObject) {
     "use strict";
-    const linkURL = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graph);
+
+    // We should really deal with these edge IDs elsewhere
+    const graphWithoutIDs = deleteEdgeIDs(graph);
+
+    const linkURL = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graphWithoutIDs);
 
     if (linkURL.length > 2082) {
         linkObject.text("The URL would have been over 2,083 characters.  " +
@@ -339,6 +357,7 @@ function updateExportURL(graph, linkObject) {
         linkObject.text(linkURL);
     }
 }
+
 
 function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
     "use strict";
