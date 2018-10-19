@@ -22,7 +22,7 @@
   <div class="collapsible">
     <input id="collapsible1" type="checkbox" name="collapsible1">
     <button>
-    <label for="collapsible1">
+      <label for="collapsible1">
         <div class="bar1"></div>
         <div class="bar2"></div>
         <div class="bar3"></div>
@@ -40,6 +40,14 @@
 <div class="row">
   <div class="xs-12 md-3 col minwid">
     <div class="paper small-text" id="inputDiv">
+      <!-- These options will appear in a drop-down for the source and destination text boxes -->
+      <datalist id="components">
+        <option value="smartphone">
+        <option value="stereo amplifier">
+        <option value="av receiver">
+        <option value="passive speakers">
+        <option value="active speakers">
+      </datalist>
     </div>
   </div>
   <div class="xs-12 md-6 col">
@@ -49,15 +57,17 @@
   </div>
   <div class="xs-12 md-3 col">
     <div class="paper small-text">
-      <p class="text-muted text-center">Draw wiring diagrams for your HiFi</p>
+      <h5>Keyboard Shortcuts</h5>
       <p>
         ENTER: Add new row to the end of the table.<br>
         SHIFT + ENTER: Remove the last row from the table.
       </p>
+      <h5>Export Your Image</h5>
+      <p>Either download your image as a .png file or use the permalink to come back here at a later date.</p>
       <div class="row">
         <!-- This will be a button to download the image as a png -->
-        <div class="md-6 align-middle"><a id="id_download" class="paper-btn btn-small" href="">Download image</a></div>
-        <div class="md-6 align-middle"><input type="button" class="btn-small" onclick="copyToClipboard('id_export_link');" value="Copy link"/></div>
+        <div class="col-fill col align-middle"><a id="id_download" class="paper-btn btn-small" href="">Download image</a></div>
+        <div class="col-fill col align-middle"><input type="button" class="btn-small" onclick="copyToClipboard('id_export_link');" value="Copy link"/></div>
       </div>
       <!-- Our URL for returning to this page another time will be put here -->
       <p id="id_export_link" class="word-wrap"></p>

@@ -2,20 +2,6 @@
 /*jslint es6 */
 
 
-// curry :: ((a, b, ...) -> c) -> a -> b -> ... -> c
-const curry = (fn) => {
-  const arity = fn.length;
-
-  return function $curry(...args) {
-    if (args.length < arity) {
-      return $curry.bind(null, ...args);
-    }
-
-    return fn.call(null, ...args);
-  };
-};
-
-
 function countBodyRows(tableBody) {
     "use strict";
 
@@ -72,6 +58,15 @@ function makeSourceBox(value, id) {
     element.setAttribute("placeholder", "source");
     element.setAttribute("autocapitalize", "none");
 
+    // no harm in hard-coding this as long as we are explicit about it
+    const datalist = $("#components").filter("datalist");
+
+    if (datalist.length === 0) {
+        console.log("INFO: Could not find a datalist with id=components.");
+    } else {
+        element.setAttribute("list", "components");
+    }
+
     if (value) {
         element.setAttribute("value", value);
     }
@@ -94,6 +89,7 @@ function makeDestinationBox(value, id) {
     element.setAttribute("type", "text");
     element.setAttribute("placeholder", "dest");
     element.setAttribute("autocapitalize", "none");
+    element.setAttribute("list", "components");
 
     if (value) {
         element.setAttribute("value", value);
@@ -216,26 +212,38 @@ function graphFromTable(tableObj) {
 }
 
 
+// function getNodePositionsFromNetwork(graph, network) {
+//     "use strict";
+//     network.storePositions();
+//     network.body.data.nodes.forEach(function (oldNode, ignore) {
+//        graph.nodes.forEach(function (newNode, ignore) {
+//            // copy the Xs and Ys of the existing graph
+//            if (newNode.label === oldNode.label) {
+//                newNode.x = oldNode.x;
+//                newNode.y = oldNode.y;
+//            }
+//        });
+//     });
+//
+// }
+
+
 function getNodePositionsFromNetwork(graph, network) {
     "use strict";
-    network.storePositions();
-    network.body.data.nodes.forEach(function (oldNode, ignore) {
-       graph.nodes.forEach(function (newNode, ignore) {
-           // copy the Xs and Ys of the existing graph
-           if (newNode.label === oldNode.label) {
-               newNode.x = oldNode.x;
-               newNode.y = oldNode.y;
-           }
-       });
-    });
+    const nodePositions = network.getPositions();
 
+    graph.nodes.forEach(function (newNode, ignore) {
+        if (nodePositions.hasOwnProperty(newNode.id)){
+            // copy the Xs and Ys of the existing graph
+            newNode.x = nodePositions[newNode.id].x;
+            newNode.y = nodePositions[newNode.id].y;
+        }
+   });
 }
 
 
-function makeNetwork(graph, drawingArea) {
+function makeEmptyNetwork(drawingArea) {
     "use strict";
-    const visNodes = new vis.DataSet(graph.nodes);
-    const visEdges = new vis.DataSet(graph.edges);
     const visContainer = drawingArea[0];
     const visOptions = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
                                          // we could give the user some warning to set one connector to simple
@@ -244,9 +252,8 @@ function makeNetwork(graph, drawingArea) {
                          nodes: {
                              font: {size: 20,
                                     face: "Patrick Hand SC, arial"
-                                    //vadjust: -2,
                                     }
-                             //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
+                                    //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
                          },
                          edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
                                  font: {size: 15,
@@ -258,39 +265,48 @@ function makeNetwork(graph, drawingArea) {
                              randomSeed: 10161
                          }};
 
-    const visData = {nodes: visNodes,
-                      edges: visEdges};
-
-    // draw the thing
-    return new vis.Network(visContainer, visData, visOptions);
+    return new vis.Network(visContainer, {}, visOptions);
 }
 
 
-function addDownloadLink(downloadID, drawingID) {
+function setNetworkData(graph, network) {
+    "use strict";
+
+    const visNodes = new vis.DataSet(graph.nodes);
+    const visEdges = new vis.DataSet(graph.edges);
+
+    const visData = {nodes: visNodes,
+                     edges: visEdges};
+
+    network.setData(visData);
+}
+
+
+function addDownloadLink(downloadID, drawingArea) {
     "use strict";
 
     const downloadLink = document.getElementById(downloadID);
-    const networkCanvas = $("#" + drawingID).find("canvas").first()[0];
+    const networkCanvas = drawingArea.find("canvas").first()[0];
 
-    // make a new canvas so that we can add an opaque background
+    // Make a new canvas so that we can add an opaque background
     const downloadCanvas = document.createElement("canvas");
 
     downloadCanvas.width = networkCanvas.width;
     downloadCanvas.height = networkCanvas.height;
     const downloadContext = downloadCanvas.getContext("2d");
 
-    //create a rectangle with the desired color
+    // Create a rectangle with the desired color
     downloadContext.fillStyle = "#FFFFFF";
     downloadContext.fillRect(0, 0, networkCanvas.width, networkCanvas.height);
 
-    //draw the original canvas onto the destination canvas
+    // Draw the original canvas onto the destination canvas
     downloadContext.drawImage(networkCanvas, 0, 0);
 
-    //add an attribution to hifidraw
-    downloadContext.font = "30px Patrick Hand SC";
+    // Add an attribution to hifidraw
+    downloadContext.font = "20px Patrick Hand SC, arial";
     downloadContext.textAlign = "right";
     downloadContext.fillStyle = "#000000";
-    downloadContext.fillText("Made by HiFiDraw", downloadCanvas.width-10, downloadCanvas.height-10);
+    downloadContext.fillText("Made with HiFiDraw", downloadCanvas.width-10, downloadCanvas.height-10);
 
     downloadLink.setAttribute("download", "HiFiDraw.png");
     downloadLink.setAttribute("href", downloadCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
@@ -324,30 +340,25 @@ function updateExportURL(graph, linkObject) {
     }
 }
 
-function makeRedrawFunc (setExportURL, setDownloadLink) {
-    let visNetwork;
+function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
+    "use strict";
 
-    return function redraw(tableObj, drawingArea) {
-        "use strict";
+    return function redraw(tableObj) {
         // ToDo This function does too much, break it up
         const graph = graphFromTable(tableObj);
         let scale;
         let position;
 
-        // We store the network in the window global object
-        // There is probably a nicer way to do this
-        if (visNetwork) {
-            getNodePositionsFromNetwork(graph, visNetwork);
+        getNodePositionsFromNetwork(graph, visNetwork);
 
-            scale = visNetwork.getScale();
-            position = visNetwork.getViewPosition();
-        }
+        scale = visNetwork.getScale();
+        position = visNetwork.getViewPosition();
+
+        setNetworkData(graph, visNetwork);
 
         setExportURL(graph);
 
-        visNetwork = makeNetwork(graph, drawingArea);
-
-        // keep the old position if there is one else
+        // Keep the old position, if there are any
         if (position === undefined) {
             position = visNetwork.getViewPosition();
         }
@@ -362,21 +373,27 @@ function makeRedrawFunc (setExportURL, setDownloadLink) {
         });
 
         visNetwork.on("afterDrawing",
-            // function () {
-            //     addDownloadLink("id_download", drawingArea.attr("id"));}
-            setDownloadLink
+                      setDownloadLink
+        );
+
+        // When the user repositions a node, we need to update the export link
+        visNetwork.on("release",
+                      function(){
+                          getNodePositionsFromNetwork(graph, visNetwork);
+                          setExportURL(graph);
+                      }
         );
     };
-};
+}
 
 
 function makeDeleteButton(redrawFunc) {
     "use strict";
 
-    //Create an input type dynamically.
+    // Create an input type dynamically.
     const element = document.createElement("input");
 
-    //Assign different attributes to the element.
+    // Assign attributes to the element.
     element.setAttribute("type", "button");
     element.setAttribute("value", "-");
 
@@ -384,8 +401,6 @@ function makeDeleteButton(redrawFunc) {
 
     jqe.click(
         function () {
-            const theTable = $(this).closest("table");
-
             $(this).closest("tr").remove();
 
             redrawFunc();
@@ -458,19 +473,19 @@ function makeTable(tableID, redrawWithTable) {
 
     const newTable =
            $("<table id='" + tableID + "'>\n" +
-        "       <thead>\n" +
-        "         <tr>\n" +
-        "           <th>Source</th>\n" +
-        "           <th>Connector</th>\n" +
-        "           <th>Destination</th>\n" +
-        "           <th>\n" +
-        "             <input type='button' value='+'/>\n" +
-        "           </th>\n" +
-        "         </tr>\n" +
-        "       </thead>\n" +
-        "       <tbody>\n" +
-        "       </tbody>\n" +
-        "     </table>");
+               "<thead>\n" +
+                 "<tr>\n" +
+                   "<th>Source</th>\n" +
+                   "<th>Connector</th>\n" +
+                   "<th>Destination</th>\n" +
+                   "<th>\n" +
+                     "<input type='button' value='+'/>\n" +
+                   "</th>\n" +
+                 "</tr>\n" +
+               "</thead>\n" +
+               "<tbody>\n" +
+               "</tbody>\n" +
+             "</table>");
 
     const button = newTable.find("input").first();
 
@@ -539,13 +554,11 @@ function addSampleData(tableObj, redrawFunc) {
 }
 
 
-function removeSampleData(tableObj, drawingArea) {
+function removeSampleData(tableObj) {
     "use strict";
 
     const tableBody = tableObj.children("tbody").first();
     tableBody.empty();
-
-    //redraw(tableObj, drawingArea);
 }
 
 
@@ -575,12 +588,13 @@ function getQueryParams(queryString) {
 }
 
 
-function addDataFromURL(serialisedData, tableObj, redrawFunc) {
+function addDataFromURL(serialisedData, tableObj, redrawFunc, visNetwork) {
     "use strict";
 
     const unpackedData = deserialiseGraph(serialisedData);
 
     // ToDo Re-write this using array.some()
+    // We will manually add the graph data to the table
     unpackedData.edges.forEach(function (edge) {
         let fromLabel = null;
         let toLabel = null;
@@ -600,13 +614,11 @@ function addDataFromURL(serialisedData, tableObj, redrawFunc) {
             addRow(tableObj, redrawFunc, fromLabel, toLabel, edge.label);
         }
     });
-}
 
-
-function refresh(sourceTable, drawingArea) {
-    "use strict";
-
-    redraw(sourceTable, drawingArea);
+    // We will also set the visNetwork data directly this one time.
+    // This is necessary because we can't store the node x and y coordinates in the table
+    // and hope for them to be displayed later
+    setNetworkData(unpackedData, visNetwork);
 }
 
 
@@ -658,25 +670,23 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
     const drawingArea = $("#" + drawingDivID);
 
     const setExportURL = function (graph) {
-        updateExportURL(graph, $("#" + exportURLID))
+        updateExportURL(graph, $("#" + exportURLID));
     };
 
     const setDownloadLink = function () {
-                addDownloadLink(downloadID, drawingDivID);
+        addDownloadLink(downloadID, drawingArea);
     };
 
-    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink);
+    const visNetwork = makeEmptyNetwork(drawingArea);
 
-    const redrawWithTable = function (tableObj) {
-        redrawMe(tableObj, drawingArea);
-    };
+    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink   , visNetwork);
 
-    const inputTable = makeTable("inputTable", redrawWithTable);
+    const inputTable = makeTable("inputTable", redrawMe);
 
     inputDiv.append(inputTable);
 
     const redrawFunc = function () {
-        redrawMe(inputTable, drawingArea);
+        redrawMe(inputTable);
     };
 
     drawingArea.parent().append(makeRefreshButton(redrawFunc));
@@ -684,14 +694,15 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
     const queryParams = getQueryParams(document.location.search);
 
     if (queryParams.hasOwnProperty("serialised")) {
-        addDataFromURL(queryParams.serialised, inputTable, redrawFunc);
+        addDataFromURL(queryParams.serialised, inputTable, redrawFunc, visNetwork);
+        redrawFunc();
     } else {
         addSampleData(inputTable, redrawFunc);
+        redrawFunc();
     }
 
     setKeydownListener(inputTable, redrawFunc);
 
-    redrawFunc();
 }
 
 

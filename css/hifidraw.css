@@ -53,7 +53,7 @@ table input[type="button"] {
     font-size: 0.75rem;
     margin-bottom: 0rem;
 
-    /* top, right, bottom, left */
+    /* top right bottom left */
     padding: 0.2rem 0.4rem 0.2rem 0.4rem;
 }
 
@@ -65,4 +65,9 @@ div table th tr td {
 
 .word-wrap {
     word-wrap: break-word;
+}
+
+#id_download {
+    /* So that the button doesn't try to wrap over two lines */
+    white-space: nowrap
 }
