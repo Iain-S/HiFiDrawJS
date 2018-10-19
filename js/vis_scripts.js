@@ -57,6 +57,8 @@ function makeSourceBox(value, id) {
     element.setAttribute("type", "text");
     element.setAttribute("placeholder", "source");
     element.setAttribute("autocapitalize", "none");
+    element.setAttribute("list", "components");
+
 
     if (value) {
         element.setAttribute("value", value);
@@ -80,6 +82,7 @@ function makeDestinationBox(value, id) {
     element.setAttribute("type", "text");
     element.setAttribute("placeholder", "dest");
     element.setAttribute("autocapitalize", "none");
+    element.setAttribute("list", "components");
 
     if (value) {
         element.setAttribute("value", value);
@@ -463,19 +466,19 @@ function makeTable(tableID, redrawWithTable) {
 
     const newTable =
            $("<table id='" + tableID + "'>\n" +
-        "       <thead>\n" +
-        "         <tr>\n" +
-        "           <th>Source</th>\n" +
-        "           <th>Connector</th>\n" +
-        "           <th>Destination</th>\n" +
-        "           <th>\n" +
-        "             <input type='button' value='+'/>\n" +
-        "           </th>\n" +
-        "         </tr>\n" +
-        "       </thead>\n" +
-        "       <tbody>\n" +
-        "       </tbody>\n" +
-        "     </table>");
+               "<thead>\n" +
+                 "<tr>\n" +
+                   "<th>Source</th>\n" +
+                   "<th>Connector</th>\n" +
+                   "<th>Destination</th>\n" +
+                   "<th>\n" +
+                     "<input type='button' value='+'/>\n" +
+                   "</th>\n" +
+                 "</tr>\n" +
+               "</thead>\n" +
+               "<tbody>\n" +
+               "</tbody>\n" +
+             "</table>");
 
     const button = newTable.find("input").first();
 
