@@ -27,7 +27,7 @@
           <th>Connector</th>
           <th>Destination</th>
           <th style="padding-left: 1rem">
-            <input type="button" id="btnAdd" value="Add" onclick="addRowRedraw('inputTable');" style="padding: 2px 17px"/>
+            <input type="button" id="btnAdd" value="Add" style="padding: 2px 17px"/>
           </th>
         </tr>
       </thead>
@@ -40,6 +40,13 @@
     </div>
     <div id="drawing_div" class="border border-primary"></div>
     <a id="id_download" href="">Download</a>
+    <datalist id="components">
+      <option value="smartphone">
+      <option value="stereo amplifier">
+      <option value="av receiver">
+      <option value="passive speakers">
+      <option value="active speakers">
+    </datalist>
   </div> <!-- End the main div -->
   <!-- jQuery library javascript -->
   <script src="js/jquery-3.3.1.min.js"></script>

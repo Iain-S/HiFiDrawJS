@@ -520,6 +520,27 @@ function makeTable(tableID, redrawWithTable) {
 }
 
 
+function makeComponentsDatalist() {
+    "use strict";
+    const options = ["headphones",
+                     "phone",
+                     "pc",
+                     "dac",
+                     "amp",
+                     "speakers"];
+
+    let datalistString = '<datalist id="components">';
+
+    options.sort().forEach(function(option){
+        datalistString += '<option value="' + option + '">';
+    });
+
+    datalistString += "</datalist>";
+
+    return $(datalistString);
+}
+
+
 function deleteRowFrom(tableObj, idx, redrawFunc) {
     "use strict";
 
@@ -684,6 +705,9 @@ function setKeydownListener(tableObj, redrawFunc) {
 
 function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadID) {
     "use strict";
+
+    // Make a data list for use by the table
+    makeComponentsDatalist().appendTo($("body"));
 
     const inputDiv = $("#" + inputDivID);
     const drawingArea = $("#" + drawingDivID);

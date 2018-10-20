@@ -681,6 +681,12 @@ const hifidrawTesting = (function() {
         },
 
 
+        test_make_data_list: function() {
+            const data_list = makeComponentsDatalist().filter("datalist");
+            assert.equal(data_list.length, 1, "Expected one datalist");
+            assert.equal(data_list.children().length, 6);
+        },
+
         _test_template: function() {
 
             assert.equal(1, 2, "This is an error message.");
