@@ -65,19 +65,18 @@ const hifidrawTesting = (function() {
 
         test_make_connector_menu: function () {
 
-            // There should be one <select> element returned
-            const connector_menu = makeConnectorMenu().filter("select");
-            assert.equal(1, connector_menu.length);
+            const connector_menu = makeConnectorMenu().filter("input");
+            assert.equal(1, connector_menu.length, connector_menu.html());
         },
 
 
         test_make_connector_menu_with_id: function () {
 
-            let connector_menu = makeConnectorMenu(null, 0).filter("select");
-            assert.equal("id_conn_0", connector_menu.attr("id"));
+            let connector_menu = makeConnectorMenu(null, 0).filter("input");
+            assert.equal("id_via_0", connector_menu.attr("id"));
 
-            connector_menu = makeConnectorMenu(null, 66778).filter("select");
-            assert.equal("id_conn_66778", connector_menu.attr("id"));
+            connector_menu = makeConnectorMenu(null, 66778).filter("input");
+            assert.equal("id_via_66778", connector_menu.attr("id"));
         },
         
 
@@ -103,10 +102,10 @@ const hifidrawTesting = (function() {
         test_make_destination_box_with_id: function() {
 
             let destination_box = makeDestinationBox(null, 0).filter("input");
-            assert.equal("id_dst_0", destination_box.attr("id"));
+            assert.equal("id_dest_0", destination_box.attr("id"));
     
             destination_box = makeDestinationBox(null, 8789).filter("input");
-            assert.equal("id_dst_8789", destination_box.attr("id"));
+            assert.equal("id_dest_8789", destination_box.attr("id"));
         },
     
     
@@ -129,10 +128,10 @@ const hifidrawTesting = (function() {
         test_make_source_box_with_id: function() {
     
             let source_box = makeSourceBox(null, 0).filter("input");
-            assert.equal("id_src_0", source_box.attr("id"));
+            assert.equal("id_source_0", source_box.attr("id"));
     
             source_box = makeSourceBox(null, 84456).filter("input");
-            assert.equal("id_src_84456", source_box.attr("id"));
+            assert.equal("id_source_84456", source_box.attr("id"));
         },
     
     
@@ -406,10 +405,7 @@ const hifidrawTesting = (function() {
                 "\t      </tr>\n" +
                 "        <tr>\n" +
                 "\t        <td><input value='comp1' type='text'></td>\n" +
-                "\t        <td><select>" +
-                "<option value='conn1' selected='selected'></option>" +
-                "<option value='conn2'></option>" +
-                "</select></td>\n" +
+                "\t        <td><input value='connector' type='text'></td>\n" +
                 "\t        <td><input value='comp2' type='text'></td>\n" +
                 "\t      </tr>\n" +
                 "      </tbody>\n" +
@@ -440,29 +436,51 @@ const hifidrawTesting = (function() {
             assert.deepEqual(data.nodes, nodes, "nodes don't match " + data.nodes);
             assert.deepEqual(data.edges, edges, "edges don't match " + data.nodes);
         },
+
+
+        test_graph_from_table_no_label: function() {
+
+            const test_data = makeTable("some_id", $("<div>temp drawing area</div>"));
+
+            addRow(test_data, ()=>null, "part1", "part2", "");
+
+            const nodes = [
+                {id: "part1", label: "part1", shape: "box"},
+                {id: "part2", label: "part2", shape: "box"}
+            ];
+
+            // create an array with edges
+            const edges = [
+                {from: "part1", to: "part2", arrows: "to", label: ""}
+            ];
+
+            const data = graphFromTable(test_data);
+
+            assert.deepEqual(data.nodes, nodes, "nodes don't match " + data.nodes);
+            assert.deepEqual(data.edges, edges, "edges don't match " + data.nodes);
+        },
     
     
         test_row_is_valid: function() {
     
-            const test_data = $("<tr>\n" +
-                "<td><input value='comp1' type='text'></td>\n" +
-                "<td><select>" +
-                "<option value='conn1' selected='selected'></option>" +
-                "<option value='conn2'></option>" +
-                "</select></td>\n" +
-                "<td><input value='comp2' type='text'></td>\n" +
-                "</tr>");
+            const test_data = $("<tr>" +
+                                    "<td><input value='comp1' type='text'></td>" +
+                                    "<td><input value='connector' type='text'></td>" +
+                                    "<td><input value='comp2' type='text'></td>" +
+                                "</tr>");
     
             assert.equal(rowIsValid(test_data), true);
     
             const rest_data = $("<tr>\n" +
-                "<td><input value='comp1' type='text'></td>\n" +
-                "<td><select>" +
-                "<option value='conn1' selected='selected'></option>" +
-                "<option value='conn2'></option>" +
-                "</select></td>\n" +
-                "<td><input type='text'></td>\n" +
-                "</tr>");
+                                    "<td><input value='comp1' type='text'></td>\n" +
+                                    "<td>" +
+                                        "<select>" +
+                                            "<option value='conn1' selected='selected'></option>" +
+                                            "<option value='conn2'></option>" +
+                                        "</select>" +
+                                    "</td>\n" +
+                                    "<td><input type='text'></td>\n" +
+                                "</tr>");
     
             assert.equal(rowIsValid(rest_data), false);
         },
@@ -681,11 +699,19 @@ const hifidrawTesting = (function() {
         },
 
 
-        test_make_data_list: function() {
-            const data_list = makeComponentsDatalist().filter("datalist");
+        test_make_components_data_list: function() {
+            const data_list = makeComponentsDatalist().filter("datalist").filter("#components");
             assert.equal(data_list.length, 1, "Expected one datalist");
             assert.equal(data_list.children().length, 6);
         },
+
+
+        test_make_connector_data_list: function() {
+            const data_list = makeConnectorDatalist().filter("datalist").filter("#connectors");
+            assert.equal(data_list.length, 1, "Expected one datalist");
+            assert.equal(data_list.children().length, 6);
+        },
+
 
         _test_template: function() {
 

@@ -11,95 +11,88 @@ function countBodyRows(tableBody) {
 }
 
 
-function makeConnectorMenu(value, id) {
+// function makeConnectorMenu(value, number) {
+//     "use strict";
+//
+//     const arr = [
+//         {val: "", text: "Simple"},
+//         {val: "RCA<>RCA", text: "RCA<>RCA"},
+//         {val: "RCA<>TRS", text: "RCA<>TRS"},
+//         {val: "RCA<>XLR", text: "RCA<>XLR"},
+//         {val: "TRS<>TRS", text: "TRS<>TRS"},
+//         {val: "TRS<>RCA", text: "TRS<>RCA"},
+//         {val: "TRS<>XLR", text: "TRS<>XLR"},
+//         {val: "XLR<>XLR", text: "XLR<>XLR"},
+//         {val: "XLR<>RCA", text: "XLR<>RCA"},
+//         {val: "XLR<>TRS", text: "XLR<>TRS"},
+//         {val: "speaker cable", text: "speaker cable"},
+//         {val: "headphone cable", text: "headphone cable"}
+//         //{val : 3, text: "spare<>spare"},
+//         //{val : 3, text: "Wireless"},
+//     ];
+//
+//     const sel = $("<select>");
+//
+//     $(arr).each(function () {
+//         sel.append($("<option>").attr("value",this.val).text(this.text));
+//     });
+//
+//     sel.val(value);
+//
+//     if (number !== undefined) {
+//         sel.attr("id", "id_conn_" + number.toString());
+//     }
+//
+//     return sel;
+// }
+
+
+function makeTextInput(placeholder, datalistID, value, number){
     "use strict";
 
-    const arr = [
-        {val: "", text: "Simple"},
-        {val: "RCA<>RCA", text: "RCA<>RCA"},
-        {val: "RCA<>TRS", text: "RCA<>TRS"},
-        {val: "RCA<>XLR", text: "RCA<>XLR"},
-        {val: "TRS<>TRS", text: "TRS<>TRS"},
-        {val: "TRS<>RCA", text: "TRS<>RCA"},
-        {val: "TRS<>XLR", text: "TRS<>XLR"},
-        {val: "XLR<>XLR", text: "XLR<>XLR"},
-        {val: "XLR<>RCA", text: "XLR<>RCA"},
-        {val: "XLR<>TRS", text: "XLR<>TRS"},
-        {val: "speaker cable", text: "speaker cable"},
-        {val: "headphone cable", text: "headphone cable"}
-        //{val : 3, text: "spare<>spare"},
-        //{val : 3, text: "Wireless"},
-    ];
-
-    const sel = $("<select>");
-
-    $(arr).each(function () {
-        sel.append($("<option>").attr("value",this.val).text(this.text));
-    });
-
-    sel.val(value);
-
-    if (id !== undefined) {
-        sel.attr("id", "id_conn_" + id.toString());
-    }
-
-    return sel;
-}
-
-
-function makeSourceBox(value, id) {
-    "use strict";
-
-    //Create an input type dynamically.
+    // Create an input type dynamically.
     const element = document.createElement("input");
 
-    //Assign different attributes to the element.
+    // Assign different attributes to the element.
     element.setAttribute("type", "text");
-    element.setAttribute("placeholder", "source");
+    element.setAttribute("placeholder", placeholder);
     element.setAttribute("autocapitalize", "none");
 
-    // no harm in hard-coding this as long as we are explicit about it
-    const datalist = $("#components").filter("datalist");
+    // No harm in hard-coding this as long as we are explicit about it
+    const datalist = $("#" + datalistID).filter("datalist");
 
-    if (datalist.length === 0) {
-        console.log("INFO: Could not find a datalist with id=components.");
-    } else {
-        element.setAttribute("list", "components");
-    }
+    element.setAttribute("list", datalistID);
 
     if (value) {
         element.setAttribute("value", value);
     }
 
-    if (id !== undefined) {
-        element.setAttribute("id", "id_src_" + id.toString());
+    if (number !== undefined) {
+        element.setAttribute("id", "id_" + placeholder + "_" + number.toString());
     }
 
     return $(element);
 }
 
 
-function makeDestinationBox(value, id) {
+function makeSourceBox(value, number) {
     "use strict";
 
-    //Create an input type dynamically.
-    const element = document.createElement("input");
+    return makeTextInput("source", "components", value, number);
+}
 
-    //Assign different attributes to the element.
-    element.setAttribute("type", "text");
-    element.setAttribute("placeholder", "dest");
-    element.setAttribute("autocapitalize", "none");
-    element.setAttribute("list", "components");
 
-    if (value) {
-        element.setAttribute("value", value);
-    }
+function makeDestinationBox(value, number) {
+    "use strict";
 
-    if (id !== undefined) {
-        element.setAttribute("id", "id_dst_" + id.toString());
-    }
+    return makeTextInput("dest", "components", value, number);
+}
 
-    return $(element);
+
+function makeConnectorMenu(value, number) {
+    "use strict";
+
+    return makeTextInput("via", "connectors", value, number);
 }
 
 
@@ -109,15 +102,10 @@ function rowIsValid(rowObj) {
     const tableTextBoxes = rowObj.find("input[type=text]");
     let numberOfValidInputs = 0;
 
-    // ToDo Check for valid selection option as well
-
-    $.each(tableTextBoxes, function (ignore, value) {
-        if ($(value).val().length) {
-            numberOfValidInputs += 1;
-        }
-    });
-
-    return numberOfValidInputs === 2;
+    // Check that we have three text boxes and at least the source and destination are filled in
+    return tableTextBoxes.length === 3 &&
+        tableTextBoxes.eq(0).val().length &&
+        tableTextBoxes.eq(2).val().length ? true : false;
 }
 
 
@@ -181,23 +169,25 @@ function graphFromTable(tableObj) {
     $.each(tableRows, function (ignore, value) {
         const tableRow = $(value);
         if (rowIsValid(tableRow)) {
-            // get source
+            // Get source
             const srcTD = tableRow.children("td").eq(0);
 
-            // if source is not in nodes already, add it
+            // If source is not in nodes already, add it
             const srcID = addNodeFromCell(srcTD, nodes);
 
-            // get dest
+            // Get dest
             const dstTD = tableRow.children("td").eq(2);
 
-            // if dest is not in nodes already, add it
+            // If dest is not in nodes already, add it
             const dstID = addNodeFromCell(dstTD, nodes);
 
-            // find label from drop-down
+            // Find label from drop-down
             const connTD = tableRow.children("td").eq(1);
-            const connLabel = connTD.children("select").first().val();
 
-            // add edge
+            const connLabel = connTD.children("input").first().val();
+            console.log("label is: " + connLabel);
+
+            // Add edge
             edges.push({from: srcID,
                         to: dstID,
                         arrows: "to",
@@ -541,6 +531,27 @@ function makeComponentsDatalist() {
 }
 
 
+function makeConnectorDatalist() {
+    "use strict";
+    const options = ["rca-rca",
+                     "rca<>rca",
+                     "rca<->rca",
+                     "rca",
+                     "speaker cable",
+                     "optical"];
+
+    let datalistString = '<datalist id="connectors">';
+
+    options.sort().forEach(function(option){
+        datalistString += '<option value="' + option + '">';
+    });
+
+    datalistString += "</datalist>";
+
+    return $(datalistString);
+}
+
+
 function deleteRowFrom(tableObj, idx, redrawFunc) {
     "use strict";
 
@@ -706,8 +717,9 @@ function setKeydownListener(tableObj, redrawFunc) {
 function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadID) {
     "use strict";
 
-    // Make a data list for use by the table
+    // Make a data lists for use by the table
     makeComponentsDatalist().appendTo($("body"));
+    makeConnectorDatalist().appendTo($("body"));
 
     const inputDiv = $("#" + inputDivID);
     const drawingArea = $("#" + drawingDivID);
