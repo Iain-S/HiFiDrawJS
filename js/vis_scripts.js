@@ -218,7 +218,18 @@ function makeEmptyNetwork(drawingArea) {
                              randomSeed: 10161
                          }};
 
-    return new vis.Network(visContainer, {}, visOptions);
+    const visNetwork = new vis.Network(visContainer, {}, visOptions);
+
+    // const background = new Image();
+    // background.src = "images/black_on_blue.svg";
+    //
+    // visNetwork.on("beforeDrawing",
+    // function(canvasContext){
+    //     console.log(canvasContext);
+    //     canvasContext.drawImage(background, -600, -600);
+    // });
+
+    return visNetwork;
 }
 
 
@@ -328,6 +339,8 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
 
         setNetworkData(graph, visNetwork);
 
+        visNetwork.redraw();
+
         setExportURL(graph);
 
         // Keep the old position, if there are any
@@ -339,14 +352,12 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
             scale = 1.2;
         }
 
+        visNetwork.on("afterDrawing", setDownloadLink);
+
         visNetwork.moveTo({
             position: position,
             scale: scale
         });
-
-        visNetwork.on("afterDrawing",
-                      setDownloadLink
-        );
 
         // When the user repositions a node, we need to update the export link
         visNetwork.on("release",
