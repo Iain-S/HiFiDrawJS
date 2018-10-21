@@ -11,42 +11,6 @@ function countBodyRows(tableBody) {
 }
 
 
-// function makeConnectorMenu(value, number) {
-//     "use strict";
-//
-//     const arr = [
-//         {val: "", text: "Simple"},
-//         {val: "RCA<>RCA", text: "RCA<>RCA"},
-//         {val: "RCA<>TRS", text: "RCA<>TRS"},
-//         {val: "RCA<>XLR", text: "RCA<>XLR"},
-//         {val: "TRS<>TRS", text: "TRS<>TRS"},
-//         {val: "TRS<>RCA", text: "TRS<>RCA"},
-//         {val: "TRS<>XLR", text: "TRS<>XLR"},
-//         {val: "XLR<>XLR", text: "XLR<>XLR"},
-//         {val: "XLR<>RCA", text: "XLR<>RCA"},
-//         {val: "XLR<>TRS", text: "XLR<>TRS"},
-//         {val: "speaker cable", text: "speaker cable"},
-//         {val: "headphone cable", text: "headphone cable"}
-//         //{val : 3, text: "spare<>spare"},
-//         //{val : 3, text: "Wireless"},
-//     ];
-//
-//     const sel = $("<select>");
-//
-//     $(arr).each(function () {
-//         sel.append($("<option>").attr("value",this.val).text(this.text));
-//     });
-//
-//     sel.val(value);
-//
-//     if (number !== undefined) {
-//         sel.attr("id", "id_conn_" + number.toString());
-//     }
-//
-//     return sel;
-// }
-
-
 function makeTextInput(placeholder, datalistID, value, number){
     "use strict";
 
@@ -185,7 +149,6 @@ function graphFromTable(tableObj) {
             const connTD = tableRow.children("td").eq(1);
 
             const connLabel = connTD.children("input").first().val();
-            console.log("label is: " + connLabel);
 
             // Add edge
             edges.push({from: srcID,
@@ -594,14 +557,14 @@ function deleteLastDataRowFrom(tableObj, redrawFunc) {
 }
 
 
-function addSampleData(tableObj, redrawFunc) {
+function addSampleData(tableObj, redrawFunc, visNetwork) {
     "use strict";
 
-    addRow(tableObj, redrawFunc, "turntable", "stereo amp", "RCA<>RCA");
-    addRow(tableObj, redrawFunc, "phone", "stereo amp", "TRS<>RCA");
-    addRow(tableObj, redrawFunc, "stereo amp", "speakers", "speaker cable");
-    addRow(tableObj, redrawFunc);
-
+    // You can create a sample graph on the home page and then use the permalink as sample data
+    addDataFromURL('{"nodes":[{"id":"pc","label":"pc","shape":"box","x":-411,"y":-189},{"id":"dac","label":"dac","shape":"box","x":-304,"y":-187},{"id":"amplifier","label":"amplifier","shape":"box","x":-137,"y":-67},{"id":"tunrtable","label":"tunrtable","shape":"box","x":-387,"y":27},{"id":"high level inputs","label":"high level inputs","shape":"box","x":-8,"y":-174},{"id":"subwoofer","label":"subwoofer","shape":"box","x":143,"y":-174},{"id":"passive speakers","label":"passive speakers","shape":"box","x":273,"y":23}],"edges":[{"from":"pc","to":"dac","arrows":"to","label":"usb"},{"from":"dac","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"tunrtable","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"amplifier","to":"high level inputs","arrows":"to","label":"speaker cable"},{"from":"high level inputs","to":"subwoofer","arrows":"to","label":""},{"from":"subwoofer","to":"passive speakers","arrows":"to","label":"speaker cable"}]}',
+        tableObj,
+        redrawFunc,
+        visNetwork)
 }
 
 
@@ -641,7 +604,6 @@ function getQueryParams(queryString) {
 
 function addDataFromURL(serialisedData, tableObj, redrawFunc, visNetwork) {
     "use strict";
-
     const unpackedData = deserialiseGraph(serialisedData);
 
     // ToDo Re-write this using array.some()
@@ -752,7 +714,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
         addDataFromURL(queryParams.serialised, inputTable, redrawFunc, visNetwork);
         redrawFunc();
     } else {
-        addSampleData(inputTable, redrawFunc);
+        addSampleData(inputTable, redrawFunc, visNetwork);
         redrawFunc();
     }
 
