@@ -71,3 +71,8 @@ div table th tr td {
     /* So that the button doesn't try to wrap over two lines */
     white-space: nowrap
 }
+
+.full-height {
+    /* We want our papers to be the same height as each other when on the same row*/
+    height: 100%;
+}
