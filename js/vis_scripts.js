@@ -355,7 +355,7 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
             scale = 1.2;
         }
 
-        visNetwork.on("afterDrawing", setDownloadLink);
+        //visNetwork.on("afterDrawing", setDownloadLink);
 
         visNetwork.moveTo({
             position: position,
@@ -367,6 +367,7 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
                       function(){
                           getNodePositionsFromNetwork(graph, visNetwork);
                           setExportURL(graph);
+                          setDownloadLink();
                       }
         );
     };
@@ -713,7 +714,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
 
     const visNetwork = makeEmptyNetwork(drawingArea);
 
-    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink   , visNetwork);
+    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink, visNetwork);
 
     const inputTable = makeTable("inputTable", redrawMe);
 
