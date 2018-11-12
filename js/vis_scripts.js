@@ -1,6 +1,7 @@
 /*global window, $, vis, document, event, console */
 /*jslint es6 */
 
+let global_hifidraw_counter = 0;
 
 function countBodyRows(tableBody) {
     "use strict";
@@ -246,14 +247,16 @@ function setNetworkData(graph, network) {
 }
 
 
-function addDownloadLink(downloadID, drawingArea) {
+function addDownloadLink(downloadID, drawingArea, downloadCanvas) {
     "use strict";
 
-    const downloadLink = document.getElementById(downloadID);
-    const networkCanvas = drawingArea.find("canvas").first()[0];
+    global_hifidraw_counter += 1;
+    console.log("In addDownloadLink. " + global_hifidraw_counter);
 
-    // Make a new canvas so that we can add an opaque background
-    const downloadCanvas = document.createElement("canvas");
+    const downloadLink = document.getElementById(downloadID);
+
+    // ToDo We shouldn't be assuming that the first canvas is our canvas of interest
+    const networkCanvas = drawingArea.find("canvas").first()[0];
 
     downloadCanvas.width = networkCanvas.width;
     downloadCanvas.height = networkCanvas.height;
@@ -701,8 +704,11 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
         updateExportURL(graph, $("#" + exportURLID));
     };
 
+    // Make a new canvas for the download link
+    const downloadCanvas = document.createElement("canvas");
+
     const setDownloadLink = function () {
-        addDownloadLink(downloadID, drawingArea);
+        addDownloadLink(downloadID, drawingArea, downloadCanvas);
     };
 
     const visNetwork = makeEmptyNetwork(drawingArea);
