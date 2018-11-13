@@ -1,7 +1,6 @@
 /*global window, $, vis, document, event, console */
 /*jslint es6 */
 
-let global_hifidraw_counter = 0;
 
 function countBodyRows(tableBody) {
     "use strict";
@@ -247,9 +246,6 @@ function setNetworkData(graph, network) {
 function addDownloadLink(downloadID, drawingArea) {
     "use strict";
 
-    global_hifidraw_counter += 1;
-    console.log("In addDownloadLink. " + global_hifidraw_counter);
-
     const downloadLink = document.getElementById(downloadID);
 
     // ToDo We shouldn't be assuming that the first canvas is our canvas of interest
@@ -329,15 +325,13 @@ function updateExportURL(graph, linkObject) {
 function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork, tableObj) {
     "use strict";
 
-    // ToDo Perhaps we want to call this explicitly in redraw() and after a "release" but after every drawing
-    visNetwork.on("afterDrawing", setDownloadLink);
-
-    // When the user repositions a node, we need to update the export link
+    // When the user repositions a node, we need to update the export and download links
     visNetwork.on("release",
                   function(){
                       const graph = graphFromTable(tableObj);
                       getNodePositionsFromNetwork(graph, visNetwork);
                       setExportURL(graph);
+                      setDownloadLink();
                   }
     );
 
@@ -371,6 +365,8 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork, tableObj) {
             position: position,
             scale: scale
         });
+
+        setDownloadLink();
 
     };
 }

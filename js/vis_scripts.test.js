@@ -706,7 +706,6 @@ const hifidrawTesting = (function() {
 
 
         test_vis_callbacks_only_registered_once: function() {
-
             const drawingDiv = $("<div>this is for drawing</div>");
             $("body").append(drawingDiv);
 
@@ -734,10 +733,6 @@ const hifidrawTesting = (function() {
             // ToDo Add some kind of random for loop here
 
             redrawMe(table);
-
-            assert.equal(2, exportCallCount, "Expected exportCallCount to be 2.");
-            assert.equal(2, downloadCallCount, "Expected downloadCallCount to be 2.");
-
             redrawMe(table);
 
             assert.equal(3, exportCallCount, "Expected exportCallCount to be 3.");
