@@ -326,12 +326,22 @@ function updateExportURL(graph, linkObject) {
 }
 
 
-function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
+function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork, tableObj) {
     "use strict";
 
+    // ToDo Perhaps we want to call this explicitly in redraw() and after a "release" but after every drawing
     visNetwork.on("afterDrawing", setDownloadLink);
 
-    return function redraw(tableObj) {
+    // When the user repositions a node, we need to update the export link
+    visNetwork.on("release",
+                  function(){
+                      const graph = graphFromTable(tableObj);
+                      getNodePositionsFromNetwork(graph, visNetwork);
+                      setExportURL(graph);
+                  }
+    );
+
+    return function redraw() {
         // ToDo This function does too much, break it up
         const graph = graphFromTable(tableObj);
         let scale;
@@ -362,13 +372,6 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
             scale: scale
         });
 
-        // When the user repositions a node, we need to update the export link
-        visNetwork.on("release",
-                      function(){
-                          getNodePositionsFromNetwork(graph, visNetwork);
-                          setExportURL(graph);
-                      }
-        );
     };
 }
 
@@ -472,16 +475,6 @@ function makeTable(tableID, redrawWithTable) {
                "<tbody>\n" +
                "</tbody>\n" +
              "</table>");
-
-    const button = newTable.find("input").first();
-
-    const redrawFunc = function () {
-        redrawWithTable(newTable);
-    };
-
-    button.click(function(){
-        addRow(newTable, redrawFunc);
-    });
 
     return newTable;
 }
@@ -713,29 +706,31 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
 
     const visNetwork = makeEmptyNetwork(drawingArea);
 
-    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink, visNetwork);
+    const inputTable = makeTable("inputTable");
 
-    const inputTable = makeTable("inputTable", redrawMe);
+    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink, visNetwork, inputTable);
+
+    const button = inputTable.find("input").first();
+
+    button.click(function(){
+        addRow(inputTable, redrawMe);
+    });
 
     inputDiv.append(inputTable);
 
-    const redrawFunc = function () {
-        redrawMe(inputTable);
-    };
-
-    drawingArea.parent().append(makeRefreshButton(redrawFunc));
+    drawingArea.parent().append(makeRefreshButton(redrawMe));
 
     const queryParams = getQueryParams(document.location.search);
 
     if (queryParams.hasOwnProperty("serialised")) {
-        addDataFromURL(queryParams.serialised, inputTable, redrawFunc, visNetwork);
-        redrawFunc();
+        addDataFromURL(queryParams.serialised, inputTable, redrawMe, visNetwork);
+        redrawMe();
     } else {
-        addSampleData(inputTable, redrawFunc, visNetwork);
-        redrawFunc();
+        addSampleData(inputTable, redrawMe, visNetwork);
+        redrawMe();
     }
 
-    setKeydownListener(inputTable, redrawFunc);
+    setKeydownListener(inputTable, redrawMe);
 
 }
 

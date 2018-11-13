@@ -722,10 +722,11 @@ const hifidrawTesting = (function() {
                 downloadCallCount += 1;
             };
 
-            const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink, visNetwork);
-
             const table = $("<table></table>");
-            redrawMe(table);
+
+            const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink, visNetwork, table);
+
+            redrawMe();
 
             assert.equal(1, exportCallCount, "Expected exportCallCount to be 1.");
             assert.equal(1, downloadCallCount, "Expected downloadCallCount to be 1.");
