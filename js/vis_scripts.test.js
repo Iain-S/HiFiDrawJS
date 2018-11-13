@@ -705,6 +705,45 @@ const hifidrawTesting = (function() {
         },
 
 
+        test_vis_callbacks_only_registered_once: function() {
+
+            const drawingDiv = $("<div>this is for drawing</div>");
+            $("body").append(drawingDiv);
+
+            const visNetwork = makeEmptyNetwork(drawingDiv);
+
+            let exportCallCount = 0;
+            const setExportURL = function (){
+                exportCallCount += 1;
+            };
+
+            let downloadCallCount = 0;
+            const setDownloadLink = function (){
+                downloadCallCount += 1;
+            };
+
+            const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink, visNetwork);
+
+            const table = $("<table></table>");
+            redrawMe(table);
+
+            assert.equal(1, exportCallCount, "Expected exportCallCount to be 1.");
+            assert.equal(1, downloadCallCount, "Expected downloadCallCount to be 1.");
+
+            // ToDo Add some kind of random for loop here
+
+            redrawMe(table);
+
+            assert.equal(2, exportCallCount, "Expected exportCallCount to be 2.");
+            assert.equal(2, downloadCallCount, "Expected downloadCallCount to be 2.");
+
+            redrawMe(table);
+
+            assert.equal(3, exportCallCount, "Expected exportCallCount to be 3.");
+            assert.equal(3, downloadCallCount, "Expected downloadCallCount to be 3.");
+        },
+
+
         _test_template: function() {
 
             assert.equal(1, 2, "This is an error message.");
