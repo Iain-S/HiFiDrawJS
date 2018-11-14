@@ -22,9 +22,6 @@ function makeTextInput(placeholder, datalistID, value, number){
     element.setAttribute("placeholder", placeholder);
     element.setAttribute("autocapitalize", "none");
 
-    // No harm in hard-coding this as long as we are explicit about it
-    const datalist = $("#" + datalistID).filter("datalist");
-
     element.setAttribute("list", datalistID);
 
     if (value) {
@@ -185,11 +182,11 @@ function getNodePositionsFromNetwork(graph, network) {
     "use strict";
     const nodePositions = network.getPositions();
 
-    graph.nodes.forEach(function (newNode, ignore) {
-        if (nodePositions.hasOwnProperty(newNode.id)){
+    graph.nodes.forEach(function (node, ignore) {
+        if (nodePositions.hasOwnProperty(node.id)){
             // copy the Xs and Ys of the existing graph
-            newNode.x = nodePositions[newNode.id].x;
-            newNode.y = nodePositions[newNode.id].y;
+            node.x = nodePositions[node.id].x;
+            node.y = nodePositions[node.id].y;
         }
    });
 }
@@ -250,9 +247,11 @@ function addDownloadLink(downloadID, drawingArea) {
     "use strict";
 
     const downloadLink = document.getElementById(downloadID);
+
+    // ToDo We shouldn't be assuming that the first canvas is our canvas of interest
     const networkCanvas = drawingArea.find("canvas").first()[0];
 
-    // Make a new canvas so that we can add an opaque background
+    // Make a new canvas for the download link
     const downloadCanvas = document.createElement("canvas");
 
     downloadCanvas.width = networkCanvas.width;
@@ -323,10 +322,20 @@ function updateExportURL(graph, linkObject) {
 }
 
 
-function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
+function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork, tableObj) {
     "use strict";
 
-    return function redraw(tableObj) {
+    // When the user repositions a node, we need to update the export and download links
+    visNetwork.on("release",
+                  function(){
+                      const graph = graphFromTable(tableObj);
+                      getNodePositionsFromNetwork(graph, visNetwork);
+                      setExportURL(graph);
+                      setDownloadLink();
+                  }
+    );
+
+    return function redraw() {
         // ToDo This function does too much, break it up
         const graph = graphFromTable(tableObj);
         let scale;
@@ -352,20 +361,13 @@ function makeRedrawFunc (setExportURL, setDownloadLink, visNetwork) {
             scale = 1.2;
         }
 
-        visNetwork.on("afterDrawing", setDownloadLink);
-
         visNetwork.moveTo({
             position: position,
             scale: scale
         });
 
-        // When the user repositions a node, we need to update the export link
-        visNetwork.on("release",
-                      function(){
-                          getNodePositionsFromNetwork(graph, visNetwork);
-                          setExportURL(graph);
-                      }
-        );
+        setDownloadLink();
+
     };
 }
 
@@ -470,16 +472,6 @@ function makeTable(tableID, redrawWithTable) {
                "</tbody>\n" +
              "</table>");
 
-    const button = newTable.find("input").first();
-
-    const redrawFunc = function () {
-        redrawWithTable(newTable);
-    };
-
-    button.click(function(){
-        addRow(newTable, redrawFunc);
-    });
-
     return newTable;
 }
 
@@ -575,7 +567,7 @@ function addSampleData(tableObj, redrawFunc, visNetwork) {
     addDataFromURL('{"nodes":[{"id":"pc","label":"pc","shape":"box","x":-411,"y":-189},{"id":"dac","label":"dac","shape":"box","x":-304,"y":-187},{"id":"amplifier","label":"amplifier","shape":"box","x":-137,"y":-67},{"id":"tunrtable","label":"tunrtable","shape":"box","x":-387,"y":27},{"id":"high level inputs","label":"high level inputs","shape":"box","x":-8,"y":-174},{"id":"subwoofer","label":"subwoofer","shape":"box","x":143,"y":-174},{"id":"passive speakers","label":"passive speakers","shape":"box","x":273,"y":23}],"edges":[{"from":"pc","to":"dac","arrows":"to","label":"usb"},{"from":"dac","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"tunrtable","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"amplifier","to":"high level inputs","arrows":"to","label":"speaker cable"},{"from":"high level inputs","to":"subwoofer","arrows":"to","label":""},{"from":"subwoofer","to":"passive speakers","arrows":"to","label":"speaker cable"}]}',
         tableObj,
         redrawFunc,
-        visNetwork)
+        visNetwork);
 }
 
 
@@ -701,35 +693,40 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
         updateExportURL(graph, $("#" + exportURLID));
     };
 
+    // Make a new canvas for the download link
+    //const downloadCanvas = document.createElement("canvas");
+
     const setDownloadLink = function () {
         addDownloadLink(downloadID, drawingArea);
     };
 
     const visNetwork = makeEmptyNetwork(drawingArea);
 
-    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink   , visNetwork);
+    const inputTable = makeTable("inputTable");
 
-    const inputTable = makeTable("inputTable", redrawMe);
+    const redrawMe = makeRedrawFunc(setExportURL, setDownloadLink, visNetwork, inputTable);
+
+    const button = inputTable.find("input").first();
+
+    button.click(function(){
+        addRow(inputTable, redrawMe);
+    });
 
     inputDiv.append(inputTable);
 
-    const redrawFunc = function () {
-        redrawMe(inputTable);
-    };
-
-    drawingArea.parent().append(makeRefreshButton(redrawFunc));
+    drawingArea.parent().append(makeRefreshButton(redrawMe));
 
     const queryParams = getQueryParams(document.location.search);
 
     if (queryParams.hasOwnProperty("serialised")) {
-        addDataFromURL(queryParams.serialised, inputTable, redrawFunc, visNetwork);
-        redrawFunc();
+        addDataFromURL(queryParams.serialised, inputTable, redrawMe, visNetwork);
+        redrawMe();
     } else {
-        addSampleData(inputTable, redrawFunc, visNetwork);
-        redrawFunc();
+        addSampleData(inputTable, redrawMe, visNetwork);
+        redrawMe();
     }
 
-    setKeydownListener(inputTable, redrawFunc);
+    setKeydownListener(inputTable, redrawMe);
 
 }
 
