@@ -31,8 +31,9 @@ class TestNewVisitor(unittest.TestCase):
 
     def setUp(self):
         options = Options()
-        options.add_argument("--headless")
-        self.browser = webdriver.Firefox(options=options)
+        options.add_argument("--headless")  # Use a headless browser (one with no gui/window)
+        self.browser = webdriver.Firefox(options=options,
+                                         executable_path="../../geckodriver")
         try:
             self.browser.get('http://localhost:{}/'.format(self.port))
         except WebDriverException:
@@ -86,9 +87,9 @@ class TestNewVisitor(unittest.TestCase):
         # There should be a total of four in the table;
         # one header, two rows of pre-populated data and an empty row
         all_rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertEqual(len(all_rows), 5, "Expected five rows to begin with.")
+        self.assertEqual(len(all_rows), 7, "Expected seven rows to begin with.")
 
-        # She notices a table row, which seems to want some source input
+        # The user notices a table row, which seems to want some source input
         table_cells = self.browser.find_elements_by_tag_name("input")
         src_input_box = table_cells[4]
         dst_input_box = table_cells[5]
