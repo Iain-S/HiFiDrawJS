@@ -249,7 +249,7 @@ function addDownloadLink(downloadID, drawingArea) {
 
     const downloadLink = document.getElementById(downloadID);
 
-    // ToDo We shouldn't be assuming that the first canvas is our canvas of interest
+    // ToDo Shouldn't we be assuming that the first canvas is our canvas of interest?
     const networkCanvas = drawingArea.find("canvas").first()[0];
 
     // Make a new canvas for the download link
@@ -312,7 +312,7 @@ function updateExportURL(graph, linkObject) {
     // We should really deal with these edge IDs elsewhere
     const graphWithoutIDs = deleteEdgeIDs(graph);
 
-    const linkURL = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graphWithoutIDs);
+    const linkURL = window.location.origin +  "?serialised=" + serialiseGraph(graphWithoutIDs);
 
     if (linkURL.length > 2082) {
         linkObject.text("The URL would have been over 2,083 characters.  " +
@@ -753,15 +753,20 @@ function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
     const drawingArea = $("#" + drawingDivID);
 
     const visNetwork = makeEmptyNetwork(drawingArea);
-
     setNetworkData(exampleDataset, visNetwork);
+    visNetwork.redraw();
+
+    const updateExportAndDownload = function() {
+        getNodePositionsFromNetwork(exampleDataset, visNetwork);
+        updateExportURL(exampleDataset, $("#" + exportURLID));
+        addDownloadLink(downloadID, drawingArea);
+    };
+
+    updateExportAndDownload();
 
     visNetwork.on(
         "release",
-        function(){
-            getNodePositionsFromNetwork(exampleDataset, visNetwork);
-            updateExportURL(exampleDataset, $("#" + exportURLID));
-        }
+        updateExportAndDownload
     );
 }
 
