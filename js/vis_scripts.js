@@ -181,7 +181,6 @@ function graphFromTable(tableObj) {
 function getNodePositionsFromNetwork(graph, network) {
     "use strict";
     const nodePositions = network.getPositions();
-
     graph.nodes.forEach(function (node, ignore) {
         if (nodePositions.hasOwnProperty(node.id)){
             // copy the Xs and Ys of the existing graph
@@ -194,6 +193,7 @@ function getNodePositionsFromNetwork(graph, network) {
 
 function makeEmptyNetwork(drawingArea) {
     "use strict";
+
     const visContainer = drawingArea[0];
     const visOptions = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
                                          // we could give the user some warning to set one connector to simple
@@ -217,6 +217,7 @@ function makeEmptyNetwork(drawingArea) {
 
     const visNetwork = new vis.Network(visContainer, {}, visOptions);
 
+    // Perhaps add an image background to the canvas
     // const background = new Image();
     // background.src = "images/black_on_blue.svg";
     //
@@ -733,14 +734,35 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
 
 function getExampleDatasets(){
     "use strict";
-    return {testing};
+    return {"testing": {"nodes":[
+        {"id":"pc","label":"pc","shape":"box","x":-411,"y":-189},
+        {"id":"dac","label":"dac","shape":"box","x":-304,"y":-187}
+        ],
+            "edges":[
+                {"from":"pc",
+                 "to":"dac",
+                 "arrows":"to",
+                 "label":"usb"}
+                 ]}};
 }
 
 
 function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
     "use strict";
-    examples = getExampleDatasets();
-    exampleDataset = examples[exampleName];
+    const exampleDataset = getExampleDatasets()[exampleName];
+    const drawingArea = $("#" + drawingDivID);
+
+    const visNetwork = makeEmptyNetwork(drawingArea);
+
+    setNetworkData(exampleDataset, visNetwork);
+
+    visNetwork.on(
+        "release",
+        function(){
+            getNodePositionsFromNetwork(exampleDataset, visNetwork);
+            updateExportURL(exampleDataset, $("#" + exportURLID));
+        }
+    );
 }
 
 

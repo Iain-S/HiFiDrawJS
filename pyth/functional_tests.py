@@ -26,7 +26,7 @@ def wait_ten_seconds_for(some_function):
     return decorated_function
 
 
-class TestNewVisitor(unittest.TestCase):
+class TestHomePage(unittest.TestCase):
     port = '8009'
 
     def setUp(self):
@@ -140,6 +140,44 @@ class TestNewVisitor(unittest.TestCase):
 
         github_link = github_link_element.get_attribute('href')
         self.assertTrue('github' in github_link)
+
+
+class TestExamplesPage(unittest.TestCase):
+    port = '8009'
+
+    def setUp(self):
+        options = Options()
+        options.add_argument("--headless")  # Use a headless browser (one with no gui/window)
+        self.browser = webdriver.Firefox(options=options,
+                                         executable_path="../../geckodriver")
+        try:
+            self.browser.get('http://localhost:{}/examples.html'.format(self.port))
+        except WebDriverException:
+            print("Exception in setUp().  Have you remembered to start a webserver on port {}?".format(self.port))
+            self.browser.quit()
+            raise
+
+    def tearDown(self):
+        self.browser.quit()
+
+    @wait_ten_seconds_for
+    def check_for_href_and_download_in_element(self, element_id):
+        download_button = self.browser.find_element_by_id(element_id)
+        download_link = download_button.get_attribute('href')
+        self.assertIsNotNone(download_link)
+
+        download_filename = download_button.get_attribute('download')
+        self.assertEqual(download_filename, 'HiFiDraw.png')
+
+    @wait_ten_seconds_for
+    def check_for_page_title(self, expected_title):
+        self.assertEqual(self.browser.title, expected_title)
+
+    def test_examples_page_export(self):
+        # A visitor goes to our examples page and notices the heading
+        self.check_for_page_title('HiFiDraw Examples')
+
+
 
 
 if __name__ == '__main__':
