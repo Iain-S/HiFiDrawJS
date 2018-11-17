@@ -1,10 +1,10 @@
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-# from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 import unittest
 import time
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
 
 # NOTE: You may need to download geckodriver, if you are using linux and haven't already downloaded it
 
@@ -57,8 +57,8 @@ class TestNewVisitor(unittest.TestCase):
     def check_for_page_title(self, expected_title):
         self.assertEqual(self.browser.title, expected_title)
 
-    def test_can_make_super_simple_diagram(self):
-        # Edith wants to make a super simple diagram to of her iPhone and active monitors.
+    def test_can_delete_example_rows_and_add_blank_row(self):
+        # Edith wants to make a super simple diagram of her iPhone and active monitors.
         # Someone gives her a link to our site
 
         # She notices the page title and header
@@ -67,56 +67,50 @@ class TestNewVisitor(unittest.TestCase):
         page_header = self.browser.find_element_by_tag_name('h3').text
         self.assertIn('HiFi Draw', page_header)
 
-        # She notices a table row, which seems to want some source input
-        table_cells = self.browser.find_elements_by_tag_name("input")
-        src_input_box = table_cells[8]
-        dst_input_box = table_cells[9]
+        # She notices a table with some rows (or at least a row)
+        delete_buttons = self.browser.find_elements_by_xpath("//tbody/tr/td/input[@value='-']")
+        self.assertGreater(len(delete_buttons), 0)
 
-        self.assertEqual(
-            src_input_box.get_attribute('placeholder'),
-            'source'
-        )
+        # She deletes the example rows...
+        for delete_button in delete_buttons:
+            delete_button.click()
 
-        # She notices a table row, which seems to want some destination input
-        self.assertEqual(
-            dst_input_box.get_attribute('placeholder'),
-            'dest'
-        )
+        delete_buttons = self.browser.find_elements_by_xpath("//tbody/tr/td/input[@value='-']")
+        self.assertEqual(len(delete_buttons), 0)
+
+        # ...and adds a new blank row
+        add_buttons = self.browser.find_elements_by_xpath("//thead/tr/th/input[@value='+']")
+        self.assertEqual(len(add_buttons), 1)
+        add_buttons[0].click()
+
+        # She notices that the empty row appears to want input
+        source_boxes = self.browser.find_elements_by_xpath("//tbody/tr/td/input[@placeholder='source']")
+        dest_boxes = self.browser.find_elements_by_xpath("//tbody/tr/td/input[@placeholder='dest']")
+        self.assertEqual(len(source_boxes), 1)
+        self.assertEqual(len(dest_boxes), 1)
 
     def test_keyboard_shortcuts(self):
-        # There should be a total of four in the table;
-        # one header, two rows of pre-populated data and an empty row
-        all_rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertEqual(len(all_rows), 7, "Expected seven rows to begin with.")
+        # There should be at least one row in our table
+        number_tbody_rows_start = len(self.browser.find_elements_by_xpath("//tbody/tr"))
+        self.assertGreater(number_tbody_rows_start, 0)
 
-        # The user notices a table row, which seems to want some source input
-        table_cells = self.browser.find_elements_by_tag_name("input")
-        src_input_box = table_cells[4]
-        dst_input_box = table_cells[5]
+        # The table row should have at least one text input
+        all_table_text_inputs = self.browser.find_elements_by_xpath("//tbody/tr/td/input[@type='text']")
+        self.assertGreater(len(all_table_text_inputs), 0, "Expected at least some rows to begin with.")
 
-        src_input_box.send_keys("Edith's iPhone")
-        dst_input_box.send_keys("Mackie CR3s")
-        dst_input_box.send_keys(Keys.RETURN)
-        time.sleep(0.5)
+        # Find the last text input and send a RETURN keystroke
+        last_table_text_input = all_table_text_inputs[-1]
+        last_table_text_input.send_keys(Keys.RETURN)
 
-        # There should be a total of five in the table;
-        # one header, two rows of pre-populated data and the new one
-        all_rows = self.browser.find_elements_by_tag_name('tr')
-        self.assertEqual(len(all_rows), 6, "Expected six rows after ENTER keystroke.")
+        # We should now have one more row than we had to start with
+        self.assertEqual(number_tbody_rows_start + 1,
+                         len(self.browser.find_elements_by_xpath("//tbody/tr")))
 
-    def test_can_delete_rows(self):
-        # We begin with some rows
-        start_rows = self.browser.find_elements_by_tag_name('tr')
-        num_rows_start = len(start_rows)
-        self.assertEqual(num_rows_start, 5, "Expected five rows to begin with.")
+        # If we send RETURN and SHIFT, it should delete a row regardless of which input we send it to
+        ActionChains(self.browser).key_down(Keys.SHIFT).send_keys(Keys.RETURN).key_up(Keys.SHIFT).perform()
 
-        # Try to delete a row
-        self.browser.find_element_by_xpath("//input[@value='-']").click()
-
-        end_rows = self.browser.find_elements_by_tag_name('tr')
-        num_rows_end = len(end_rows)
-
-        self.assertEqual(num_rows_start-1, num_rows_end)
+        self.assertEqual(number_tbody_rows_start,
+                         len(self.browser.find_elements_by_xpath("//tbody/tr")))
 
     def test_can_download_png(self):
         self.check_for_href_and_download_in_element('id_download')
