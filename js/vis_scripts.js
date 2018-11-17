@@ -731,6 +731,19 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
 }
 
 
+function getExampleDatasets(){
+    "use strict";
+    return {testing};
+}
+
+
+function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
+    "use strict";
+    examples = getExampleDatasets();
+    exampleDataset = examples[exampleName];
+}
+
+
 function copyToClipboard(idExportLink) {
     "use strict";
     const textArea = document.createElement("textarea");  // Create a <textarea> element

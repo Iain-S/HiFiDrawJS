@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en-GB">
 <head>
   <!-- Required meta tags -->
@@ -37,9 +36,33 @@
       </div>
     </div>
   </nav>
+  <div class="row flex-center">
+    <div class="md-10 col">
+      <div class="paper">
+        <h3>Balanced Active 2.1 Setup</h3>
+        <p>Here we see how you could wire together:</p>
+          <ul>
+            <li>a Focusrite Scarlett 2i2</li>
+            <li>a JBL LSR310 subwoofer</li>
+            <li>two JBL LSR305 active bookshelf speakers</li>
+          </ul>
+          <p>
+            It would work equally well with other balanced active monitors (such as the Genelec 8010A), other external
+            soundcards with balanced outputs (e.g. the Steinberg UR22mkII) or other sub-woofers with balanced inputs
+            and outputs (e.g. the M-Audio BX Sub).
+          </p>
+        <div id="drawing_div" class="paper-border"></div>
+        <div class="row">
+          <!-- This will be a button to download the image as a png -->
+          <!-- ToDo sort out the alignment of these buttons -->
+          <div class="sm-3 col align-left"><a id="id_download" class="paper-btn btn-small" href="">Download image</a></div>
+          <div class="sm-3 col align-left"><input type="button" class="btn-small" onclick="copyToClipboard('id_export_link');" value="Copy link"/></div>
+          <div class="sm-6 col"></div>
+        </div>
+        <p hidden id="id_export_link" class="word-wrap"></p>
+      </div>
 
-  <div class="row">
-    Sorry, no examples yet.
+    </div>
   </div>
   <!-- jQuery library and bootstrap javascript -->
   <script src="js/jquery-3.3.1.min.js"></script>
@@ -48,6 +71,10 @@
   <!-- Our own javascript -->
   <script src="js/vis_scripts.js"></script>
   <script>
+    window.onload = function() {
+        // link our data and drawing area together
+        setUpSingleDrawingPage("testing", "drawing_div", "id_export_link", "id_download");
+    }
   </script>
 </body>
 </html>
