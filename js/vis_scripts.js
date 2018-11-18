@@ -748,7 +748,7 @@ function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
     visNetwork.redraw();
 
     visNetwork.moveTo({
-            scale: 1.6
+            scale: 1.2
         });
 
     const updateExportAndDownload = function() {
