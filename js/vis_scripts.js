@@ -181,7 +181,6 @@ function graphFromTable(tableObj) {
 function getNodePositionsFromNetwork(graph, network) {
     "use strict";
     const nodePositions = network.getPositions();
-
     graph.nodes.forEach(function (node, ignore) {
         if (nodePositions.hasOwnProperty(node.id)){
             // copy the Xs and Ys of the existing graph
@@ -194,6 +193,7 @@ function getNodePositionsFromNetwork(graph, network) {
 
 function makeEmptyNetwork(drawingArea) {
     "use strict";
+
     const visContainer = drawingArea[0];
     const visOptions = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
                                          // we could give the user some warning to set one connector to simple
@@ -217,6 +217,7 @@ function makeEmptyNetwork(drawingArea) {
 
     const visNetwork = new vis.Network(visContainer, {}, visOptions);
 
+    // Perhaps add an image background to the canvas
     // const background = new Image();
     // background.src = "images/black_on_blue.svg";
     //
@@ -248,7 +249,7 @@ function addDownloadLink(downloadID, drawingArea) {
 
     const downloadLink = document.getElementById(downloadID);
 
-    // ToDo We shouldn't be assuming that the first canvas is our canvas of interest
+    // ToDo Shouldn't we be assuming that the first canvas is our canvas of interest?
     const networkCanvas = drawingArea.find("canvas").first()[0];
 
     // Make a new canvas for the download link
@@ -271,7 +272,6 @@ function addDownloadLink(downloadID, drawingArea) {
     downloadContext.fillStyle = "#000000";
     downloadContext.fillText("Made with HiFiDraw", downloadCanvas.width-10, downloadCanvas.height-10);
 
-    downloadLink.setAttribute("download", "HiFiDraw.png");
     downloadLink.setAttribute("href", downloadCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
 
     // In case you want to choose a different random seed
@@ -311,7 +311,7 @@ function updateExportURL(graph, linkObject) {
     // We should really deal with these edge IDs elsewhere
     const graphWithoutIDs = deleteEdgeIDs(graph);
 
-    const linkURL = window.location.origin + window.location.pathname + "?serialised=" + serialiseGraph(graphWithoutIDs);
+    const linkURL = window.location.origin +  "?serialised=" + serialiseGraph(graphWithoutIDs);
 
     if (linkURL.length > 2082) {
         linkObject.text("The URL would have been over 2,083 characters.  " +
@@ -728,6 +728,41 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
 
     setKeydownListener(inputTable, redrawMe);
 
+}
+
+
+function getExampleDatasets(){
+    "use strict";
+    // return {"testing": {"nodes":[{"id":"PC","label":"PC","shape":"box","x":-264,"y":-222},{"id":"Focusrite 2i2","label":"Focusrite 2i2","shape":"box","x":-20,"y":-223},{"id":"LSR310","label":"LSR310","shape":"box","x":-14,"y":-3},{"id":"2 x LSR305","label":"2 x LSR305","shape":"box","x":-239,"y":-5}],"edges":[{"from":"PC","to":"Focusrite 2i2","arrows":"to","label":"usb"},{"from":"Focusrite 2i2","to":"LSR310","arrows":"to","label":"2 x trs - trs"},{"from":"LSR310","to":"2 x LSR305","arrows":"to","label":"2 x xlr (m) - xlr (f)"}]}};
+    return {"testing": {"nodes":[{"id":"PC","label":"PC","shape":"box","x":-264,"y":-222},{"id":"Focusrite 2i2","label":"Focusrite 2i2","shape":"box","x":-20,"y":-223},{"id":"LSR310","label":"LSR310","shape":"box","x":-257,"y":-25},{"id":"2 x LSR305","label":"2 x LSR305","shape":"box","x":-4,"y":-28}],"edges":[{"from":"PC","to":"Focusrite 2i2","arrows":"to","label":"usb"},{"from":"Focusrite 2i2","to":"LSR310","arrows":"to","label":"2 x trs - trs"},{"from":"LSR310","to":"2 x LSR305","arrows":"to","label":"2 x xlr (f) - xlr (m)"}]}}
+}
+
+
+function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
+    "use strict";
+    const exampleDataset = getExampleDatasets()[exampleName];
+    const drawingArea = $("#" + drawingDivID);
+
+    const visNetwork = makeEmptyNetwork(drawingArea);
+    setNetworkData(exampleDataset, visNetwork);
+    visNetwork.redraw();
+
+    visNetwork.moveTo({
+            scale: 1.6
+        });
+
+    const updateExportAndDownload = function() {
+        getNodePositionsFromNetwork(exampleDataset, visNetwork);
+        updateExportURL(exampleDataset, $("#" + exportURLID));
+        addDownloadLink(downloadID, drawingArea);
+    };
+
+    updateExportAndDownload();
+
+    visNetwork.on(
+        "release",
+        updateExportAndDownload
+    );
 }
 
 
