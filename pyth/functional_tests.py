@@ -177,7 +177,15 @@ class TestExamplesPage(unittest.TestCase):
         # A visitor goes to our examples page and notices the heading
         self.check_for_page_title('HiFiDraw Examples')
 
+        # They see that there are some examples
+        canvases = self.browser.find_elements_by_tag_name("canvas")
+        self.assertEqual(len(canvases), 1)
 
+        # They see that there is a download link for each canvas
+        self.browser.find_element_by_xpath("//div/a[@download='HiFiDraw Example1.png']")
+
+        # They see that there is an export link for each canvas
+        self.browser.find_element_by_xpath("//div/input[@value='Copy link']")
 
 
 if __name__ == '__main__':

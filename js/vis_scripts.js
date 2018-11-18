@@ -272,7 +272,6 @@ function addDownloadLink(downloadID, drawingArea) {
     downloadContext.fillStyle = "#000000";
     downloadContext.fillText("Made with HiFiDraw", downloadCanvas.width-10, downloadCanvas.height-10);
 
-    downloadLink.setAttribute("download", "HiFiDraw.png");
     downloadLink.setAttribute("href", downloadCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
 
     // In case you want to choose a different random seed
@@ -734,7 +733,8 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
 
 function getExampleDatasets(){
     "use strict";
-    return {"testing": {"nodes":[{"id":"PC","label":"PC","shape":"box","x":-264,"y":-222},{"id":"Focusrite 2i2","label":"Focusrite 2i2","shape":"box","x":-20,"y":-223},{"id":"LSR310","label":"LSR310","shape":"box","x":-14,"y":-3},{"id":"2 x LSR305","label":"2 x LSR305","shape":"box","x":-239,"y":-5}],"edges":[{"from":"PC","to":"Focusrite 2i2","arrows":"to","label":"usb"},{"from":"Focusrite 2i2","to":"LSR310","arrows":"to","label":"2 x trs - trs"},{"from":"LSR310","to":"2 x LSR305","arrows":"to","label":"2 x xlr (m) - xlr (f)"}]}};
+    // return {"testing": {"nodes":[{"id":"PC","label":"PC","shape":"box","x":-264,"y":-222},{"id":"Focusrite 2i2","label":"Focusrite 2i2","shape":"box","x":-20,"y":-223},{"id":"LSR310","label":"LSR310","shape":"box","x":-14,"y":-3},{"id":"2 x LSR305","label":"2 x LSR305","shape":"box","x":-239,"y":-5}],"edges":[{"from":"PC","to":"Focusrite 2i2","arrows":"to","label":"usb"},{"from":"Focusrite 2i2","to":"LSR310","arrows":"to","label":"2 x trs - trs"},{"from":"LSR310","to":"2 x LSR305","arrows":"to","label":"2 x xlr (m) - xlr (f)"}]}};
+    return {"testing": {"nodes":[{"id":"PC","label":"PC","shape":"box","x":-264,"y":-222},{"id":"Focusrite 2i2","label":"Focusrite 2i2","shape":"box","x":-20,"y":-223},{"id":"LSR310","label":"LSR310","shape":"box","x":-257,"y":-25},{"id":"2 x LSR305","label":"2 x LSR305","shape":"box","x":-4,"y":-28}],"edges":[{"from":"PC","to":"Focusrite 2i2","arrows":"to","label":"usb"},{"from":"Focusrite 2i2","to":"LSR310","arrows":"to","label":"2 x trs - trs"},{"from":"LSR310","to":"2 x LSR305","arrows":"to","label":"2 x xlr (f) - xlr (m)"}]}}
 }
 
 
@@ -746,6 +746,10 @@ function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
     const visNetwork = makeEmptyNetwork(drawingArea);
     setNetworkData(exampleDataset, visNetwork);
     visNetwork.redraw();
+
+    visNetwork.moveTo({
+            scale: 1.6
+        });
 
     const updateExportAndDownload = function() {
         getNodePositionsFromNetwork(exampleDataset, visNetwork);
