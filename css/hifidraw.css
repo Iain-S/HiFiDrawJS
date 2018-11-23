@@ -8,6 +8,12 @@ body {
     min-width: 18rem;
 }
 
+.example-button {
+    /* keep out buttons narrow enough */
+    max-width: 6rem;
+    min-width: 6rem;
+}
+
 .col {
     /* decrease the default padding */
     padding: 0.5rem;
@@ -76,3 +82,4 @@ div table th tr td {
     /* We want our papers to be the same height as each other when on the same row*/
     height: 100%;
 }
+
