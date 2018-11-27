@@ -73,7 +73,8 @@ div table th tr td {
     word-wrap: break-word;
 }
 
-#id_download {
+/*#id_download_1, #id_download_2,*/
+.no-wrap {
     /* So that the button doesn't try to wrap over two lines */
     white-space: nowrap
 }
