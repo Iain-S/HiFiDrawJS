@@ -65,23 +65,31 @@
   <div class="row flex-center">
     <div class="md-10 col">
       <div class="paper">
-        <h3>Example 2 - Something</h3>
-          <div class="row">
-            <!--<div class = "col-6 col">-->
-              <p>col1</p>
-            <!--</div>-->
-            <!--<div class = "col-6 col">-->
-              <p>col2</p>
-            <!--</div>-->
-          </div>
-        <p>Here is a HiFi Draw Link: <a>https://hifidraw.com?serialised={"nodes":[{"id":"CHROMECAST AUDIO","label":"CHROMECAST AUDIO","shape":"box","x":-182,"y":-332},{"id":"MARANTZ PM6006","label":"MARANTZ PM6006","shape":"box","x":105,"y":-240},{"id":"KEF Q150","label":"KEF Q150","shape":"box","x":122,"y":18},{"id":"REL T-ZERO","label":"REL T-ZERO","shape":"box","x":-157,"y":-65},{"id":" YAMAHA NS-SW300","label":" YAMAHA NS-SW300","shape":"box","x":-238,"y":-205}],"edges":[{"from":"CHROMECAST AUDIO","to":"MARANTZ PM6006","arrows":"to","label":"mini-toslink <-> toslink"},{"from":"MARANTZ PM6006","to":"KEF Q150","arrows":"to","label":"speaker cable"},{"from":"MARANTZ PM6006","to":"REL T-ZERO","arrows":"to","label":"speaker cable"},{"from":"MARANTZ PM6006","to":" YAMAHA NS-SW300","arrows":"to","label":"speaker cable"}]}</a></p>
-        <div id="drawing_div2" class="paper-border"></div>
+        <h3>Example 2 - Unbalanced Passive 2.1 Setup</h3>
         <div class="row">
-          <!-- This will be a button to download the image as a png -->
-          <div class="col align-middle example-button"><a id="id_download_2" class="paper-btn btn-small no-wrap" href="" download="HiFiDraw Example1.png">Download image</a></div>
-          <div class="col align-middle example-button"><input type="button" class="btn-small example-button" onclick="copyToClipboard('id_export_link_2');" value="Copy link"/></div>
+          <div class = "col-6 col">
+            <p>Here is some text explaining what is going on in the first image.</p>
+            <div class="row">
+              <!-- This will be a button to download the image as a png -->
+              <div class="col align-middle example-button"><a id="id_download_2" class="paper-btn btn-small no-wrap" href="" download="HiFiDraw Example2_1.png">Download image</a></div>
+              <div class="col align-middle example-button"><input type="button" class="btn-small example-button" onclick="copyToClipboard('id_export_link_2');" value="Copy link"/></div>
+              <p hidden id="id_export_link_2" class="word-wrap"></p>
+            </div>
+            <p>Here is some text explaining what is going on in the second image.</p>
+            <div class="row">
+              <!-- This will be a button to download the image as a png -->
+              <div class="col align-middle example-button"><a id="id_download_3" class="paper-btn btn-small no-wrap" href="" download="HiFiDraw Example2_2.png">Download image</a></div>
+              <div class="col align-middle example-button"><input type="button" class="btn-small example-button" onclick="copyToClipboard('id_export_link_3');" value="Copy link"/></div>
+              <p hidden id="id_export_link_3" class="word-wrap"></p>
+            </div>
+          </div>
+          <div class = "col-6 col">
+            <h4>Option 1</h4>
+            <div id="drawing_div_2" class="paper-border"></div>
+            <h4>Option 2</h4>
+            <div id="drawing_div_3" class="paper-border"></div>
+          </div>
         </div>
-        <p hidden id="id_export_link_2" class="word-wrap"></p>
       </div>
     </div>
   </div>
@@ -95,7 +103,8 @@
     window.onload = function() {
         // link our data and drawing area together
         setUpExample("testing1", "drawing_div_1", "id_export_link_1", "id_download_1");
-        setUpExample("testing2", "drawing_div_2", "id_export_link_2", "id_download_2");
+        setUpExample("testing2.1", "drawing_div_2", "id_export_link_2", "id_download_2");
+        setUpExample("testing2.2", "drawing_div_3", "id_export_link_3", "id_download_3");
     }
   </script>
 </body>
