@@ -191,29 +191,38 @@ function getNodePositionsFromNetwork(graph, network) {
 }
 
 
-function makeEmptyNetwork(drawingArea) {
+function makeEmptyNetwork(drawingArea, disableZoom, disableDrag) {
     "use strict";
 
     const visContainer = drawingArea[0];
-    const visOptions = {physics: false, // if false then a -> b & b -> a overlaps and labels get messy
-                                         // we could give the user some warning to set one connector to simple
-                         width: "100%",
-                         height: "500px",
-                         nodes: {
-                             font: {size: 20,
-                                    face: "Patrick Hand SC, arial"
-                                    }
-                                    //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
-                         },
-                         edges: {length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
-                                 font: {size: 15,
-                                        face: "Patrick Hand SC, arial"},
-                                 arrowStrikethrough: false // note we may want to make the node borders a little thicker
-                         },
-                         layout: {
-                             hierarchical: false,
-                             randomSeed: 10161
-                         }};
+    const visOptions = {
+        physics: false, // if false then a -> b & b -> a overlaps and labels get messy
+                        // we could give the user some warning to set one connector to simple
+        width: "100%",
+        height: "500px",
+        nodes: {
+            font: {
+                size: 20,
+                face: "Patrick Hand SC, arial"  //https://fonts.googleapis.com/css?family=Neucha|Patrick+Hand+SC
+            }
+        },
+        edges: {
+            length: 1000, // this doesn't seem to do anything.  Confirm and report a bug...
+            font: {
+                size: 15,
+                face: "Patrick Hand SC, arial"
+            },
+            arrowStrikethrough: false // note we may want to make the node borders a little thicker
+        },
+        layout: {
+            hierarchical: false,
+            randomSeed: 10161
+        },
+        interaction: {
+            dragView: disableDrag ? false : true,
+            zoomView: disableZoom ? false : true
+        }
+    };
 
     const visNetwork = new vis.Network(visContainer, {}, visOptions);
 
@@ -747,13 +756,11 @@ function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
     const exampleDataset = getExampleDatasets()[exampleName];
     const drawingArea = $("#" + drawingDivID);
 
-    const visNetwork = makeEmptyNetwork(drawingArea);
+    const visNetwork = makeEmptyNetwork(drawingArea, true, true);
     setNetworkData(exampleDataset, visNetwork);
     visNetwork.redraw();
 
-    visNetwork.moveTo({
-            scale: 1.2
-        });
+    visNetwork.moveTo({scale: 1.0});
 
     const updateExportAndDownload = function() {
         getNodePositionsFromNetwork(exampleDataset, visNetwork);
