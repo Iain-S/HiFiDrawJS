@@ -12,12 +12,29 @@
   <link rel="stylesheet" href="css/hifidraw.css">
 </head>
 <body>
-  <nav class="border split-nav">
+  <nav class="split-nav">
     <div class="nav-brand">
-      <h3><a href="#">Unit Tests</a></h3>
+      <h3><a href="/">HiFi Draw</a></h3>
+    </div>
+    <div class="collapsible">
+      <input id="collapsible1" type="checkbox" name="collapsible1">
+      <button>
+        <label for="collapsible1">
+          <div class="bar1"></div>
+          <div class="bar2"></div>
+          <div class="bar3"></div>
+        </label>
+      </button>
+      <div class="collapsible-body">
+        <ul class="inline">
+          <li><a href="/examples.html" id="id_examples_link">Examples</a></li>
+          <li><a href="https://github.com/Iain-S/HiFiDrawJS" id="id_github_link">GitHub</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
   <div class="paper">
+    <h3>Unit Test Results</h3>
     <div id="test_results"></div>
     <div id="inputDiv">
     <table id="inputTable">
