@@ -407,7 +407,7 @@ const hifidrawTesting = (function() {
     
         test_graph_from_table: function() {
     
-            const test_data = makeTable("some_id", $("<div>temp drawing area</div>"));
+            const test_data = makeTable("some_id");
 
             addRow(test_data, ()=>null, "part1", "part2", "XLR<>XLR");
 
@@ -430,7 +430,7 @@ const hifidrawTesting = (function() {
 
         test_graph_from_table_no_label: function() {
 
-            const test_data = makeTable("some_id", $("<div>temp drawing area</div>"));
+            const test_data = makeTable("some_id");
 
             addRow(test_data, ()=>null, "part1", "part2", "");
 

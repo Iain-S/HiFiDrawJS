@@ -4,14 +4,13 @@
 
 function countBodyRows(tableBody) {
     "use strict";
-
     const tableRows = tableBody.children("tr");
 
     return tableRows.length;
 }
 
 
-function makeTextInput(placeholder, datalistID, value, number){
+function makeTextInput(placeholder, datalistID, value, number) {
     "use strict";
 
     // Create an input type dynamically.
@@ -38,30 +37,25 @@ function makeTextInput(placeholder, datalistID, value, number){
 
 function makeSourceBox(value, number) {
     "use strict";
-
     return makeTextInput("source", "components", value, number);
 }
 
 
 function makeDestinationBox(value, number) {
     "use strict";
-
     return makeTextInput("dest", "components", value, number);
 }
 
 
 function makeConnectorMenu(value, number) {
     "use strict";
-
     return makeTextInput("via", "connectors", value, number);
 }
 
 
 function rowIsValid(rowObj) {
     "use strict";
-
     const tableTextBoxes = rowObj.find("input[type=text]");
-    let numberOfValidInputs = 0;
 
     // Check that we have three text boxes and at least the source and destination are filled in
     return tableTextBoxes.length === 3 &&
@@ -73,7 +67,6 @@ function rowIsValid(rowObj) {
 function countValidRows(tableObj) {
     /* Count the number of valid table rows (rows with a source and destination)*/
     "use strict";
-
     const tableBody = tableObj.children("tbody").first();
     const tableRows = tableBody.children("tr");
     let numberOfValidRows = 0;
@@ -95,7 +88,6 @@ function addNodeFromCell(tdObject, nodeArray) {
     // get back the id of any nodes added or the id
     // of the matching node if it was already in nodeArray
     "use strict";
-
     let id = null;
     const input = tdObject.children("input").first();
 
@@ -120,7 +112,6 @@ function addNodeFromCell(tdObject, nodeArray) {
 
 function graphFromTable(tableObj) {
     "use strict";
-
     const tableBody = tableObj.children("tbody").first();
     const tableRows = tableBody.children("tr");
 
@@ -193,7 +184,6 @@ function getNodePositionsFromNetwork(graph, network) {
 
 function makeEmptyNetwork(drawingArea, disableZoom, disableDrag) {
     "use strict";
-
     const visContainer = drawingArea[0];
     const visOptions = {
         physics: false, // if false then a -> b & b -> a overlaps and labels get messy
@@ -242,12 +232,13 @@ function makeEmptyNetwork(drawingArea, disableZoom, disableDrag) {
 
 function setNetworkData(graph, network) {
     "use strict";
-
     const visNodes = new vis.DataSet(graph.nodes);
     const visEdges = new vis.DataSet(graph.edges);
 
-    const visData = {nodes: visNodes,
-                     edges: visEdges};
+    const visData = {
+        nodes: visNodes,
+        edges: visEdges
+    };
 
     network.setData(visData);
 }
@@ -255,7 +246,6 @@ function setNetworkData(graph, network) {
 
 function addDownloadLink(downloadID, drawingArea) {
     "use strict";
-
     const downloadLink = document.getElementById(downloadID);
 
     // ToDo Shouldn't we be assuming that the first canvas is our canvas of interest?
@@ -306,9 +296,10 @@ function deleteEdgeIDs(graph) {
     // Seems to be a common way to deep copy
     const newGraph = JSON.parse(JSON.stringify(graph));
 
-    newGraph.edges.forEach(function (edge) {
-        delete edge.id;
-    });
+    newGraph.edges.forEach(
+        function (edge) {
+            delete edge.id;
+        });
 
     return newGraph;
 }
@@ -408,9 +399,7 @@ function makeDeleteButton(redrawFunc) {
 
 
 function addRow(tableObj, redrawFunc, sourceVal, destVal, connVal) {
-
     "use strict";
-
     const tableBody = tableObj.children("tbody").first();
 
     // if the last row has focus, we will later set the focus to the last source input
@@ -462,11 +451,9 @@ function addRow(tableObj, redrawFunc, sourceVal, destVal, connVal) {
 }
 
 
-function makeTable(tableID, redrawWithTable) {
+function makeTable(tableID) {
     "use strict";
-
-    const newTable =
-           $("<table id='" + tableID + "'>\n" +
+    return $("<table id='" + tableID + "'>\n" +
                "<thead>\n" +
                  "<tr>\n" +
                    "<th>Source</th>\n" +
@@ -480,8 +467,6 @@ function makeTable(tableID, redrawWithTable) {
                "<tbody>\n" +
                "</tbody>\n" +
              "</table>");
-
-    return newTable;
 }
 
 
@@ -494,10 +479,10 @@ function makeComponentsDatalist() {
                      "amp",
                      "speakers"];
 
-    let datalistString = '<datalist id="components">';
+    let datalistString = "<datalist id='components'>";
 
     options.sort().forEach(function(option){
-        datalistString += '<option value="' + option + '">';
+        datalistString += "<option value='" + option + "'>";
     });
 
     datalistString += "</datalist>";
@@ -515,10 +500,10 @@ function makeConnectorDatalist() {
                      "speaker cable",
                      "optical"];
 
-    let datalistString = '<datalist id="connectors">';
+    let datalistString = "<datalist id='connectors'>";
 
     options.sort().forEach(function(option){
-        datalistString += '<option value="' + option + '">';
+        datalistString += "<option value='" + option + "'>";
     });
 
     datalistString += "</datalist>";
@@ -529,7 +514,6 @@ function makeConnectorDatalist() {
 
 function deleteRowFrom(tableObj, idx, redrawFunc) {
     "use strict";
-
     const tableBody = tableObj.children("tbody").first();
 
     // if the last row has focus, set the focus to the last but one destination input
@@ -560,7 +544,6 @@ function deleteLastDataRowFrom(tableObj, redrawFunc) {
     // This is a safe delete function, it will always leave the
     //  headers and the add button.
     "use strict";
-
     const tableBody = tableObj.children("tbody").first();
 
     if (tableBody.find("tr").length > 1) {
@@ -582,7 +565,6 @@ function addSampleData(tableObj, redrawFunc, visNetwork) {
 
 function removeSampleData(tableObj) {
     "use strict";
-
     const tableBody = tableObj.children("tbody").first();
     tableBody.empty();
 }
@@ -594,7 +576,6 @@ function removeSampleData(tableObj) {
    You can call it like this getQueryParams(document.location.search)*/
 function getQueryParams(queryString) {
     "use strict";
-
     queryString = queryString.split("+").join(" ");
 
     let params = {};
@@ -659,7 +640,6 @@ function makeRefreshButton(refreshFunc) {
 
 function setKeydownListener(tableObj, redrawFunc) {
     "use strict";
-
     if (! window.hasOwnProperty("pressedKeys")) {
         window.pressedKeys = {};
     }
@@ -736,22 +716,20 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
     }
 
     setKeydownListener(inputTable, redrawMe);
-
 }
 
 
-function getExampleDatasets(){
+function getExampleDatasets() {
     "use strict";
-    // return {"testing": {"nodes":[{"id":"PC","label":"PC","shape":"box","x":-264,"y":-222},{"id":"Focusrite 2i2","label":"Focusrite 2i2","shape":"box","x":-20,"y":-223},{"id":"LSR310","label":"LSR310","shape":"box","x":-14,"y":-3},{"id":"2 x LSR305","label":"2 x LSR305","shape":"box","x":-239,"y":-5}],"edges":[{"from":"PC","to":"Focusrite 2i2","arrows":"to","label":"usb"},{"from":"Focusrite 2i2","to":"LSR310","arrows":"to","label":"2 x trs - trs"},{"from":"LSR310","to":"2 x LSR305","arrows":"to","label":"2 x xlr (m) - xlr (f)"}]}};
     return {
         "testing1": {"nodes":[{"id":"PC","label":"PC","shape":"box","x":-264,"y":-222},{"id":"Focusrite 2i2","label":"Focusrite 2i2","shape":"box","x":-20,"y":-223},{"id":"LSR310","label":"LSR310","shape":"box","x":-257,"y":-25},{"id":"2 x LSR305","label":"2 x LSR305","shape":"box","x":-4,"y":-28}],"edges":[{"from":"PC","to":"Focusrite 2i2","arrows":"to","label":"usb"},{"from":"Focusrite 2i2","to":"LSR310","arrows":"to","label":"2 x trs - trs"},{"from":"LSR310","to":"2 x LSR305","arrows":"to","label":"2 x xlr (f) - xlr (m)"}]},
         "testing2.1": {"nodes":[{"id":"CHROMECAST AUDIO","label":"CHROMECAST AUDIO","shape":"box","x":-77,"y":-330},{"id":"MARANTZ PM6006","label":"MARANTZ PM6006","shape":"box","x":-73,"y":-219},{"id":"KEF Q150","label":"KEF Q150","shape":"box","x":6,"y":-48},{"id":" YAMAHA NS-SW300","label":" YAMAHA NS-SW300","shape":"box","x":-159,"y":8}],"edges":[{"from":"CHROMECAST AUDIO","to":"MARANTZ PM6006","arrows":"to","label":"mini-toslink <-> toslink"},{"from":"MARANTZ PM6006","to":"KEF Q150","arrows":"to","label":"speaker cable"},{"from":"MARANTZ PM6006","to":" YAMAHA NS-SW300","arrows":"to","label":"speaker cable"}]},
         "testing2.2": {"nodes":[{"id":"CHROMECAST AUDIO","label":"CHROMECAST AUDIO","shape":"box","x":-77,"y":-330},{"id":"MARANTZ PM6006","label":"MARANTZ PM6006","shape":"box","x":-73,"y":-219},{"id":" YAMAHA NS-SW300","label":" YAMAHA NS-SW300","shape":"box","x":-159,"y":8},{"id":"KEF Q150","label":"KEF Q150","shape":"box","x":24,"y":-98}],"edges":[{"from":"CHROMECAST AUDIO","to":"MARANTZ PM6006","arrows":"to","label":"mini-toslink <-> toslink"},{"from":" YAMAHA NS-SW300","to":"KEF Q150","arrows":"to","label":"speaker cable"},{"from":"MARANTZ PM6006","to":" YAMAHA NS-SW300","arrows":"to","label":"speaker cable"}]}
-    }
+    };
 }
 
 
-function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
+function setUpExample(exampleName, drawingDivID, exportURLID, downloadID) {
     "use strict";
     const exampleDataset = getExampleDatasets()[exampleName];
     const drawingArea = $("#" + drawingDivID);
@@ -780,20 +758,20 @@ function setUpExample(exampleName, drawingDivID, exportURLID, downloadID){
 function copyToClipboard(idExportLink) {
     "use strict";
     const textArea = document.createElement("textarea");  // Create a <textarea> element
-    textArea.value = $("#" + idExportLink).text();        // Set its value to the string that you want copied
-    textArea.setAttribute("readonly", "");                // Make it readonly to be tamper-proof
+    textArea.value = $("#" + idExportLink).text();                // Set its value to the string that you want copied
+    textArea.setAttribute("readonly", "");      // Make it readonly to be tamper-proof
     textArea.style.position = "absolute";
     textArea.style.left = "-9999px";                      // Move outside the screen to make it invisible
     document.body.appendChild(textArea);                  // Append the <textarea> element to the HTML document
     const selected =
-        document.getSelection().rangeCount > 0      // Check if there is any content selected previously
-        ? document.getSelection().getRangeAt(0)     // Store selection if found
-        : false;                                    // Mark as false to know no selection existed before
-    textArea.select();                              // Select the <textarea> content
-    document.execCommand("copy");                   // Copy - only works as a result of a user action (e.g. click events)
-    document.body.removeChild(textArea);            // Remove the <textarea> element
-    if (selected) {                                 // If a selection existed before copying
-        document.getSelection().removeAllRanges();  // Unselect everything on the HTML document
-        document.getSelection().addRange(selected); // Restore the original selection
+        document.getSelection().rangeCount > 0         // Check if there is any content selected previously
+        ? document.getSelection().getRangeAt(0)  // Store selection if found
+        : false;                                       // Mark as false to know no selection existed before
+    textArea.select();                                 // Select the <textarea> content
+    document.execCommand("copy");            // Copy - only works as a result of a user action (e.g. click events)
+    document.body.removeChild(textArea);               // Remove the <textarea> element
+    if (selected) {                                    // If a selection existed before copying
+        document.getSelection().removeAllRanges();     // Unselect everything on the HTML document
+        document.getSelection().addRange(selected);    // Restore the original selection
     }
 }
