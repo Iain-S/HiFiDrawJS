@@ -39,27 +39,29 @@
   <div class="row flex-center">
     <div class="md-10 col">
       <div class="paper">
-        <h3>Balanced Active 2.1 Setup</h3>
+        <h3>Example 1 - Balanced Active 2.1 Setup</h3>
         <p>Here we see how you could wire together:</p>
-          <ul>
-            <li>a Focusrite Scarlett 2i2</li>
-            <li>a JBL LSR310 subwoofer</li>
-            <li>two JBL LSR305 active bookshelf speakers</li>
-          </ul>
-          <p>
-            It would work equally well with other balanced active monitors (such as the Genelec 8010A), other external
-            soundcards with balanced outputs (e.g. the Steinberg UR22mkII) or other sub-woofers with balanced inputs
-            and outputs (e.g. the M-Audio BX Sub).
-          </p>
-        <div id="drawing_div" class="paper-border"></div>
+        <ul>
+          <li>a Focusrite Scarlett 2i2</li>
+          <li>a JBL LSR310 subwoofer</li>
+          <li>two JBL LSR305 active bookshelf speakers</li>
+        </ul>
+        <p>It would work equally well with:</p>
+        <ul>
+          <li>other balanced active monitors (such as the Genelec 8010A)</li>
+          <li>any soundcard with a balanced output (e.g. the Steinberg UR22mkII)</li>
+          <li>other sub-woofers with balanced inputs and outputs (e.g. the M-Audio BX Sub)</li>
+        </ul>
+        <div id="drawing_div_1" class="paper-border"></div>
         <div class="row">
           <!-- This will be a button to download the image as a png -->
-          <div class="col align-middle example-button"><a id="id_download" class="paper-btn btn-small" href="" download="HiFiDraw Example1.png">Download image</a></div>
-          <div class="col align-middle example-button"><input type="button" class="btn-small example-button" onclick="copyToClipboard('id_export_link');" value="Copy link"/></div>
+          <div class="col align-middle example-button"><a id="id_download_1" class="paper-btn btn-small no-wrap" href="" download="HiFiDraw Example1.png">Download image</a></div>
+          <div class="col align-middle example-button"><input type="button" class="btn-small example-button" onclick="copyToClipboard('id_export_link_1');" value="Copy link"/></div>
         </div>
-        <p hidden id="id_export_link" class="word-wrap"></p>
+        <p hidden id="id_export_link_1" class="word-wrap"></p>
       </div>
     </div>
+  </div>
   </div>
   <!-- jQuery library and bootstrap javascript -->
   <script src="js/jquery-3.3.1.min.js"></script>
@@ -70,7 +72,9 @@
   <script>
     window.onload = function() {
         // link our data and drawing area together
-        setUpExample("testing", "drawing_div", "id_export_link", "id_download");
+        setUpExample("testing1", "drawing_div_1", "id_export_link_1", "id_download_1");
+        // setUpExample("testing2.1", "drawing_div_2", "id_export_link_2", "id_download_2");
+        // setUpExample("testing2.2", "drawing_div_3", "id_export_link_3", "id_download_3");
     }
   </script>
 </body>
