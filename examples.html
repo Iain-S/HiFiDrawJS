@@ -21,7 +21,7 @@
     <div class="collapsible">
       <input id="collapsible1" type="checkbox" name="collapsible1">
       <button>
-      <label for="collapsible1">
+        <label for="collapsible1">
           <div class="bar1"></div>
           <div class="bar2"></div>
           <div class="bar3"></div>
@@ -29,9 +29,8 @@
       </button>
       <div class="collapsible-body">
         <ul class="inline">
-          <!--<li><a href="#">Examples</a></li>-->
+          <li><a href="#">Examples</a></li>
           <li><a href="https://github.com/Iain-S/HiFiDrawJS">Github</a></li>
-          <!--<li><a href="#">About</a></li>-->
         </ul>
       </div>
     </div>
@@ -39,7 +38,20 @@
   <div class="row flex-center">
     <div class="md-10 col">
       <div class="paper">
-        <h3>Example 1 - Balanced Active 2.1 Setup</h3>
+        <div class="row flex-center margin-bottom-none">
+          <h2>Examples</h2>
+        </div>
+        <div class="row flex-center">
+          <a href="#example1" class="paper-btn margin">Example 1 - Balanced Active 2.1 Setup</a>
+          <a href="#example2" class="paper-btn margin">Example 2 - Unbalanced Passive 2.1 Setup</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row flex-center">
+    <div class="md-10 col">
+      <div class="paper">
+        <h3><a id="example1"></a>Example 1 - Balanced Active 2.1 Setup</h3>
         <p>Here we see how you could wire together:</p>
         <ul>
           <li>a Focusrite Scarlett 2i2</li>
@@ -62,6 +74,79 @@
       </div>
     </div>
   </div>
+  <div class="row flex-center">
+    <div class="md-10 col">
+      <div class="paper">
+        <h3><a id="example2"></a>Example 2 - Unbalanced Passive 2.1 Setup</h3>
+        <div class="row">
+          <div class = "col-6 col">
+            <h4>Option 1</h4>
+            <p>
+              With this option, the sub is connected to the amp with a separate cable run.  This makes it easy
+              to position the sub independently of the speakers.
+            </p>
+            <p>
+              There is no way for the sub to alter the signal going to the speakers so all it can do
+              is to "fill in" the lower octave or two.  Good integration relies on careful adjustment of the sub high-pass
+              cutoff frequency and phase.
+            </p>
+            <p>
+              The natural roll-off of a speaker is 12db/octave for a sealed box and 24db/octave for a ported "bass-reflex" design.  Since
+              hardly any subs have the option to change roll-off, they can only work properly with one type of speaker.  This is (one of many)
+              arguments in favour of active crossover designs.
+            </p>
+            <!-- Electrically, they are in parallel -->
+            <div class="row">
+              <div class="col align-middle example-button">
+                <a id="id_download_2" class="paper-btn btn-small no-wrap" href="" download="HiFiDraw Example2_1.png">Download image</a>
+              </div>
+              <div class="col align-middle example-button">
+                <input type="button" class="btn-small example-button" onclick="copyToClipboard('id_export_link_2');" value="Copy link"/>
+              </div>
+            </div>
+            <p hidden id="id_export_link_2" class="word-wrap"></p>
+          </div>
+          <div class = "col-6 col align-middle">
+            <div id="drawing_div_2" class="paper-border"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 col">
+            <h4>Option 2</h4>
+            <p>
+              Here, the sub is connected in between the amplifier and the speakers.  Electrically, the sub is still in
+              parallel with the speakers.  However, there is the possibility for it to passively high-pass filter the signal going to the
+              speakers.
+            </p>
+            <p>
+              If there is no high-pass filter then, as before, good integration relies on careful adjustment of the crossover controls.
+              If there is a high-pass filter built into the sub then things get more interesting
+              as frequencies lower than the crossover point will be attenuated before being passed to the speakers.
+              This is what happens with Home Theatre In a Box systems where the satellites are too small
+              to play low frequencies without damage or distortion.  In systems with amply sized speakers, there are still
+              benefits to be had as the total power output required of the speakers will be reduced.
+            </p>
+            <p>
+              Good integration is possible if the assumptions made by the crossover designer concerning the type
+              of speaker being used are correct.  This is one of the situations where it is advisable to buy the speakers and sub from the same
+              manufacturer/product line.
+            </p>
+            <div class="row">
+              <div class="col align-middle example-button">
+                <a id="id_download_3" class="paper-btn btn-small no-wrap" href="" download="HiFiDraw Example2_2.png">Download image</a>
+              </div>
+              <div class="col align-middle example-button">
+                <input type="button" class="btn-small example-button" onclick="copyToClipboard('id_export_link_3');" value="Copy link"/>
+              </div>
+            </div>
+            <p hidden id="id_export_link_3" class="word-wrap"></p>
+          </div>
+          <div class = "col-6 col align-middle">
+            <div id="drawing_div_3" class="paper-border"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- jQuery library and bootstrap javascript -->
   <script src="js/jquery-3.3.1.min.js"></script>
@@ -73,8 +158,8 @@
     window.onload = function() {
         // link our data and drawing area together
         setUpExample("testing1", "drawing_div_1", "id_export_link_1", "id_download_1");
-        // setUpExample("testing2.1", "drawing_div_2", "id_export_link_2", "id_download_2");
-        // setUpExample("testing2.2", "drawing_div_3", "id_export_link_3", "id_download_3");
+        setUpExample("testing2.1", "drawing_div_2", "id_export_link_2", "id_download_2");
+        setUpExample("testing2.2", "drawing_div_3", "id_export_link_3", "id_download_3");
     }
   </script>
 </body>
