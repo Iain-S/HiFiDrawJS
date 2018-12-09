@@ -183,7 +183,7 @@ class TestExamplesPage(unittest.TestCase):
 
         # They see that there are some examples
         canvases = self.browser.find_elements_by_tag_name("canvas")
-        self.assertEqual(len(canvases), 1)
+        self.assertEqual(len(canvases), 3)
 
         # They see that there is a download link for each canvas
         self.browser.find_element_by_xpath("//div/a[@download='HiFiDraw Example1.png']")
