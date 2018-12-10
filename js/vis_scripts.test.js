@@ -618,7 +618,8 @@ const hifidrawTesting = (function() {
     
     
         test_update_export_url: function() {
-    
+            // Note that this test doesn't pass when the test page is run via PyCharm
+            // so use a server instead (e.g. "python -m http.server 8009")
             const para = $("<p></p>");
             const pass_fail = [];
     
