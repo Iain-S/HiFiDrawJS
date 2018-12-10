@@ -11,7 +11,8 @@ a:hover
   color: tomato;
 }
 
-#menuToggle
+/*#menuToggle*/
+.menuToggle
 {
   display: block;
   position: relative;
@@ -24,7 +25,8 @@ a:hover
   user-select: none;
 }
 
-#menuToggle input
+/*#menuToggle input*/
+.menuToggle input
 {
   display: block;
   width: 40px;
@@ -44,7 +46,8 @@ a:hover
 /*
  * Just a quick hamburger
  */
-#menuToggle span
+/*#menuToggle span*/
+.menuToggle span
 {
   display: block;
   width: 33px;
@@ -64,12 +67,14 @@ a:hover
               opacity 0.55s ease;
 }
 
-#menuToggle span:first-child
+/*#menuToggle span:first-child*/
+.menuToggle span:first-child
 {
   transform-origin: 0 0;
 }
 
-#menuToggle span:nth-last-child(2)
+/*#menuToggle span:nth-last-child(2)*/
+.menuToggle span:nth-last-child(2)
 {
   transform-origin: 0 100%;
 }
@@ -78,7 +83,8 @@ a:hover
  * Transform all the slices of hamburger
  * into a crossmark.
  */
-#menuToggle input:checked ~ span
+/*#menuToggle input:checked ~ span*/
+.menuToggle input:checked ~ span
 {
   opacity: 1;
   transform: rotate(45deg) translate(-2px, -1px);
@@ -88,16 +94,18 @@ a:hover
 /*
  * But let's hide the middle one.
  */
-#menuToggle input:checked ~ span:nth-last-child(3)
+/*#menuToggle input:checked ~ span:nth-last-child(3)*/
+.menuToggle input:checked ~ span:nth-last-child(3)
 {
   opacity: 0;
   transform: rotate(0deg) scale(0.2, 0.2);
 }
 
 /*
- * Ohyeah and the last one should go the other direction
+ * Oh yeah and the last one should go the other direction
  */
-#menuToggle input:checked ~ span:nth-last-child(2)
+/*#menuToggle input:checked ~ span:nth-last-child(2)*/
+.menuToggle input:checked ~ span:nth-last-child(2)
 {
   transform: rotate(-45deg) translate(0, -1px);
 }
@@ -136,7 +144,8 @@ a:hover
 /*
  * And let's slide it in from the left
  */
-#menuToggle input:checked ~ ul
+/*#menuToggle input:checked ~ ul*/
+.menuToggle input:checked ~ ul
 {
   transform: none;
 }
