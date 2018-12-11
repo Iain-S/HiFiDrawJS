@@ -60,7 +60,7 @@ function rowIsValid(rowObj) {
     // Check that we have three text boxes and at least the source and destination are filled in
     return tableTextBoxes.length === 3 &&
         tableTextBoxes.eq(0).val().length &&
-        tableTextBoxes.eq(2).val().length ? true : false;
+        tableTextBoxes.eq(2).val().length;
 }
 
 
@@ -209,8 +209,8 @@ function makeEmptyNetwork(drawingArea, disableZoom, disableDrag) {
             randomSeed: 10161
         },
         interaction: {
-            dragView: disableDrag ? false : true,
-            zoomView: disableZoom ? false : true
+            dragView: disableDrag,
+            zoomView: disableZoom
         }
     };
 
@@ -311,7 +311,9 @@ function updateExportURL(graph, linkObject) {
     // We should really deal with these edge IDs elsewhere
     const graphWithoutIDs = deleteEdgeIDs(graph);
 
-    const linkURL = window.location.origin +  "?serialised=" + serialiseGraph(graphWithoutIDs);
+    // const linkURL = window.location.origin +  "?serialised=" + encodeURIComponent(serialiseGraph(graphWithoutIDs));
+    const linkURL = location.protocol + "//" + location.host + location.pathname +
+        "?serialised=" + encodeURIComponent(serialiseGraph(graphWithoutIDs));
 
     if (linkURL.length > 2082) {
         linkObject.text("The URL would have been over 2,083 characters.  " +
@@ -552,24 +554,6 @@ function deleteLastDataRowFrom(tableObj, redrawFunc) {
 }
 
 
-function addSampleData(tableObj, redrawFunc, visNetwork) {
-    "use strict";
-
-    // You can create a sample graph on the home page and then use the permalink as sample data
-    addDataFromURL('{"nodes":[{"id":"pc","label":"pc","shape":"box","x":-411,"y":-189},{"id":"dac","label":"dac","shape":"box","x":-304,"y":-187},{"id":"amplifier","label":"amplifier","shape":"box","x":-137,"y":-67},{"id":"tunrtable","label":"tunrtable","shape":"box","x":-387,"y":27},{"id":"high level inputs","label":"high level inputs","shape":"box","x":-8,"y":-174},{"id":"subwoofer","label":"subwoofer","shape":"box","x":143,"y":-174},{"id":"passive speakers","label":"passive speakers","shape":"box","x":273,"y":23}],"edges":[{"from":"pc","to":"dac","arrows":"to","label":"usb"},{"from":"dac","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"tunrtable","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"amplifier","to":"high level inputs","arrows":"to","label":"speaker cable"},{"from":"high level inputs","to":"subwoofer","arrows":"to","label":""},{"from":"subwoofer","to":"passive speakers","arrows":"to","label":"speaker cable"}]}',
-        tableObj,
-        redrawFunc,
-        visNetwork);
-}
-
-
-function removeSampleData(tableObj) {
-    "use strict";
-    const tableBody = tableObj.children("tbody").first();
-    tableBody.empty();
-}
-
-
 /* Get query parameters from the URL
    e.g. www.my-site.com?something=a_thing&what=why
         will return a dict with something and what as keys
@@ -625,6 +609,24 @@ function addDataFromURL(serialisedData, tableObj, redrawFunc, visNetwork) {
     // This is necessary because we can't store the node x and y coordinates in the table
     // and hope for them to be displayed later
     setNetworkData(unpackedData, visNetwork);
+}
+
+
+function addSampleData(tableObj, redrawFunc, visNetwork) {
+    "use strict";
+
+    // You can create a sample graph on the home page and then use the permalink as sample data
+    addDataFromURL('{"nodes":[{"id":"pc","label":"pc","shape":"box","x":-411,"y":-189},{"id":"dac","label":"dac","shape":"box","x":-304,"y":-187},{"id":"amplifier","label":"amplifier","shape":"box","x":-137,"y":-67},{"id":"tunrtable","label":"tunrtable","shape":"box","x":-387,"y":27},{"id":"high level inputs","label":"high level inputs","shape":"box","x":-8,"y":-174},{"id":"subwoofer","label":"subwoofer","shape":"box","x":143,"y":-174},{"id":"passive speakers","label":"passive speakers","shape":"box","x":273,"y":23}],"edges":[{"from":"pc","to":"dac","arrows":"to","label":"usb"},{"from":"dac","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"tunrtable","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"amplifier","to":"high level inputs","arrows":"to","label":"speaker cable"},{"from":"high level inputs","to":"subwoofer","arrows":"to","label":""},{"from":"subwoofer","to":"passive speakers","arrows":"to","label":"speaker cable"}]}',
+        tableObj,
+        redrawFunc,
+        visNetwork);
+}
+
+
+function removeSampleData(tableObj) {
+    "use strict";
+    const tableBody = tableObj.children("tbody").first();
+    tableBody.empty();
 }
 
 

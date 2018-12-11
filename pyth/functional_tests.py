@@ -118,9 +118,6 @@ class TestHomePage(unittest.TestCase):
     def test_there_is_export_link(self):
         export_link = self.browser.find_element_by_id('id_export_link')
         current_url = self.browser.current_url
-        if current_url[-1] == '/':
-            # The current url might be http://localhost:8009/ be we don't care about the final /
-            current_url = current_url[0:-1]
 
         self.assertTrue(current_url in export_link.text)
 

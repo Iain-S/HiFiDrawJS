@@ -459,7 +459,7 @@ const hifidrawTesting = (function() {
                                     "<td><input value='comp2' type='text'></td>" +
                                 "</tr>");
     
-            assert.equal(rowIsValid(test_data), true);
+            assert.isOk(rowIsValid(test_data));
     
             const rest_data = $("<tr>\n" +
                                     "<td><input value='comp1' type='text'></td>\n" +
@@ -472,7 +472,7 @@ const hifidrawTesting = (function() {
                                     "<td><input type='text'></td>\n" +
                                 "</tr>");
     
-            assert.equal(rowIsValid(rest_data), false);
+            assert.isNotOk(rowIsValid(rest_data));
         },
     
     
@@ -542,12 +542,13 @@ const hifidrawTesting = (function() {
     
         generate_a_valid_graph: function() {
             // ToDo Finish this
+
             return {
-                "nodes": [{"id": 1, "label": "phone", "shape": "box"},
-                    {"id": 2, "label": "amp", "shape": "box"},
-                    {"id": 3, "label": "speakers", "shape": "box"}],
-                "edges": [{"from": 1, "to": 2, "arrows": "to", "label": "XLR<>XLR"},
-                    {"from": 2, "to": 3, "arrows": "to", "label": ""}]
+                "nodes": [{"id": "+=/?().!£$%^&*", "label": "+=/?().!£$%^&*", "shape": "box"},
+                    {"id": "amp", "label": "amp", "shape": "box"},
+                    {"id": "speakers", "label": "speakers", "shape": "box"}],
+                "edges": [{"from": "+=/?().!£$%^&*", "to": "amp", "arrows": "to", "label": "XLR<>XLR"},
+                    {"from": "amp", "to": "speakers", "arrows": "to", "label": ""}]
             };
         },
 
@@ -626,7 +627,7 @@ const hifidrawTesting = (function() {
             updateExportURL(this.generate_a_valid_graph(), para);
     
             const export_url = para.text();
-    
+
             $.ajax({
                 type: "HEAD",
                 async: false,
@@ -641,7 +642,28 @@ const hifidrawTesting = (function() {
     
             assert.equal(pass_fail[0], "success");
         },
-    
+
+
+        test_to_url_from_url_special_chars: function() {
+            // I had forgotten to URI-encode the graph so chars like + were getting lost
+
+            const graph = this.generate_a_valid_graph();  // Should give us a graph with special chars in it
+            let fake_export_url = {
+                member_text: "",
+                text: function(text){this.member_text=text;
+                }
+            };
+
+            updateExportURL(graph, fake_export_url);
+
+            // updateExportURL will set the member_text to a full URL: http://something:8111/index.html?serialised=...
+            // but we only want the query parameters because that's what getQueryParams will see in action
+            const query_string = fake_export_url.member_text.substring(fake_export_url.member_text.indexOf("?"));
+            const query_params = getQueryParams(query_string);
+
+            assert.deepEqual(deserialiseGraph(query_params.serialised), graph);
+        },
+
     
         test_long_export_url_error_message: function() {
 
