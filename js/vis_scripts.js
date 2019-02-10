@@ -691,7 +691,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
         addDownloadLink(downloadID, drawingArea);
     };
 
-    const visNetwork = makeEmptyNetwork(drawingArea);
+    const visNetwork = makeEmptyNetwork(drawingArea, false, false);
 
     const inputTable = makeTable("inputTable");
 
