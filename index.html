@@ -81,16 +81,12 @@
             <input type="button" class="btn-small" onclick="copyToClipboard('id_export_link');" value="Copy permalink"/>
           </div>
         </div>
-        <div class="row">
-          <div class="col-fill col">
-            <div class="collapsible">
-              <input id="collapsible2" type="checkbox" name="collapsible">
-              <label for="collapsible2">View permalink</label>
-              <div class="collapsible-body">
-                <!-- Our URL for returning to this page another time will be put here -->
-                <p id="id_export_link" class="word-wrap"></p>
-              </div>
-            </div>
+        <div class="collapsible">
+          <input id="collapsible2" type="checkbox" name="collapsible">
+          <label for="collapsible2">View permalink</label>
+          <div class="collapsible-body">
+            <!-- Our URL for returning to this page another time will be put here -->
+            <p id="id_export_link" class="word-wrap"></p>
           </div>
         </div>
       </div>
@@ -109,7 +105,7 @@
         // link our data and drawing area together
         setUpSingleDrawingPage("inputDiv", "drawing_div", "id_export_link", "id_download");
 
-        // make table rows sortable
+        // make table rows sortable with JQuery UI
         $('tbody').sortable();
     };
   </script>
