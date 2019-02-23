@@ -615,8 +615,41 @@ function addDataFromURL(serialisedData, tableObj, redrawFunc, visNetwork) {
 function addSampleData(tableObj, redrawFunc, visNetwork) {
     "use strict";
 
+    // This is the old sample, I think it is a bit too complicated so is only here for posterity
+    const pc_turntable_passive_two_point_one =
+        "{\"nodes\":[" +
+            "{\"id\":\"pc\",\"label\":\"pc\",\"shape\":\"box\",\"x\":-411,\"y\":-189}," +
+            "{\"id\":\"dac\",\"label\":\"dac\",\"shape\":\"box\",\"x\":-304,\"y\":-187}," +
+            "{\"id\":\"amplifier\",\"label\":\"amplifier\",\"shape\":\"box\",\"x\":-137,\"y\":-67}," +
+            "{\"id\":\"turntable\",\"label\":\"turntable\",\"shape\":\"box\",\"x\":-387,\"y\":27}," +
+            "{\"id\":\"high level inputs\",\"label\":\"high level inputs\",\"shape\":\"box\",\"x\":-8,\"y\":-174}," +
+            "{\"id\":\"subwoofer\",\"label\":\"subwoofer\",\"shape\":\"box\",\"x\":143,\"y\":-174}," +
+            "{\"id\":\"passive speakers\",\"label\":\"passive speakers\",\"shape\":\"box\",\"x\":273,\"y\":23}]," +
+        "\"edges\":[" +
+            "{\"from\":\"pc\",\"to\":\"dac\",\"arrows\":\"to\",\"label\":\"usb\"}," +
+            "{\"from\":\"dac\",\"to\":\"amplifier\",\"arrows\":\"to\",\"label\":\"rca-rca\"}," +
+            "{\"from\":\"turntable\",\"to\":\"amplifier\",\"arrows\":\"to\",\"label\":\"rca-rca\"}," +
+            "{\"from\":\"amplifier\",\"to\":\"high level inputs\",\"arrows\":\"to\",\"label\":\"speaker cable\"}," +
+            "{\"from\":\"high level inputs\",\"to\":\"subwoofer\",\"arrows\":\"to\",\"label\":\"\"}," +
+            "{\"from\":\"subwoofer\",\"to\":\"passive speakers\",\"arrows\":\"to\",\"label\":\"speaker cable\"}]}";
+
+    // The newer, simpler, sample data
+    const pc_dac_amp_speakers =
+        "{\"nodes\":[" +
+            "{\"id\":\"pc\",\"label\":\"pc\",\"shape\":\"box\",\"x\":-265,\"y\":-254}," +
+            "{\"id\":\"dac\",\"label\":\"dac\",\"shape\":\"box\",\"x\":-88,\"y\":-254}," +
+            "{\"id\":\"amplifier\",\"label\":\"amplifier\",\"shape\":\"box\",\"x\":-85,\"y\":-133}," +
+            "{\"id\":\"left speaker\",\"label\":\"left speaker\",\"shape\":\"box\",\"x\":-199,\"y\":68}," +
+            "{\"id\":\"right speaker\",\"label\":\"right speaker\",\"shape\":\"box\",\"x\":59,\"y\":66}]," +
+        "\"edges\":[" +
+            "{\"from\":\"pc\",\"to\":\"dac\",\"arrows\":\"to\",\"label\":\"usb\"}," +
+            "{\"from\":\"dac\",\"to\":\"amplifier\",\"arrows\":\"to\",\"label\":\"rca-rca\"}," +
+            "{\"from\":\"amplifier\",\"to\":\"left speaker\",\"arrows\":\"to\",\"label\":\"speaker cable\"}," +
+            "{\"from\":\"amplifier\",\"to\":\"right speaker\",\"arrows\":\"to\",\"label\":\"speaker cable\"}]}";
+
     // You can create a sample graph on the home page and then use the permalink as sample data
-    addDataFromURL('{"nodes":[{"id":"pc","label":"pc","shape":"box","x":-411,"y":-189},{"id":"dac","label":"dac","shape":"box","x":-304,"y":-187},{"id":"amplifier","label":"amplifier","shape":"box","x":-137,"y":-67},{"id":"tunrtable","label":"tunrtable","shape":"box","x":-387,"y":27},{"id":"high level inputs","label":"high level inputs","shape":"box","x":-8,"y":-174},{"id":"subwoofer","label":"subwoofer","shape":"box","x":143,"y":-174},{"id":"passive speakers","label":"passive speakers","shape":"box","x":273,"y":23}],"edges":[{"from":"pc","to":"dac","arrows":"to","label":"usb"},{"from":"dac","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"tunrtable","to":"amplifier","arrows":"to","label":"rca-rca"},{"from":"amplifier","to":"high level inputs","arrows":"to","label":"speaker cable"},{"from":"high level inputs","to":"subwoofer","arrows":"to","label":""},{"from":"subwoofer","to":"passive speakers","arrows":"to","label":"speaker cable"}]}',
+    addDataFromURL(
+        pc_dac_amp_speakers,
         tableObj,
         redrawFunc,
         visNetwork);
