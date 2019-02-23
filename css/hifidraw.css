@@ -9,9 +9,9 @@ body {
 }
 
 .example-button {
-    /* keep out buttons narrow enough */
-    max-width: 6rem;
-    min-width: 6rem;
+    /* keep our buttons narrow enough */
+    max-width: 7rem;
+    min-width: 7rem;
 }
 
 .col {

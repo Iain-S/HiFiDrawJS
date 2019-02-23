@@ -84,13 +84,25 @@
         <p>Either download your image as a .png file or use the permalink to come back here at a later date.</p>
         <div class="row">
           <!-- This will be a button to download the image as a png -->
-          <div class="col-fill col align-middle example-button"><a id="id_download" class="paper-btn btn-small no-wrap" href="" download="HiFiDraw.png">Download image</a></div>
-          <div class="col-fill col align-middle example-button"><input type="button" class="btn-small" onclick="copyToClipboard('id_export_link');" value="Copy link"/></div>
+          <div class="col-fill col align-middle example-button">
+            <a id="id_download" class="paper-btn btn-small no-wrap" href="" download="HiFiDraw.png">Download image</a>
+          </div>
+          <div class="col-fill col align-middle example-button">
+            <input type="button" class="btn-small" onclick="copyToClipboard('id_export_link');" value="Copy permalink"/>
+          </div>
         </div>
-        <!-- Our URL for returning to this page another time will be put here -->
-        <h5>Permalink</h5>
-        <p id="id_export_link" class="word-wrap"></p>
-
+        <div class="row">
+          <div class="col-fill col">
+            <div class="collapsible">
+              <input id="collapsible2" type="checkbox" name="collapsible">
+              <label for="collapsible2">View permalink</label>
+              <div class="collapsible-body">
+                <!-- Our URL for returning to this page another time will be put here -->
+                <p id="id_export_link" class="word-wrap"></p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
