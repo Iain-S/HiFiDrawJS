@@ -116,6 +116,7 @@ class TestHomePage(unittest.TestCase):
         self.check_for_href_and_download_in_element('id_download')
 
     def test_there_is_export_link(self):
+        self.browser.find_element_by_id('id_view_permalink').click()
         export_link = self.browser.find_element_by_id('id_export_link')
         current_url = self.browser.current_url
 
