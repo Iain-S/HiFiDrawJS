@@ -1,6 +1,25 @@
 /*global window, $, vis, document, event, console */
 /*jslint es6 */
+const componentOptions = ["headphones",
+                            "phone",
+                            "pc",
+                            "dac",
+                            "amp",
+                            "speakers"];
 
+const connectorOptions = ["rca-rca",
+                            "rca<>rca",
+                            "rca<->rca",
+                            "rca",
+                            "speaker cable",
+                            "optical"];
+
+const destinationOptions = ["headphones",
+                            "phone",
+                            "pc",
+                            "dac",
+                            "amp",
+                            "speakers"];
 
 function countBodyRows(tableBody) {
     "use strict";
@@ -43,7 +62,7 @@ function makeSourceBox(value, number) {
 
 function makeDestinationBox(value, number) {
     "use strict";
-    return makeTextInput("dest", "components", value, number);
+    return makeTextInput("dest", "destination", value, number);
 }
 
 
@@ -127,16 +146,25 @@ function graphFromTable(tableObj) {
             // If source is not in nodes already, add it
             const srcID = addNodeFromCell(srcTD, nodes);
 
+            // Add the new source to the components list
+            addNewDataListItem('components', srcID);
+
             // Get dest
             const dstTD = tableRow.children("td").eq(2);
 
             // If dest is not in nodes already, add it
             const dstID = addNodeFromCell(dstTD, nodes);
 
+            // Add the new destination to the components list
+            addNewDataListItem('destination', dstID);
+            
             // Find label from drop-down
             const connTD = tableRow.children("td").eq(1);
 
             const connLabel = connTD.children("input").first().val();
+
+            // Add the new connection to the components list
+            addNewDataListItem('connectors', connLabel);
 
             // Add edge
             edges.push({from: srcID,
@@ -474,16 +502,10 @@ function makeTable(tableID) {
 
 function makeComponentsDatalist() {
     "use strict";
-    const options = ["headphones",
-                     "phone",
-                     "pc",
-                     "dac",
-                     "amp",
-                     "speakers"];
 
     let datalistString = "<datalist id='components'>";
 
-    options.sort().forEach(function(option){
+    componentOptions.sort().forEach(function(option){
         datalistString += "<option value='" + option + "'>";
     });
 
@@ -491,20 +513,13 @@ function makeComponentsDatalist() {
 
     return $(datalistString);
 }
-
 
 function makeConnectorDatalist() {
     "use strict";
-    const options = ["rca-rca",
-                     "rca<>rca",
-                     "rca<->rca",
-                     "rca",
-                     "speaker cable",
-                     "optical"];
 
     let datalistString = "<datalist id='connectors'>";
 
-    options.sort().forEach(function(option){
+    connectorOptions.sort().forEach(function(option){
         datalistString += "<option value='" + option + "'>";
     });
 
@@ -513,6 +528,51 @@ function makeConnectorDatalist() {
     return $(datalistString);
 }
 
+function makeDesinationDatalist() {
+    "use strict";
+
+    let datalistString = "<datalist id='destination'>";
+
+    destinationOptions.sort().forEach(function(option){
+        datalistString += "<option value='" + option + "'>";
+    });
+
+    datalistString += "</datalist>";
+
+    return $(datalistString);
+}
+
+function addNewDataListItem(dataListID, newOption) {
+    switch(dataListID) {
+        case 'components':
+            if (!componentOptions.includes(newOption)) {
+                componentOptions.push(newOption);
+                addNewOptionToDataList(dataListID, newOption);
+            };
+            break;
+        case 'connectors':
+            if (!connectorOptions.includes(newOption)) {
+                connectorOptions.push(newOption);
+                addNewOptionToDataList(dataListID, newOption);
+            };
+            break;
+        case 'destination':
+            if (!destinationOptions.includes(newOption)) {
+                destinationOptions.push(newOption);
+                addNewOptionToDataList(dataListID, newOption);
+            };
+            break;
+        default:
+            break;
+    }
+}
+
+function addNewOptionToDataList(dataListID, newOption) {
+    const list = document.getElementById(dataListID);
+    let option = document.createElement('option');
+    option.value = newOption;   
+    list.appendChild(option);
+}
 
 function deleteRowFrom(tableObj, idx, redrawFunc) {
     "use strict";
@@ -709,6 +769,7 @@ function setUpSingleDrawingPage(inputDivID, drawingDivID, exportURLID, downloadI
     // Make a data lists for use by the table
     makeComponentsDatalist().appendTo($("body"));
     makeConnectorDatalist().appendTo($("body"));
+    makeDesinationDatalist().appendTo($("body"));
 
     const inputDiv = $("#" + inputDivID);
     const drawingArea = $("#" + drawingDivID);
